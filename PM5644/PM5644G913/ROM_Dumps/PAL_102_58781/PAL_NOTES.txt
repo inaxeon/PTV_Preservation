@@ -1,0 +1,38 @@
+This directory contains an accurate functional (but not bit-for-bit) recreation of this PAL
+which was not able to be read for some reason (either security bit set or accidental damage).
+
+There are two implementations both of which work but resulting in different checksums.
+
+Contains a counter on A3-A8 which counts from 0x00 to 0x27
+Then a reset register (I/O 1) activates
+Then back to zero
+
+Also has a pin which shifts the data registers. Complicated formula.
+
+I/O PINS:
+
+PIN 14 (I/O 0): Output which shifts the data register banks (SHFT in my schematic)
+PIN 15 (I/O 1): Counter reset register
+PIN 16 (I/O 2): Unused/0/HiZ
+PIN 17 (I/O 3): Unused/0/HiZ
+PIN 18 (I/O 4): A8 (Not connected to anything on PCB)
+PIN 19 (I/O 5): A7
+PIN 20 (I/O 6): A6
+PIN 21 (I/O 7): A5
+PIN 22 (I/O 8): A4
+PIN 23 (I/O 9): A3
+
+I PINS:
+
+1: CLK: Global clock. Connected to all output latches. Required.
+2: Used in forumula for I/0 0
+3: Used in forumula for I/0 0
+4: Used in forumula for I/0 0
+5: Used in forumula for I/0 0
+6: Used in forumula for I/0 0
+7: Counter clock gate. Counter will increment only when this pin is high.
+8: Unused / Inactive (0) in operation
+9: Unused / Inactive (0) in operation
+10: Unused / Inactive (0) in operation
+11: Unused / Inactive (0) in operation
+13: Unused / Inactive (0) in operation

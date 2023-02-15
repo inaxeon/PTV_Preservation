@@ -1,0 +1,60 @@
+Name     D758;
+PartNo   00 ;
+Date     26/10/2022 ;
+Revision 01 ;
+Designer Engineer ;
+Company  Inaxeon ;
+Assembly None ;
+Location  ;
+Device   g22v10 ;
+
+PIN 1 = GCLK;
+PIN [2..6] = [I0..4];
+PIN 7=LCLK;
+
+PIN [23..18] = [A3..8];
+PIN 17=UNUSED1;
+PIN 16=UNUSED2;
+PIN 15=LRESET;
+PIN 14=UNK;
+
+// NOTES:
+// A3-7 are a synchronous counter which only increments when LCLK is high
+// Self resets upon reaching 0x27
+// A3-7 are connected to EPROM address pins
+// A8 is not connected to anything. Used for rollover.
+
+A3.d = (LRESET # !LCLK) & !LCLK $ !A3;
+A3.oe = 'b'1;
+
+A4.d =  (LRESET # !LCLK) & (A4 $ (A3 & LCLK));
+A4.oe = 'b'1;
+
+A5.d =  (LRESET # !LCLK) & (A5 $ (A4 & A3 & LCLK));
+A5.oe = 'b'1;
+
+A6.d =  (LRESET # !LCLK) & (A6 $ (A5 & A4 & A3 & LCLK));
+A6.oe = 'b'1;
+
+A7.d =  (LRESET # !LCLK) & (A7 $ (A6 & A5 & A4 & A3 & LCLK));
+A7.oe = 'b'1;
+
+A8.d =  (LRESET # !LCLK) & (A8 $ (A7 & A6 & A5 & A4 & A3 & LCLK));
+A8.oe = 'b'1;
+
+!LRESET = A3 & A4 & A5 & !A6 & !A7 & A8;
+LRESET.oe = 'b'0;
+
+UNUSED1 = 'b'0;
+UNUSED1.oe = 'b'0;
+
+UNUSED2 = 'b'0;
+UNUSED2.oe = 'b'0;
+
+UNK.d = A3 & !A4 & !A5 & !A6 & !A7 & !A8 & I1 & !I2 & !I3 & I4
+	# UNK & A3 & !A4 & !A5 & !A6 & !A7 & !A8
+	# UNK & !A3 & A4 & !A5 & !A6 & !A7 & !A8
+	# UNK & A3 & A4 & !I0 & !I1 & !I2 & !I3 & !I4
+	# UNK & A3 & A4 & I0 & !I1 & !I2 & !I3 & !I4;
+
+UNK.oe = 'b'1;

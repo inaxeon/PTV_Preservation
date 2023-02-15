@@ -1,0 +1,124 @@
+%SIGNAL
+PIN  23 =  A0 
+PIN  22 =  A1 
+PIN  21 =  A2 
+PIN  20 =  A3 
+PIN  19 =  A4 
+PIN  18 =  A5 
+PIN   1 =  GCLK 
+PIN   2 =  I0 
+PIN   3 =  I1 
+PIN   4 =  I2 
+PIN   5 =  I3 
+PIN   6 =  I4 
+PIN   7 =  LCLK 
+PIN  15 =  LRESET 
+PIN  14 =  UNK 
+PIN  17 =  UNUSED1 
+PIN  16 =  UNUSED2 
+%END
+
+%FIELD
+FIELD COUNT = A5,A4,A3,A2,A1,A0
+%END
+
+%EQUATION
+A0.d  =>
+    !A0 & A3 & !A4 & A5 & !LCLK
+  # A0 & A3 & !A4 & A5 & LCLK
+  # !A0 & !A3 & A5 & !LCLK
+  # A0 & A3 & A4 & LCLK
+  # !A0 & A3 & A4 & !LCLK
+  # A0 & !A3 & A5 & LCLK
+
+A1.d  =>
+    !A0 & !A1 & A3 & !A4 & A5 & !LCLK
+  # !A0 & A1 & A3 & A4 & LCLK
+  # A0 & !A1 & A3 & !A4 & A5
+  # !A0 & !A1 & A3 & A4 & !LCLK
+  # A0 & !A1 & A3 & A4
+  # !A0 & A1 & !A3 & A5 & LCLK
+  # !A0 & A1 & A3 & !A4 & A5 & LCLK
+  # !A0 & !A1 & !A3 & A5 & !LCLK
+  # A0 & !A1 & !A3 & A5
+
+A2.d  =>
+    !A0 & !A1 & !A2 & A3 & A4 & !A5 & !LCLK
+  # !A0 & !A1 & A2 & A3 & A4 & !A5 & LCLK
+  # !A0 & A1 & !A2 & A3 & !A4 & A5
+  # A1 & !A2 & A3 & A4
+  # A0 & !A1 & !A2 & A3 & A4
+  # !A0 & !A1 & !A2 & A5 & !LCLK
+  # A0 & !A2 & A3 & !A4 & A5
+  # A1 & !A2 & !A3 & A5
+  # A0 & !A1 & !A2 & !A3 & A5
+  # !A0 & !A1 & A2 & A5 & LCLK
+
+A3.d  =>
+    !A0 & !A1 & !A2 & !A3 & A5 & !LCLK
+  # !A0 & !A1 & !A2 & A3 & A5 & LCLK
+  # !A0 & !A1 & A2 & !A3 & A5
+  # A1 & !A3 & A5
+  # A0 & !A1 & !A3 & A5
+
+A4.d  =>
+    !A0 & !A1 & !A2 & !A3 & !A4 & A5 & !LCLK
+  # !A0 & !A1 & !A2 & !A3 & A4 & A5 & LCLK
+  # !A0 & !A1 & !A2 & A3 & !A4 & A5
+  # A2 & !A4 & A5
+  # !A0 & A1 & !A2 & !A4 & A5
+  # A0 & !A2 & !A4 & A5
+
+A5.d  =>
+    !A0 & !A1 & !A2 & A3 & A4 & !A5 & !LCLK
+  # !A0 & !A1 & !A2 & !A3 & !A4 & A5 & LCLK
+  # !A0 & !A1 & A2 & A3 & A4 & !A5
+  # A1 & A3 & A4 & !A5
+  # A0 & !A1 & A3 & A4 & !A5
+
+!LRESET =>
+    !A0 & !A1 & !A2 & A3 & A4 & !A5
+
+LRESET.oe  =>
+    1 
+
+UNK.d  =>
+    !A0 & A1 & A2 & A3 & A4 & A5 & I1 & !I2 & !I3 & I4
+  # !A0 & A1 & A2 & A3 & A4 & A5 & !UNK
+  # A0 & !A1 & A2 & A3 & A4 & A5 & !UNK
+  # !A0 & !A1 & !I1 & !I2 & !I3 & !I4 & !UNK
+
+UNK.oe  =>
+    1 
+
+UNUSED1 =>
+    0 
+
+UNUSED1.oe  =>
+    0 
+
+UNUSED2 =>
+    0 
+
+UNUSED2.oe  =>
+    0 
+
+A0.oe  =>
+    1 
+
+A1.oe  =>
+    1 
+
+A2.oe  =>
+    1 
+
+A3.oe  =>
+    1 
+
+A4.oe  =>
+    1 
+
+A5.oe  =>
+    1 
+
+%END
