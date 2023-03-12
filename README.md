@@ -1,4 +1,4 @@
-# PTV_Preservation
+# Philips Professional Television test equipment preservation
 
 This repository contains all of the catalogues, manuals and code dumps I have for Philips "PTV" test equipment. Presently that includes:
 
