@@ -1,0 +1,14 @@
+ -z -mPT5300.MAP -Nc -Elnk.err \
+  -pvectors=00h,text,stack=08000h \
+  -prbit=0100h/020h,rdata/text,rbss/. \
+  -pdata=rbss/rdata,const,strings,bss/. \
+  -pfarbss=010000h,fardata/strings \
+  -pnvram=bss,heap \
+  -ACODE=00h-0FFFFh,010000h-01FFFFhx255 \
+  -pfarnvram=fardata \
+  -oC:.\L.OBJ C:\HT-XA\LIB\RTxa--l.OBJ mas.obj menu.obj menutree.obj menuhlp.obj message.obj \
+          util.obj text.obj tables.obj factory.obj timing.obj rs232cmd.obj \
+          rs232err.obj rs232par.obj cont_drv.obj disp_drv.obj keyb_drv.obj \
+          unit_drv.obj iniic.obj piic1.obj piic2.obj serial1.obj xadrivr.obj \
+          xaintfc.obj C:\HT-XA\LIB\xa--lC.LIB 
+

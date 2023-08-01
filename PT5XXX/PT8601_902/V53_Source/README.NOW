@@ -1,0 +1,35 @@
+Option PT8601 Analog Test Signal Generator for the
+					PT5210 VariTime Digital Sync Generator
+
+For at foretage en komplet assemblering og linkning benyttes: ANALOG.BAT
+
+Som Assembler er benyttet:	KEIL A51-Assembler ver 5.04
+Som Linker er benyttet:		KEIL L51-linker ver 3.52.
+Som Object to hex er benyttet:	KEIL OH51-translator ver 2.1.
+
+Vedr. Hex til Binary konvertering:
+	Indl‘s HEX-filen i sprint eller lign.
+	Gem den resulterende hukommelse i en fil.
+
+Som Hex to Binary er benyttet:	HI-LO Systems HEXBIN.EXE Ver 3.3 (170893)
+
+Som make generator er brugt: 	Borlands MAKE.EXE Ver 3.0
+
+MAKE-file:	MAKEFILE
+
+desuden benyttes BAT-filerne:
+	A.BAT			der assemblerer filerne med de rette parametre
+
+samt de benyttede biblioteker fra KEIL C51-compiler ver 5.04.:
+	C51S.LIB ver. 5P03, dateret 27-09-95
+	C51FPS.LIB ver. 5P03, dateret 72-09-95
+
+Den komplette source best†r af 5 program-filer:
+
+	ANLGENER.A51, ANLTYPEG.A51, ANLTYPEM.A51, ANLTABLE.A51 og ANLCMD.A51
+
+og 2 include-filer:
+
+	REG52.INC og MACROS.INC
+	
+For programmerede PROM benyttes 12NC.: 4008 002 0565 5

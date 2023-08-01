@@ -1,0 +1,1 @@
+emul51 -p8032 -m128 -e110 -f16 -t100 -ianlgener.def

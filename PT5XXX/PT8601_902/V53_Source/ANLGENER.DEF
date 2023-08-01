@@ -1,0 +1,8 @@
+ena reg
+so=s,,a51
+load anlgener
+cw
+tab 3
+mapx=emul
+g f 0
+
