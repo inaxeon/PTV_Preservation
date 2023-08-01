@@ -1,6 +1,6 @@
 $NOMOD51			;Disable the predefined 8051 register set
 
-$INCLUDE( REG52.INC)		;Include the predefined 8052 register set
+$INCLUDE( REG320.INC)		;Include the predefined 8052 register set
 $INCLUDE( MACROS.INC)		;Include user defined macros
 
 ;************************************************************************

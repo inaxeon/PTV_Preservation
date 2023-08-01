@@ -1,13 +1,15 @@
 $NOMOD51			;Disable the predefined 8051 register set
 
-$INCLUDE( REG52.INC)		;Include the predefined 8052 register set
+$INCLUDE( REG320.INC)		;Include the predefined 80C320 register set
 $INCLUDE( MACROS.INC)		;Include user defined macros
 
 ;************************************************************************
 ;* Copyright PHILIPS TV TEST EQUIPMENT A/S, BRONDBY 1997		*
 ;* Project: PT8601 Analog Test Signal generator				*
+;* 			PT8601/902 Recreation				*
 ;* Module:  ANLGENER.A51						*
 ;* Author:  Kim Engedahl, DEV						*
+;			Modified by Matt Millman 			*
 ;* Org.  :  970101							*
 ;* Rev.  :  990613, KEn DEV						*
 ;* Status:  Version 1.4							*
@@ -30,6 +32,7 @@ EXTRN CODE( Reset_DAC, Read_EEPROM)
 
 EXTRN CODE( GA1_F1L22, GA2_F1L22, GA3_F1L22, GA4_F1L22, GA5_F1L22, GA6_F1L22)
 EXTRN CODE( GB1_F1L22, GB2_F1L22, GB3_F1L22, GB4_F1L22, GB5_F1L22, GB6_F1L22)
+EXTRN CODE( G7_F1L22, G8_F1L22)
 EXTRN CODE( CB75GreyPattG, EBUCBRedPattG, Win15PattG, Win20PattG, Win100PattG)
 EXTRN CODE( CrossPattg, PLUGEPattG, SafePattG)
 
@@ -46,8 +49,10 @@ PUBLIC	StatusPort
 PUBLIC	GenericMSBPort, LineAdrPort, FinePortH, FinePortL
 PUBLIC	ScHPhasePort
 PUBLIC	SCFreqLSBPort, SCFreqMSBPort
+PUBLIC	TextPort
 
-PUBLIC	NewPattern, PatternType, PatternPtr
+PUBLIC	NewPattern, PatternType, PatternAttr, PatternPtr
+PUBLIC	ComplexPtr, ComplexCnt
 
 PUBLIC	GenlockOffset, UserOffset
 PUBLIC	OffsetCal, LineOffset, CoarseOffset, FineOffset
@@ -55,8 +60,8 @@ PUBLIC	OffsetCal, LineOffset, CoarseOffset, FineOffset
 PUBLIC	UserScHOffset, ScHOffset, ScHPhaseCal
 PUBLIC	DACLevel, DACOffset
 
-PUBLIC	Status, Status_S0, Status_SYSSEL, Status_TXT_ON
-PUBLIC	OSDText, TextPos, TextEnable, TmpBit, CoarseGTMax
+PUBLIC	Status, Status_S0, Status_SYSSEL, Status_TXT_ON, Status_TXT_0, Status_TXT_1
+PUBLIC	OSDTextLN1, OSDTextLN2, TextPos, Text1Enable, Text2Enable, TmpBit, CoarseGTMax
 PUBLIC	PALSystem, NTSCSystem
 
 PUBLIC	ErrorStatus, Buffer_OV, Illegal_Del, Illegal_Cmd, Illegal_Par
@@ -128,9 +133,10 @@ NewPattern:	DBIT	1		;1: New pattern received
 UpdOffsetFlag:	DBIT	1		;1: Delayed field interrupt has
 					; occurred -> update line offset
 
-TextEnable:	DBIT	1		;1: User text ON
-TextPOS:	DBIT	1		;1: Text inside safearea (TYPE nB)
-TmpBit:		DBIT	1		;Temporary bit. Used in ANLCMD.A51
+Text1Enable:	DBIT	1		;1: User text ON
+Text2Enable:	DBIT	1		;1: User text ON (Complex line 2)
+TextPOS:		DBIT	1		;1: Text inside safearea (TYPE nB)
+TmpBit:			DBIT	1		;Temporary bit. Used in ANLCMD.A51
 
 CoarseGTMax:	DBIT	1		;1: CoarseOffset >= Max. value
 
@@ -141,8 +147,7 @@ Global_DATA	SEGMENT	DATA
 		RSEG	Global_DATA
 
 PatternType:	DS	1		;User selected pattern type
-
-OSDText:	DS	9		;Array for user text
+PatternAttr:	DS	1		;User selected pattern attribute.
 
 OffsetCal:	DS	4		;Calibration offset
 ScHPhaseCal:	DS	2		;ScH-Phase calibration
@@ -160,6 +165,9 @@ FineOffset:	DS	2		;Calculated fine offset, (n*0.145ns)
 ScHOffset:	DS	2		;Calculated ScHPhase offset
 
 PatternPtr:	DS	2		;Pointer to pattern table, (MACROS.INC)
+
+ComplexPtr:	DS	2		;Pointer to complex linenumber.
+ComplexCnt:	DS	2		;Counter for displaing complex lines.
 
 TmpBuffer:	DS	11		;Temporary array
 
@@ -183,6 +191,8 @@ SCFreqMSBPort	EQU	0D001H		;Address of 16 MSB Subcarrier frequency
 
 NCOFreqPort	EQU	0B000H		;Address of 13.5 MHz NCO (LSB of 32bit)
 
+TextPort	EQU	0E000H		;Address of textport  
+
 					;Definitions for register bank 1
 absR0		EQU	008H		;No. of lines with same S1S0
 absR1		EQU	009H		;S1S0 pattern
@@ -196,6 +206,11 @@ absR5		EQU	00DH		;Not Used / PatternPtr
 absR6		EQU	00EH		;LineType / PatternPtr+1
 
 absR7		EQU	00FH		;Reg. to push ACC
+
+; Extended scratchpad
+OSDTextLN1		EQU	080H		; User text line 1 (11 bytes)
+OSDTextLN2		EQU	OSDTextLN1+11	; User text line 2 (17 bytes)
+; NO FREE MEMORY AFTER THIS. ALL USED IN RS232.A51 !!!
 
 ;************************************************************************
 Global_TABLES	SEGMENT	CODE
@@ -304,7 +319,7 @@ ZeroLoop:			;Reset internal RAM, ie. clear 248 bytes
 	MOV	RCAP2L, #0FAH	;Reload value 65530, ( 0FFFAH).
 	MOV	RCAP2H, #0FFH
 
-	MOV	SCON, #0F0H	;Serial control: Mode 3, using timer 2
+	MOV	SCON0, #0F0H	;Serial control: Mode 3, using timer 2
 				; 9-bit receive/transmit
 
 	MOV	TCON, #055H	;Start Counter0, Counter 1 and set edge
@@ -411,23 +426,25 @@ ZeroLoop:			;Reset internal RAM, ie. clear 248 bytes
 	;****************************************************************
 	;Initialize text RAM
 	;****************************************************************
-	SETB	Status_TXT_1		;Set statusbit, Text_1, while resetting
+	SETB	TmpBit
 
-	MOV	A, Status
-	MOV	DPTR, #StatusPort+1
-	MOVX	@DPTR, A
+	MOV	DPTR, #StatusPort+1	; enable resetting
+	MOVX	@DPTR, A		; the first 256 bytes in text RAM
 
-	MOV	DPTR, #0E000H		;Clear bytes 0-255 of TEXT RAM
-	MOV	R0, #00
-	CLR	A
-RAM_Loop:
+	MOV	DPTR, #TextPort
+TextRAMReset:
+	MOV	R0, #00			; Clear bytes 0-255 of TEXT RAM
+TextRAMLoop:
 	MOVX	@DPTR, A
 	INC	DPTR
-	DJNZ	R0, RAM_Loop
+	DJNZ	R0, TextRAMLoop
 
-	MOV	OSDText+8, #00		;EOF OSD text
+	MOV	DPTR, #StatusPort	; enable resetting
+	MOVX	@DPTR, A		; the next 256 bytes in text RAM
 
-	CLR	Status_TXT_1		;Clear statusbit, Text OFF
+	MOV	DPTR, #TextPort+0100H
+
+	JBC	TmpBit, TextRAMReset
 
 	MOV	A, Status
 	MOV	DPTR, #StatusPort
@@ -519,34 +536,36 @@ RelLineCntIntr:
 	PUSH	PSW			;+2
 	PUSH	DPL			;+2
 	PUSH	DPH			;+2
+	PUSH	DPS			;+2
+	MOV	DPS, #0			;+3
 
-	MOV	PSW, #08H		;+2 ALWAYS use register bank 1
+	MOV	PSW, #08H		;+3 ALWAYS use register bank 1
 	MOV	R7, A			;+1 Push accumulator
 
-	JNB	IE1, TestFieldUpdIntr	;+2 If HW field interrupt..
-	CLR	IE1			;+1  reset field interrupt
+	JNB	IE1, TestFieldUpdIntr	;+4 If HW field interrupt..
+	CLR	IE1			;+2  reset field interrupt
 
-	MOV	TH1, LineOffset		;+2  load offset to delayed field
-	MOV	TL1, LineOffset+1	;+2
+	MOV	TH1, LineOffset		;+3  load offset to delayed field
+	MOV	TL1, LineOffset+1	;+3
 
 TestFieldUpdIntr:
-	JBC	TF1, TempFieldUpdIntr	;+2 If SW field interrupt service intr.
+	JBC	TF1, TempFieldUpdIntr	;+4 If SW field interrupt service intr.
 					;   otherwise..
 
-	DJNZ	R0, NoS1S0Update	;+2 If time to update S1S0..
+	DJNZ	R0, NoS1S0Update	;+3 If time to update S1S0..
 
-	MOV	DPTR, #S1S0_M		;+2 Load basis pointer for Table Entry
+	MOV	DPTR, #S1S0_M		;+3 Load basis pointer for Table Entry
 
 	MOV	A, R1			;+1
-	MOVC	A, @A+DPTR		;+2 Get no. of lines to next S1S0 upd.
+	MOVC	A, @A+DPTR		;+3 Get no. of lines to next S1S0 upd.
 
-	JNZ	 StoreNoOfLines		;+2 If ( NoOfLines == 0)...
+	JNZ	 StoreNoOfLines		;+3 If ( NoOfLines == 0)...
 					;    table entry is out of bound
-	JB	Status_SYSSEL, TFULbl1	;+2  reset table pointer to NTSC...
-	MOV	A, #61			;+1  or PAL
+	JB	Status_SYSSEL, TFULbl1	;+4  reset table pointer to NTSC...
+	MOV	A, #61			;+2  or PAL
 TFULbl1:
 	MOV	R1, A			;+1
-	MOVC	A, @A+DPTR		;+2 Get no. of lines to next S1S0 upd.
+	MOVC	A, @A+DPTR		;+3 Get no. of lines to next S1S0 upd.
 
 StoreNoOfLines:
 	MOV	R0, A			;+1 Save no. of lines in R0
@@ -554,106 +573,110 @@ StoreNoOfLines:
 	INC	R1			;+1 Update pointer to next table entry
 
 	MOV	A, R1			;+1
-	MOVC	A, @A+DPTR		;+2 Get linetype for next R0 lines
+	MOVC	A, @A+DPTR		;+3 Get linetype for next R0 lines
 	MOV	R2, A			;+1 Save linetype information in R2
 
 	INC	R1			;+1 Update pointer to next table entry
 
-	MOV	C, ACC.2		;+1 Store field type in carry
-	ANL	A, #03			;+1 Isolate S1S0
+	MOV	C, ACC.2		;+2 Store field type in carry
+	ANL	A, #03			;+2 Isolate S1S0
 	MOV	ACC.6, C		;+2 Recall field type from carry
 
-	ANL	Status, #0BCH		;+2 Remove S1S0 & field information
-	ORL	Status, A		;+1 Update status: S1S0 & field bit
+	ANL	Status, #0BCH		;+3 Remove S1S0 & field information
+	ORL	Status, A		;+2 Update status: S1S0 & field bit
 
-	JBC	TF0, PatternUpdate	;+2
+	JBC	TF0, PatternUpdate	;+4
 
-	MOV	A, Status		;+1 Update status port with S1S0
-	MOV	DPTR, #StatusPort	;+2
-	MOVX	@DPTR, A		;+2
+	MOV	A, Status		;+2 Update status port with S1S0
+	MOV	DPTR, #StatusPort	;+3
+	MOVX	@DPTR, A		;+3
 
 	MOV	A, R2			;+1 Linetype F8 -> 1F: DO NOT UPDATE
 	SWAP	A			;+1
 	RL	A			;+1
-	ANL	A, #01FH		;+1 Acc. = Linetype
+	ANL	A, #01FH		;+2 Acc. = Linetype
 
-	CJNE	A, #01FH, FindLineType	;+2
+	CJNE	A, #01FH, FindLineType	;+4
 
 	MOV	A, R7			;+1 Linetype = 01FH, ie. DO NOT UPDATE
+	POP	DPS			;+2
 	POP	DPH			;+2
 	POP	DPL			;+2
 	POP	PSW			;+2
-	RETI				;+2
+	RETI				;+4
 
 TempFieldUpdIntr:
-	LJMP	FieldUpdIntr		;+2 Jump to interrupt routine handler
+	LJMP	FieldUpdIntr		;+4 Jump to interrupt routine handler
 
 FindLineType:
-	JB	Status_SYSSEL, UpdLineType	;+2
-	JB	PALSystem, UpdLineType		;+2 If system is PAL-ID..
+	JB	Status_SYSSEL, UpdLineType	;+4
+	JB	PALSystem, UpdLineType		;+4 If system is PAL-ID..
 
-	CJNE	A, #00FH, UpdLineType	;+2 If line 7, ie. line with PAL-ID..
-	MOV	A, #BlackBurst_G	;+1  reset line to black burst
+	CJNE	A, #00FH, UpdLineType	;+4 If line 7, ie. line with PAL-ID..
+	MOV	A, #BlackBurst_G	;+2  reset line to black burst
 UpdLineType:
-	MOV	DPTR, #LineAdrPort	;+2 NOTE: GenericMSBPort MUST contain 0
-	MOVX	@DPTR, A		;+2 Write update to line port
+	MOV	DPTR, #LineAdrPort	;+3 NOTE: GenericMSBPort MUST contain 0
+	MOVX	@DPTR, A		;+3 Write update to line port
 
 	MOV	A, R7			;+1
+	POP	DPS			;+2
 	POP	DPH			;+2
 	POP	DPL			;+2
 	POP	PSW			;+2
-	RETI				;+2
+	RETI				;+4
 
 NoS1S0Update:
-	JBC	TF0, PatternUpdate	;+2
-	JBC	UpdOffsetFlag, UpdOffset;+2
+	JBC	TF0, PatternUpdate	;+4
+	JBC	UpdOffsetFlag, UpdOffset;+4
 
 	MOV	A, R7			;+1
+	POP	DPS			;+2
 	POP	DPH			;+2
 	POP	DPL			;+2
 	POP	PSW			;+2
-	RETI				;+2
+	RETI				;+4
 
 PatternUpdate:
 	MOV	DPH, R3			;+2 Update pointer to routine
 	MOV	DPL, R4			;+2
 
 	CLR	A			;+1 
-	JMP	@A+DPTR			;+2 Jump to interrupt routine
+	JMP	@A+DPTR			;+3 Jump to interrupt routine
 
 UpdOffset:				;Update lineoffset every F4/F8
 	;NOTE: GenericMSBPort MUST contain 0
 	;AND should ALWAYS be set to ZERO
 	;before writing the FineOffset
 
-	MOV	A, FineOffset+1		;+1
-	MOV	DPTR, #FinePortL	;+2 NB! LSB MUST be loaded before MSB
-	MOVX	@DPTR, A		;+2
+	MOV	A, FineOffset+1		;+2
+	MOV	DPTR, #FinePortL	;+3 NB! LSB MUST be loaded before MSB
+	MOVX	@DPTR, A		;+3
 
-	MOV	A, FineOffset		;+1
-	MOV	DPTR, #FinePortH	;+2
-	MOVX	@DPTR, A		;+2
+	MOV	A, FineOffset		;+2
+	MOV	DPTR, #FinePortH	;+3
+	MOVX	@DPTR, A		;+3
 
-	MOV	A, CoarseOffset		;+1
-	MOV	DPTR, #GenericMSBPort	;+2
-	MOVX	@DPTR, A		;+2
+	MOV	A, CoarseOffset		;+2
+	MOV	DPTR, #GenericMSBPort	;+3
+	MOVX	@DPTR, A		;+3
 
-	MOV	A, CoarseOffset+1	;+1
-	MOV	DPTR, #CoarsePort	;+2
-	JNB	CoarseGTMax, LoadCoarseOffset	;+2
-	INC	DPTR			;+2
+	MOV	A, CoarseOffset+1	;+2
+	MOV	DPTR, #CoarsePort	;+3
+	JNB	CoarseGTMax, LoadCoarseOffset	;+4
+	INC	DPTR			;+3
 LoadCoarseOffset:
-	MOVX	@DPTR, A		;+2
+	MOVX	@DPTR, A		;+3
 
 	CLR	A			;+1 NOTE: GenericMSBPort MUST contain 0
-	MOV	DPTR, #GenericMSBPort	;+2  AND should ALWAYS be set to ZERO
-	MOVX	@DPTR, A		;+2  before writing the FineOffset
+	MOV	DPTR, #GenericMSBPort	;+3  AND should ALWAYS be set to ZERO
+	MOVX	@DPTR, A		;+3  before writing the FineOffset
 
 	MOV	A, R7			;+1
+	POP	DPS			;+2
 	POP	DPH			;+2
 	POP	DPL			;+2
 	POP	PSW			;+2
-	RETI				;+2
+	RETI				;+4
 
 
 ;************************************************************************
@@ -741,9 +764,9 @@ PatternTable_M:
 	LJMP	Pattern14_M		;+2 Not used
 	LJMP	Pattern14_M		;+2 Not used
 	LJMP	Pattern14_M		;+2 Not used
-	LJMP	Pattern30_M		;+2 Staircase 5-step
 	LJMP	Pattern14_M		;+2 Not used
-	LJMP	Pattern32_M		;+2 Staircase 10-step
+	LJMP	Pattern14_M		;+2 Not used
+	LJMP	Pattern14_M		;+2 Not used
 
 ;**************************************************************************
 Pattern0_M:				;SMPTE Colorbar, (525 only)
@@ -985,48 +1008,6 @@ NewPattern14_M:
 	LJMP	FieldUpdIntrEnd
 
 ;**************************************************************************
-Pattern30_M:				;Staircase 5-step
-	JB	TextPos, Pattern30_MB
-
-	MOV	R3, #HIGH( MA1_F1L20)	;+6/+7
-	MOV	R4, #LOW( MA1_F1L20)
-
-	JBC	NewPattern, NewPattern30_M
-	LJMP	FieldUpdIntrEnd
-
-Pattern30_MB:
-	MOV	R3, #HIGH( MB1_F1L20)	;+6/+7
-	MOV	R4, #LOW( MB1_F1L20)
-
-	JBC	NewPattern, NewPattern30_M
-	LJMP	FieldUpdIntrEnd
-
-NewPattern30_M:
-	MOV	R6, #GreyScale5_M
-	LJMP	FieldUpdIntrEnd
-
-;**************************************************************************
-Pattern32_M:				;Staircase 10-step
-	JB	TextPos, Pattern32_MB
-
-	MOV	R3, #HIGH( MA1_F1L20)	;+6/+7
-	MOV	R4, #LOW( MA1_F1L20)
-
-	JBC	NewPattern, NewPattern32_M
-	LJMP	FieldUpdIntrEnd
-
-Pattern32_MB:
-	MOV	R3, #HIGH( MB1_F1L20)	;+6/+7
-	MOV	R4, #LOW( MB1_F1L20)
-
-	JBC	NewPattern, NewPattern32_M
-	LJMP	FieldUpdIntrEnd
-
-NewPattern32_M:
-	MOV	R6, #GreyScale10_M
-	LJMP	FieldUpdIntrEnd
-
-;**************************************************************************
 ;* PAL-G/PAL-G with ID SYSTEM
 ;* Worst case timing: 53 cycles + 5 cycle
 ;**************************************************************************
@@ -1056,8 +1037,8 @@ SetPatternTable:
 	LJMP	Pattern12_G		;+2 Multiburst
 	LJMP	Pattern13_G		;+2 Red 75%
 	LJMP	Pattern14_G		;+2 Blackburst
-	LJMP	Pattern14_G		;+2 Not used
-	LJMP	Pattern14_G		;+2 Not used
+	LJMP	Pattern15_G		;+2 Philips
+	LJMP	Pattern16_G		;+2 Philips wo/APAL
 	LJMP	Pattern17_G		;+2 CCIR17
 	LJMP	Pattern18_G		;+2 Multipulse
 	LJMP	Pattern19_G		;+2 Sinc5MHz
@@ -1071,9 +1052,9 @@ SetPatternTable:
 	LJMP	Pattern14_G		;+2 Not used
 	LJMP	Pattern14_G		;+2 Not used
 	LJMP	Pattern14_G		;+2 Not used
-	LJMP	Pattern30_G		;+2 Staircase 5-step
 	LJMP	Pattern14_G		;+2 Not used
-	LJMP	Pattern32_G		;+2 Staircase 10-step
+	LJMP	Pattern14_G		;+2 Not used
+	LJMP	Pattern14_G		;+2 Not used
 
 ;**************************************************************************
 Pattern1_G:				;EBU Colorbar, (625 only)
@@ -1378,6 +1359,23 @@ NewPattern14_G:
 	LJMP	FieldUpdIntrEnd
 
 ;**************************************************************************
+Pattern15_G:				;Philips
+Pattern16_G:				;Philips wo/APAL
+	MOV	A, PatternAttr
+	JNB	ACC.0, Pattern16woAPAL_G
+
+	MOV	R3, #HIGH( G7_F1L22)	;+/+
+	MOV	R4, #LOW( G7_F1L22)
+
+	LJMP	FieldUpdIntrEnd
+
+Pattern16woAPAL_G:
+	MOV	R3, #HIGH( G8_F1L22)	;+/+
+	MOV	R4, #LOW( G8_F1L22)
+
+	LJMP	FieldUpdIntrEnd
+
+;**************************************************************************
 Pattern17_G:				;CCIR17
 	JB	TextPos, Pattern17_GB
 
@@ -1462,50 +1460,9 @@ NewPattern20_G:
 	LJMP	FieldUpdIntrEnd
 
 ;**************************************************************************
-Pattern30_G:				;Staircase 5-step
-	JB	TextPos, Pattern30_GB
-
-	MOV	R3, #HIGH( GA1_F1L22)	;+6/+7
-	MOV	R4, #LOW( GA1_F1L22)
-
-	JBC	NewPattern, NewPattern30_G
-	LJMP	FieldUpdIntrEnd
-
-Pattern30_GB:
-	MOV	R3, #HIGH( GB1_F1L22)	;+6/+7
-	MOV	R4, #LOW( GB1_F1L22)
-
-	JBC	NewPattern, NewPattern30_G
-	LJMP	FieldUpdIntrEnd
-
-NewPattern30_G:
-	MOV	R6, #GreyScale5_G
-	LJMP	FieldUpdIntrEnd
-
-;**************************************************************************
-Pattern32_G:				;Staircase 10-step
-	JB	TextPos, Pattern32_GB
-
-	MOV	R3, #HIGH( GA1_F1L22)	;+6/+7
-	MOV	R4, #LOW( GA1_F1L22)
-
-	JBC	NewPattern, NewPattern32_G
-	LJMP	FieldUpdIntrEnd
-
-Pattern32_GB:
-	MOV	R3, #HIGH( GB1_F1L22)	;+6/+7
-	MOV	R4, #LOW( GB1_F1L22)
-
-	JBC	NewPattern, NewPattern32_G
-	LJMP	FieldUpdIntrEnd
-
-NewPattern32_G:
-	MOV	R6, #GreyScale10_G
-	LJMP	FieldUpdIntrEnd
-
-;**************************************************************************
 FieldUpdIntrEnd:
 	MOV	A, R7			;+1
+	POP	DPS			;+2
 	POP	DPH			;+2
 	POP	DPL			;+2
 	POP	PSW			;+2

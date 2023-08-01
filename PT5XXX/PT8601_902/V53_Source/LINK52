@@ -1,1 +1,1 @@
-anlgener.obj,anlcmd.obj,anltypga.obj,anltypgb.obj,anltypma.obj,anltypmb.obj,anltable.obj,..\rs232.obj,..\comm.obj,..\C51FPS.LIB,..\C51S.LIB IXREF
+anlgener.obj,anlcmd.obj,anlutil.obj,anltypga.obj,anltypgb.obj,anltypma.obj,anltypmb.obj,anltypeg.obj,anltable.obj,rs232.obj,comm.obj,C51FPS.LIB,C51S.LIB IXREF

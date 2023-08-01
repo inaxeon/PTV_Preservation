@@ -1,6 +1,6 @@
 $NOMOD51			;Disable the predefined 8051 register set
 
-$INCLUDE( REG52.INC)		;Include the predefined 8052 register set
+$INCLUDE( REG320.INC)		;Include the predefined 8052 register set
 
 ;************************************************************************
 ;* Copyright PHILIPS TV TEST EQUIPMENT A/S, BRONDBY 1997		*
@@ -43,7 +43,7 @@ PUBLIC Parameter, String, CmdDelimiter, TxChkSum, ParamCnt, StrCnt
 
 ;************************************************************************
 
-Def_Unit_Adr	EQU	0F2H
+Def_Unit_Adr	EQU	016H
 
 XORValue	EQU	003H
 
@@ -62,8 +62,8 @@ State_6		EQU	State_0+6
 State_7		EQU	State_0+7
 State_8		EQU	State_0+8
 
-RxBufferLen	EQU	64
-StringLen	EQU	16
+RxBufferLen	EQU	56
+StringLen	EQU	18
 
 ;************************************************************************
 RS232_Bit	SEGMENT	BIT
@@ -159,7 +159,7 @@ RS232Intr:
 	RETI
 
 TxInt_A:
-	MOV	SBUF, Tx_ACK_Buffer	;Transmit acknowledge
+	MOV	SBUF0, Tx_ACK_Buffer	;Transmit acknowledge
 
 	POP	PSW
 	RETI
@@ -168,7 +168,7 @@ TxInt_A:
 ;=========================== RECEIVER INTERRUPT ===============================
 RxInt:
 	MOV	R4, A			;Push ACC
-	MOV	A, SBUF			;Get received character
+	MOV	A, SBUF0			;Get received character
 
 	JNB	SM2, RxInt_A		;If SM2 = 0 we're receiving data..
 
@@ -206,7 +206,7 @@ RxChkSumTested:
 	JB	Tx_BUSY, Tx_Is_Busy
 
 	CLR	Tx_SBUF_Empty
-	MOV	SBUF, Tx_ACK_Buffer
+	MOV	SBUF0, Tx_ACK_Buffer
 
 	SJMP	RxInt_E			;End by storing result of checksum
 
@@ -738,7 +738,7 @@ WriteChar:
 
 	JNB	Tx_SBUF_Empty, $	;Wait for transmitter buffer to empty
 
-	MOV	SBUF, A
+	MOV	SBUF0, A
 
 	ADD	A, TxChkSum
 	MOV	TxChkSum, A		;Update checksum
@@ -793,7 +793,7 @@ WriteString:
 	SETB	Tx_BUSY
 	JNB	Tx_SBUF_Empty, $	;Wait for transmitter buffer to empty
 
-	MOV	SBUF, A			;Transmit character
+	MOV	SBUF0, A			;Transmit character
 
 	ADD	A, TxChkSum
 	MOV	TxChkSum, A		;Update checksum
@@ -816,7 +816,7 @@ WriteString:
 	SETB	Tx_BUSY
 	JNB	Tx_SBUF_Empty, $	;Wait for transmitter buffer to empty
 
-	MOV	SBUF, A			;Transmit character
+	MOV	SBUF0, A			;Transmit character
 
 	ADD	A, TxChkSum
 	MOV	TxChkSum, A		;Update checksum

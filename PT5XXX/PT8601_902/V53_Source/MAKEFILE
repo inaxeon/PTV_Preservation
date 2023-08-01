@@ -1,26 +1,40 @@
-anlgener.hex:	anlgener.obj anlcmd.obj anltypga.obj anltypgb.obj\
-		anltypma.obj anltypmb.obj anltable.obj rs232.obj comm.obj
+anlgenr.bin:	anlgener.hex
+		hex2bin anlgener.hex
+
+anlgener.hex:	anlgener.obj anlcmd.obj anlutil.obj anltypga.obj anltypgb.obj anltypeg.obj anltypma.obj anltypmb.obj anltable.obj rs232.obj comm.obj
 		@echo off
-		echo  klar til at linke
-		l51 @link52
+		echo klar til at linke
+		bl51 @link52
 		oh51 anlgener
-		rem del *.lst
-		del ..\*.lst
+
 anlgener.obj:	anlgener.a51 macros.inc
 		a anlgener.a51
 anlcmd.obj:	anlcmd.a51 macros.inc
 		a anlcmd.a51
+anlutil.obj:	anlutil.a51 macros.inc
+		a anlutil.a51
 anltypga.obj:	anltypga.a51 macros.inc
 		a anltypga.a51
 anltypgb.obj:	anltypgb.a51 macros.inc
 		a anltypgb.a51
+anltypeg.obj:	anltypeg.a51 macros.inc
+		a anltypeg.a51
 anltypma.obj:	anltypma.a51 macros.inc
 		a anltypma.a51
 anltypmb.obj:	anltypmb.a51 macros.inc
 		a anltypmb.a51
 anltable.obj:	anltable.a51 macros.inc
 		a anltable.a51
-rs232.obj:	..\rs232.a51
-		a ..\rs232.a51
-comm.obj:	..\comm.a51
-		a ..\comm.a51
+rs232.obj:	rs232.a51
+		a rs232.a51
+comm.obj:	comm.a51
+		a comm.a51
+
+clean:
+		del *.bin
+		del *.hex
+		del *.obj
+		del *.lst
+		del *.m51
+		del *.map
+		del anlgener
