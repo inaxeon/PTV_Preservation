@@ -889,9 +889,9 @@ UC ConfigureAnlTPGUnit( UC ndx) {
 UC ConfigureAnlTPGText( UC ndx, UC pattern) {
 
 	register UC i;
-	UC error, tmp, type = AnlFindPatternType( pattern);
+	UC error = 0, tmp, type = AnlFindPatternType( pattern);
 
-	if ( AnlTPGUnit[ndx].HWType == PT8601) {
+	if ( AnlTPGUnit[ndx].HWType == PT8601 && AnlTPGUnit[ndx].HWVersion != 2) {
 		error = TrxAnlTPGTextLineEnable( ndx, 1,
 										( AnlTPGConfig[ndx].TextEnable & 0x01));
 
@@ -899,6 +899,37 @@ UC ConfigureAnlTPGText( UC ndx, UC pattern) {
 
 		if ( !error)
 			error = TrxAnlTPGText( ndx, 1, AnlTPGConfig[ndx].Text[0]);
+	}
+	else if ( AnlTPGUnit[ndx].HWType == PT8601 && AnlTPGUnit[ndx].HWVersion == 2) {
+
+		if (type == ComplexPattern) {
+			error = TrxAnlTPGTextLineEnable( ndx, 1,
+								( AnlTPGConfig[ndx].TextEnable >> 3) & 0x03); // enable for lines 1/2 only
+
+			waitms( 5);									//
+
+			if ( !error)
+				error = TrxAnlTPGText( ndx, 1, AnlTPGConfig[ndx].Text[3]);
+
+			waitms( 10);								//
+
+			if ( !error)
+				error = TrxAnlTPGText( ndx, 2, AnlTPGConfig[ndx].Text[4]);
+
+			waitms( 10);								//
+		}
+		else {
+			error = TrxAnlTPGTextLineEnable( ndx, 1,
+								( AnlTPGConfig[ndx].TextEnable & 0x01)); // enable for lines 0 only
+
+			waitms( 5);									//
+	
+			if ( !error)
+				error = TrxAnlTPGText( ndx, 1, AnlTPGConfig[ndx].Text[0]);
+		}
+
+		waitms( 5);										//
+		
 	}
 	else {
 															// Transmit text style
@@ -1518,14 +1549,13 @@ UC TrxAnlTPGDelay( UC ndx, UC system, UL delay) {
 /***************************************************************************/
 UC TrxAnlTPGPattern( UC ndx, UC pattern, UC attrib) {
 
-	UC error, HWtype = AnlTPGUnit[ndx].HWType;
+	UC error, HWtype = AnlTPGUnit[ndx].HWType, HWversion = AnlTPGUnit[ndx].HWVersion;
 
 	FeedTheWatchdog;
-
 															// Lookup analog pattern code
-	pattern = FindPatternTable( HWtype)[pattern];
+	pattern = FindPatternTable( HWtype, HWversion)[pattern];
 
-	if ( HWtype == PT8601)
+	if ( (HWtype == PT8601) && (HWversion != 2))
 		error = SndInt( AnlTPGUnit[ndx].Address, "AP", pattern);
 	else
 		error = SndInt2( AnlTPGUnit[ndx].Address, "AP", pattern, attrib);
@@ -1684,7 +1714,7 @@ UC TrxAnlTPGTextLineEnable( UC ndx, UC no, UC state) {
 	FeedTheWatchdog;
 
 	if ( AnlTPGUnit[ndx].HWType == PT8601)
-		error = SndInt( AnlTPGUnit[ndx].Address, "AF", state);
+		error = SndInt2( AnlTPGUnit[ndx].Address, "AF", state, 1 /* Hard code type 2 */);
 	else
 		error = SndInt2( AnlTPGUnit[ndx].Address, "AF", no, state);
 
@@ -1712,7 +1742,7 @@ UC TrxAnlTPGText( UC ndx, UC no, char* text) {
 
 	FeedTheWatchdog;
 
-	if ( AnlTPGUnit[ndx].HWType == PT8601) {
+	if ( AnlTPGUnit[ndx].HWType == PT8601 && AnlTPGUnit[ndx].HWVersion != 2) {
 		i = 0;
 		while (( tmp = text[i]) && ( i < 8))
 			tmpBuffer[i++] = tmp;
@@ -1803,7 +1833,7 @@ UC TrxSDITSGPattern( UC ndx, UC pattern) {
 
 	FeedTheWatchdog;
 															// Lookup pattern code
-	pattern = FindPatternTable( SDITSGUnit[ndx].HWType)[pattern];
+	pattern = FindPatternTable( SDITSGUnit[ndx].HWType, 0)[pattern];
 
 	error = SndChar( SDITSGUnit[ndx].Address, "HP", pattern);
 
@@ -1955,7 +1985,7 @@ UC TrxSDITPGPattern( UC ndx, UC pattern, UC attrib) {
 
 	FeedTheWatchdog;
 															// Lookup digital pattern code
-	pattern = FindPatternTable( HWtype)[pattern];
+	pattern = FindPatternTable( HWtype, 0)[pattern];
 
 	switch ( HWtype) {
 		case PT8602:
@@ -2572,10 +2602,12 @@ UC GetV24Version( UC ndx, UC address, UC HWtype) {
 
 			error = 0;
 													// If /900 version & NO custom patterns
+#if 0 // MM/2023: Don't want this check anymore. Allow custom pattern modules
 			if ( AnlTPGUnit[ndx].HWVersion)
 				if ( !( AnlTPGUnit[ndx].HWCustomPattern & 0x88))
 					error = SystemErrorType + ConfigurationError;
 			break;
+#endif 
 
 		case PT8602:								// SDI Signal Generator 1 (PT5210)
 		case PT8603:								// SDI Signal Generator 2 (PT5210)
@@ -2640,7 +2672,7 @@ UC GetV24Version( UC ndx, UC address, UC HWtype) {
 
 			error = 0;
 
-#if 0
+#if 0 // MM/2023: Don't want this check anymore. Allow custom pattern modules
 			// If /900 version & NO custom patterns
 			if ( SDITPGUnit[ndx].HWVersion)
 				if ( !( SDITPGUnit[ndx].HWCustomPattern & 0x88))
@@ -2966,12 +2998,13 @@ UC TestAnlBlkUnit( UC ndx) {
 /***************************************************************************/
 UC TestAnlTPGUnit( UC ndx) {
 
-	UC error, tmp, HWtype, addr;
+	UC error, tmp, HWtype, HWversion, addr;
 	float ScHPhase;
 
 	FeedTheWatchdog;
 
 	HWtype = AnlTPGUnit[ndx].HWType;
+	HWversion = AnlTPGUnit[ndx].HWVersion;
 	addr = AnlTPGUnit[ndx].Address;
 
 												// Examine status byte
@@ -2985,7 +3018,7 @@ UC TestAnlTPGUnit( UC ndx) {
 		return( 1);
 
 												// Lookup analog pattern code
-	tmp = FindPatternTable( HWtype)[AnlTPGConfig[ndx].Pattern];
+	tmp = FindPatternTable( HWtype, HWversion)[AnlTPGConfig[ndx].Pattern];
 
 												// Test pattern
 	tmp -= (UC) RecInt( addr, "AP", 0xFF, &error);
@@ -3047,7 +3080,7 @@ UC TestSDITSGUnit( UC ndx) {
 			return( 1);
 	}
 												// Lookup digital pattern code
-	tmp = FindPatternTable( HWtype)[SDITSGConfig[ndx].Pattern];
+	tmp = FindPatternTable( HWtype, 0)[SDITSGConfig[ndx].Pattern];
 
 												// Test pattern
 	tmp -= (UC) RecInt( addr, "HP", 0xFF, &error);
@@ -3110,7 +3143,7 @@ UC TestSDITPGUnit( UC ndx) {
 		return( 1);
 
 												// Lookup digital pattern code
-	tmp = FindPatternTable( HWtype)[SDITPGConfig[ndx].Pattern];
+	tmp = FindPatternTable( HWtype, 0)[SDITPGConfig[ndx].Pattern];
 
 												// Test pattern
 	tmp -= (UC) RecInt( addr, "SP", 0xFF, &error);

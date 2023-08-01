@@ -9,10 +9,10 @@
 /*																									*/
 /*	This module contains the following functions:									*/
 /*																									*/
-/*		code UC* FindPatternTable( UC HWtype);											*/
+/*		code UC* FindPatternTable( UC HWtype, UC HWVersion);										*/
 /*		code UC* FindAudioLevelTable( UC HWtype);										*/
 /*																									*/
-/*		void AnlValidateSetting( UC HWtype, UC ndx)									*/
+/*		void AnlValidateSetting( UC HWtype, UC HWVersion, UC ndx)									*/
 /*		UC AnlValidatePattern( UC HWtype, UC ndx, UC system, UC pattern)		*/
 /*		UC AnlValidateGroupPattern( UC HWtype, UC ndx, UC system, \				*/
 /*																	 UC group, UC pattern)	*/
@@ -111,9 +111,9 @@ code UC PT8601PatternTable[] = {
 	11, 				// AnlShallowRamp
 	NoPattern, 		// AnlRamp
 	NoPattern, 		// AnlModulatedRamp
-	30, 				// AnlStair5
+	NoPattern,		// AnlStair5
 	NoPattern, 		// AnlModulatedStair5
-	32, 				// AnlStair10
+	NoPattern,		// AnlStair10
 	NoPattern, 		// AnlPulseBar
 	NoPattern, 		// AnlCCIR17
 	NoPattern, 		// AnlCCIR330
@@ -122,6 +122,73 @@ code UC PT8601PatternTable[] = {
 	NoPattern, 		// AnlNTC7Composite
 
 	NoPattern,		// AnlPhilips4x3
+	NoPattern,		// AnlPhilips16x9
+	NoPattern,		// AnlFuBK4x3
+	NoPattern,		// AnlFuBK16x9
+	8, 				// AnlCrosshatch
+	NoPattern,		// AnlCrosshatch16x9
+	NoPattern,		// AnlWhiteCircle4x3
+	NoPattern,		// AnlWhiteCircle16x9
+	9, 				// AnlPLUGE
+	10, 				// AnlSafeArea
+	NoPattern,		// AnlkHz250
+	NoPattern, 		// AnlVMT01
+};
+
+/***************************************************************************/
+/* PT8601/902 Analog Test Pattern Generator. Conversion table	TABLES.C	*/
+/***************************************************************************/
+code UC PT8601_902PatternTable[] = {
+	0, 				// AnlSMPTECBar
+	1, 				// AnlEBUCBar
+	NoPattern,		// AnlFCCBar
+	2, 				// AnlCBar100
+	3, 				// AnlCBarGrey75
+	4, 				// AnlCBarRed75
+	13,			 	// AnlRed75,
+
+	12, 				// AnlMultiburst
+	NoPattern,		// AnlLumSweep
+	NoPattern, 		// AnlMultipulse
+	NoPattern, 		// AnlSinxx
+	NoPattern, 		// AnlCCIR18
+	NoPattern, 		// AnlNTC7Comb
+	NoPattern, 		// AnlFCCMultiburst,
+
+	NoPattern,		// AnlWindow10
+	5, 				// AnlWindow15
+	6, 				// AnlWindow20
+	7, 				// AnlWindow100
+	NoPattern,	 	// AnlBlWh15kHz
+	NoPattern,	 	// AnlGrey50
+	NoPattern, 		// AnlWhite100
+	14, 				// AnlBlackBurst
+
+	NoPattern, 		// AnlFieldSquareWave
+	NoPattern, 		// AnlBlWh01Hz
+	40,				// Customized 1
+	41,				// Customized 2
+	42,				// Customized 3
+	43,				// Customized 4
+	44,				// Customized 5
+	45,				// Customized 6
+	46,				// Customized 7
+	47,				// Customized 8
+
+	11, 				// AnlShallowRamp
+	NoPattern, 		// AnlRamp
+	NoPattern, 		// AnlModulatedRamp
+	NoPattern,		// AnlStair5
+	NoPattern, 		// AnlModulatedStair5
+	NoPattern,		// AnlStair10
+	NoPattern, 		// AnlPulseBar
+	NoPattern, 		// AnlCCIR17
+	NoPattern, 		// AnlCCIR330
+	NoPattern, 		// AnlCCIR331
+	NoPattern, 		// AnlFCCComposite
+	NoPattern, 		// AnlNTC7Composite
+
+	15,				// AnlPhilips4x3
 	NoPattern,		// AnlPhilips16x9
 	NoPattern,		// AnlFuBK4x3
 	NoPattern,		// AnlFuBK16x9
@@ -895,12 +962,16 @@ code UC PresetCharSet[128] = {
 /*	Returns:	   Pointer to pattern table.												*/
 /*	Updates:		--																				*/
 /***************************************************************************/
-code UC* FindPatternTable( UC HWtype) {
+code UC* FindPatternTable( UC HWtype, UC HWversion) {
 
 	switch ( HWtype) {
 		case PT8601:
-			return( PT8601PatternTable);
-
+			switch ( HWversion) {
+				case 2:
+					return( PT8601_902PatternTable);
+				default:
+					return( PT8601PatternTable);
+			}
 		case PT8602:
 			return( PT8602PatternTable);
 
@@ -1024,12 +1095,12 @@ void AnlValidateSetting( UC HWtype, UC ndx) {
 /***************************************************************************/
 UC AnlValidatePattern( UC HWtype, UC ndx, UC system, UC pattern) {
 
-	UC tmp, HWcustom, SWversion;
+	UC tmp, SWversion, HWcustom = AnlTPGUnit[ndx].HWCustomPattern,
+	HWversion = AnlTPGUnit[ndx].HWVersion;
 
-	if ( FindPatternTable( HWtype)[pattern] == NoPattern)
+	if ( FindPatternTable( HWtype, HWversion)[pattern] == NoPattern)
 		return( NoPattern);					// The pattern does not exist at all
 
-	HWcustom = AnlTPGUnit[ndx].HWCustomPattern;
 	SWversion = AnlTPGUnit[ndx].SWVersion;
 
 	if ( system < NTSC) {   				// Patterns that do not exist in PAL
@@ -1388,7 +1459,7 @@ UC AnlValidateAttrib( UC HWtype, UC ndx, UC system, UC pattern, UC attrib) {
 
 		case AttribPLUGE:
 		case AttribStair10:
-			if (( pattern < AnlPhilips4x3) || ( pattern > AnlPhilips16x9))
+			if (( pattern < AnlPhilips4x3) || ( pattern > AnlPhilips16x9) || ( HWtype == PT8601))
 				return( 255);
 			break;
 
@@ -1397,7 +1468,7 @@ UC AnlValidateAttrib( UC HWtype, UC ndx, UC system, UC pattern, UC attrib) {
 			break;
 
 		case AttribCircles:
-			if ( pattern != AnlPhilips16x9)
+			if (( pattern != AnlPhilips16x9) || ( HWtype == PT8601))
 				return( 255);
 			break;
 
@@ -1406,6 +1477,32 @@ UC AnlValidateAttrib( UC HWtype, UC ndx, UC system, UC pattern, UC attrib) {
 	}
 
 	return( attrib);
+}
+
+
+/***************************************************************************/
+/*	AnlValidateAttrib																TABLES.C	*/
+/*																									*/
+/* Author:		Matt Millman	    										*/
+/*																									*/
+/*	Function:	Test if the text style is valid for the specified pattern.	*/
+/*	Returns:		The argument <style> if it exists in the group, otherwise	*/
+/*					255 will be returned.													*/
+/*	Updates:		--																				*/
+/***************************************************************************/
+UC AnlValidateTextStyle( UC HWtype, UC ndx, UC system, UC style)
+{
+	switch (style) {
+		case TPGComplexTextStyle:
+			break;
+		case TPGFreeTextStyle:
+		case TPGStandardTextStyle:
+			if ( HWtype == PT8601)
+				return ( 255);
+			break;
+	}
+
+	return style;
 }
 
 /***************************************************************************/
@@ -1484,7 +1581,7 @@ UC SDIValidatePattern( UC HWtype, UC ndx, UC system, UC pattern) {
 
 	UC tmp, HWcustom, HWinfo, SWversion;
 
-	if ( FindPatternTable( HWtype)[pattern] == NoPattern)
+	if ( FindPatternTable( HWtype, 0)[pattern] == NoPattern)
 		return( NoPattern);					// The pattern does not exist at all
 
 	switch ( HWtype) {

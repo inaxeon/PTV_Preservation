@@ -2309,7 +2309,15 @@ void AnlTPGTextDown(){
 	switch ( itemNdx) {
 		case TPGTextEditItem:					   // Prepare for text editing
 			if ( AnlTPGUnit[ndx].HWType == PT8601)
-				UcharVal1 = UcharVal2 = 0; 	   // Array start/stop
+			{
+				if ( patternType == ComplexPattern) {
+					UcharVal1 = 3;					   // Array start
+					UcharVal2 = 4;       		   // Array stop
+				}
+				else {
+					UcharVal1 = UcharVal2 = 0; 	   // Array start/stop
+				}
+			}
 			else {
 				if ( patternType == ComplexPattern) {
 					UcharVal1 = 3;					   // Array start
@@ -2404,7 +2412,16 @@ void AnlTPGTextEditSelect(){
 		tmp = ( UcharVal % 3) + 1;					// Calculate line number
 
 															// Transmit text line enable
-		ErrorCode = TrxAnlTPGTextLineEnable( ndx, tmp, UcharVal3);
+		if ( AnlTPGUnit[ndx].HWType == PT8601 && AnlTPGUnit[ndx].HWVersion == 2) {
+			UC type = AnlFindPatternType( AnlTPGConfig[ndx].Pattern);
+			if (type == ComplexPattern) {
+				ErrorCode = TrxAnlTPGTextLineEnable( ndx, tmp, (AnlTPGConfig[ndx].TextEnable >> 3) & 0x03);
+			} else {
+				ErrorCode = TrxAnlTPGTextLineEnable( ndx, tmp, AnlTPGConfig[ndx].TextEnable & 0x01);
+			}
+		} else {
+			ErrorCode = TrxAnlTPGTextLineEnable( ndx, tmp, UcharVal3);
+		}
 
 		if ( !ErrorCode) 								// Transmit text line string
 			ErrorCode = TrxAnlTPGText( ndx, tmp, TextBuffer);
@@ -2455,7 +2472,7 @@ void AnlTPGTextEditSelect(){
 				UintVal--;								//  character
 		}
 		else {											// ..button pressed is RIGHT
-			if ( AnlTPGUnit[ndx].HWType == PT8601)
+			if ( AnlTPGUnit[ndx].HWType == PT8601 && AnlTPGUnit[ndx].HWVersion != 2)
 				tmp = 7;									// Max. 8 characters in PT8601
 			else
 				tmp = 15;								// Max. 16 characters in PT8631
@@ -2555,20 +2572,30 @@ void AnlTPGTextStyleSelect(){
 
 	if ( FuncTriggers & 0x03) {					// If UP/DOWN button pressed..
 		if ( AnlFindPatternType( AnlTPGConfig[ndx].Pattern) == StandardPattern) {
-			if ( UcharVal == TPGStandardTextStyle)
-				UcharVal = TPGFreeTextStyle;
-			else
+			if (AnlTPGUnit[ndx].HWType == PT8601)
+			{
 				UcharVal = TPGStandardTextStyle;
+			}
+			else
+			{
+				if ( UcharVal == TPGStandardTextStyle)
+					UcharVal = TPGFreeTextStyle;
+				else
+					UcharVal = TPGStandardTextStyle;
+			}
 		}
 		else {
-			if ( FuncTriggers & 0x01) {				// If button pressed is UP..
-				if ( UcharVal-- == TPGFreeTextStyle)
-					UcharVal = TPGComplexTextStyle;
-			}
-			else {											// ..button pressed is DOWN
-				if ( UcharVal++ == TPGComplexTextStyle)
-					UcharVal = TPGFreeTextStyle;
-			}
+			do {
+				if ( FuncTriggers & 0x01) {				// If button pressed is UP..
+					if ( UcharVal-- == TPGFreeTextStyle)
+						UcharVal = TPGComplexTextStyle;
+				}
+				else {											// ..button pressed is DOWN
+					if ( UcharVal++ == TPGComplexTextStyle)
+						UcharVal = TPGFreeTextStyle;
+				}
+			} while( UcharVal != AnlValidateTextStyle( AnlTPGUnit[ndx].HWType, ndx,\
+									 AnlTPGConfig[ndx].System, UcharVal ));
 		}
 																		// If current style
 		if ( UcharVal == ( AnlTPGConfig[ndx].TextStyle[UcharVal1] & 0x0F))

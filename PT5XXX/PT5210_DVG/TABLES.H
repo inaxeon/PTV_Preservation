@@ -204,7 +204,7 @@ extern code UC StdTextCharSet[100];
 extern code UC ExtTextCharSet[236];
 extern code UC PresetCharSet[128];
 
-extern code UC* FindPatternTable( UC HWtype);
+extern code UC* FindPatternTable( UC HWtype, UC HWversion);
 extern code UC* FindAudioLevelTable( UC HWtype);
 
 extern void AnlValidateSetting( UC HWtype, UC ndx);
@@ -216,6 +216,7 @@ extern UC AnlFindGroup( UC pattern);
 extern UC AnlFindPatternType( UC pattern);
 extern UC AnlTPGAttrib( UC ndx, UC pattern);
 extern UC AnlValidateAttrib( UC HWtype, UC ndx, UC system, UC pattern, UC attrib);
+extern UC AnlValidateTextStyle( UC HWtype, UC ndx, UC system, UC style);
 
 extern void SDIValidateSetting( UC HWtype, UC ndx);
 extern UC SDIValidatePattern( UC HWtype, UC ndx, UC system, UC pattern);

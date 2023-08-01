@@ -3730,7 +3730,10 @@ void AnlTPGTextString() {
 					switch ( AnlTPGUnit[Suffix].HWType) {
 						case PT8601:
 							CharPtr = StdTextCharSet;
-							noOfChar = PT860xMaxNoChar;
+							if ( AnlTPGUnit[Suffix].HWVersion == 2)
+								noOfChar = PT863xMaxNoChar;
+							else
+								noOfChar = PT860xMaxNoChar;
 							break;
 
 						default:
