@@ -4,14 +4,14 @@ $INCLUDE( REG320.INC)		;Include the predefined 80C320 register set
 $INCLUDE( MACROS.INC)		;Include user defined macros
 
 ;************************************************************************
-;* Project: PT8601 Analog Test Pattern generator						*
-;* 			PT8601/902 Recreation										*
-;* Module:  ANLUTIL.A51													*
-;* Author:  Kim Engedahl, DEV											*
-;			Modified by Matthew Millman 								*
-;* Org.  :  230730														*
-;* Status:  Version 1.0 (the DALLAS 80C320 running at 14.756MHz)		*
-;* 																		*
+;* Project: PT8601 Analog Test Pattern generator			*
+;* 			PT8601/902 Recreation				*
+;* Module:  ANLUTIL.A51						*
+;* Author:  Kim Engedahl, DEV						*
+;			Modified by Matt Millman 			*
+;* Org.  :  230730							*
+;* Status:  Version 1.0 (the DALLAS 80C320 running at 14.756MHz)	*
+;* 									*
 ;************************************************************************
 
 NAME		ANLUTIL
@@ -21,8 +21,8 @@ EXTRN CODE( TextTable)
 EXTRN DATA( OSDTextLN1, OSDTextLN2)
 EXTRN DATA( PatternType, PatternAttr)
 EXTRN BIT( Text1Enable, Text2Enable)
-EXTRN BIT( Status_S0)
-EXTRN BIT( TmpBit)
+EXTRN BIT( Status_TXT_ON)
+EXTRN BIT( Tmp1Bit, Tmp2Bit)
 
 PUBLIC WriteOSDText, InsertOSDText
 
@@ -136,12 +136,18 @@ ClearOSDLine:
 ;* Time:	-
 ;************************************************************************
 WriteOSDText:
-	CJNE	R1, #01, ?WOTLine2	;Is line 1 is to be updated?
-
 	MOV	C, Text1Enable
-	MOV	TmpBit, C
+	MOV	Tmp1Bit, C
 	CLR	Text1Enable		;Disable TEXT while loading RAM
-	JB	Status_S0, $		;Wait for text bit to clear
+
+	MOV	C, Text2Enable
+	MOV	Tmp2Bit, C
+	CLR	Text2Enable		;Disable TEXT while loading RAM
+
+	; MM: Fun fact: PT8601/00 waits on Status_S0 which is wrong (and a bug)
+	JB	Status_TXT_ON, $ ; Wait for bit to clear
+
+	CJNE	R1, #01, ?WOTLine2	;Is line 1 is to be updated?
 
 	MOV R3, #050h	; This is the horizontal text position for standard patterns
 
@@ -161,11 +167,6 @@ WriteOSDText:
 
 ?WOTLine2:
 	CJNE	R1, #02, ?WOTEnd	;Is line 2 is to be updated?
-
-	MOV	C, Text2Enable
-	MOV	TmpBit, C
-	CLR	Text2Enable		;Disable TEXT while loading RAM
-	JB	Status_S0, $		;Wait for text bit to clear
 
 	MOV	A, PatternType
 
@@ -201,7 +202,7 @@ InsertOSDText:
 	SJMP	?IOTContinue
 
 ?IOTLine2:
-	CJNE	R1, #02, ?IOTFinish	;Is line 2 to be updated?
+	CJNE	R1, #02, ?IOTEnd	;Is line 2 to be updated?
 	MOV	R0, #OSDTextLN2
 	MOV	DPTR, #TextPort+180H	;Start of text RAM for line 2
 
@@ -219,7 +220,7 @@ InsertOSDText:
 ?IOTWriteText:
 	CLR	C
 	MOV	A, @R0		;Get char to display
-	JZ	?IOTFinish
+	JZ	?IOTEnd
 
 	INC	DPS			;Select text table pointer
 	MOV	DPTR, #TextTable
@@ -253,7 +254,7 @@ InsertOSDText:
 	POP	DPL	
 	POP	ACC
 
-	JNC	?IOTFinish			;and end if it does 
+	JNC	?IOTEnd			;and end if it does 
 
 	MOVX	@DPTR, A		;Write character address to video RAM
 	INC	A
@@ -262,18 +263,13 @@ InsertOSDText:
 
 	SJMP	?IOTWriteText
 
-?IOTFinish:
-	CJNE	R1, #01, ?RestoreLine2	;Is line 2 is to be updated?
+?IOTEnd:
 
-	MOV	C, TmpBit
+	MOV	C, Tmp1Bit
 	MOV	Text1Enable, C
-	JMP ?IOTEnd
-
-?RestoreLine2:
-	MOV	C, TmpBit
+	MOV	C, Tmp2Bit
 	MOV	Text2Enable, C
 
-?IOTEnd:
 	MOV	DPS, #0			;Select "default" pointer
 	RET
 

@@ -61,7 +61,7 @@ PUBLIC	UserScHOffset, ScHOffset, ScHPhaseCal
 PUBLIC	DACLevel, DACOffset
 
 PUBLIC	Status, Status_S0, Status_SYSSEL, Status_TXT_ON, Status_TXT_0, Status_TXT_1
-PUBLIC	OSDTextLN1, OSDTextLN2, TextPos, Text1Enable, Text2Enable, TmpBit, CoarseGTMax
+PUBLIC	OSDTextLN1, OSDTextLN2, TextPos, Text1Enable, Text2Enable, Tmp1Bit, Tmp2Bit, CoarseGTMax
 PUBLIC	PALSystem, NTSCSystem
 
 PUBLIC	ErrorStatus, Buffer_OV, Illegal_Del, Illegal_Cmd, Illegal_Par
@@ -136,7 +136,8 @@ UpdOffsetFlag:	DBIT	1		;1: Delayed field interrupt has
 Text1Enable:	DBIT	1		;1: User text ON
 Text2Enable:	DBIT	1		;1: User text ON (Complex line 2)
 TextPOS:		DBIT	1		;1: Text inside safearea (TYPE nB)
-TmpBit:			DBIT	1		;Temporary bit. Used in ANLCMD.A51
+Tmp1Bit:		DBIT	1		;Temporary bit. Used in ANLCMD.A51
+Tmp2Bit:		DBIT	1		;Temporary bit. Used in ANLCMD.A51
 
 CoarseGTMax:	DBIT	1		;1: CoarseOffset >= Max. value
 
@@ -426,7 +427,7 @@ ZeroLoop:			;Reset internal RAM, ie. clear 248 bytes
 	;****************************************************************
 	;Initialize text RAM
 	;****************************************************************
-	SETB	TmpBit
+	SETB	Tmp1Bit
 
 	MOV	DPTR, #StatusPort+1	; enable resetting
 	MOVX	@DPTR, A		; the first 256 bytes in text RAM
@@ -444,7 +445,7 @@ TextRAMLoop:
 
 	MOV	DPTR, #TextPort+0100H
 
-	JBC	TmpBit, TextRAMReset
+	JBC	Tmp1Bit, TextRAMReset
 
 	MOV	A, Status
 	MOV	DPTR, #StatusPort

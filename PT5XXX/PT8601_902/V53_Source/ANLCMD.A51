@@ -52,7 +52,7 @@ EXTRN DATA( ErrorStatus)
 
 EXTRN BIT( Status_SYSSEL, Status_S0)
 EXTRN BIT( Illegal_Del, Illegal_Cmd, Illegal_Par, IIC_CheckSum)
-EXTRN BIT( TextPos, Text1Enable, Text2Enable, TmpBit)
+EXTRN BIT( TextPos, Text1Enable, Text2Enable)
 EXTRN BIT( CoarseGTMax)
 EXTRN BIT( PALSystem, NTSCSystem, HWRunning)
 

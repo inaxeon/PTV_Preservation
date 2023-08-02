@@ -143,6 +143,9 @@ RS232_Interrupt	SEGMENT	CODE
 ;* Time:	-
 ;************************************************************************
 RS232Intr:
+	PUSH	DPS			;Push Data Pointer Selector
+	MOV	DPS, #0			;Select Data Pointer Selector 0
+
 	PUSH	PSW			;Push PSW
 	MOV	PSW, #010H		;ALWAYS use register bank 2
 
@@ -155,18 +158,22 @@ RS232Intr:
 	JBC	Tx_ACK_Pending, TxInt_A	;If no acknowledge is pending...
 	SETB	Tx_SBUF_Empty		;indicate SBUF empty
 
-	POP	PSW
+	POP	PSW			;Restore Processor Status Word
+	POP	DPS			;Restore Data Pointer Selector
 	RETI
 
 TxInt_A:
 	MOV	SBUF0, Tx_ACK_Buffer	;Transmit acknowledge
 
-	POP	PSW
+	POP	PSW			;Restore Processor Status Word
+	POP	DPS			;Restore Data Pointer Selector
 	RETI
 
 
 ;=========================== RECEIVER INTERRUPT ===============================
 RxInt:
+	PUSH	DPL			;
+	PUSH	DPH			;
 	MOV	R4, A			;Push ACC
 	MOV	A, SBUF0			;Get received character
 
@@ -216,15 +223,10 @@ Tx_Is_Busy:
 	SJMP	RxInt_E			;End by storing result of checksum
 
 RxInt_B:
-	PUSH	DPL			;
-	PUSH	DPH			;
 
 	MOV	DPTR, #TypeTable
 	MOVC	A, @A+DPTR		;Get type of received data from table
 	MOV	R3, A			;Save received data type
-
-	POP	DPH			;
-	POP	DPL			;
 
 	CJNE	R3, #'Q', RxInt_C	;Received data a quote
 	XRL	RxState, #XORValue	;Yes, toggle between  data state and
@@ -266,8 +268,10 @@ RxInt_E:
 
 RxInt_End:
 	MOV	A, R4			;Restore ACC
+	POP	DPH			;
+	POP	DPL			;
 	POP	PSW			;Restore status word
-
+	POP	DPS			;Restore Data Pointer Selector
 	RETI				;
 
 
