@@ -6,7 +6,7 @@ $INCLUDE( MACROS.INC)		;Include user defined macros
 ;************************************************************************
 ;* Project: PT8601 Analog Test Pattern generator			*
 ;* 			PT8601/902 Recreation				*
-;* Module:  ANLUTIL.A51						*
+;* Module:  ANLUTIL.A51							*
 ;* Author:  Kim Engedahl, DEV						*
 ;			Modified by Matt Millman 			*
 ;* Org.  :  230730							*
