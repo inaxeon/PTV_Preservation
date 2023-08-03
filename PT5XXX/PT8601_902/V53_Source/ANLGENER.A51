@@ -429,27 +429,39 @@ ZeroLoop:			;Reset internal RAM, ie. clear 248 bytes
 	;****************************************************************
 	SETB	Tmp1Bit
 
-	MOV	DPTR, #StatusPort+1	; enable resetting
-	MOVX	@DPTR, A		; the first 256 bytes in text RAM
+	;Set statusbit, Status_TXT_1, while resetting
+	;
+	;The DPRAM (V56) does not allow writes on one port while a read
+	;is occuring at the same address on the other. Thus writes by
+	;this process may be ignored depending on what the output logic
+	;happens to be doing, leading to erratic wierd behaviour.
+	;Setting this bit points it at the second 256 bytes so we can
+	;clear the first 256.
+	SETB	Status_TXT_1 
+	MOV	A, Status
+	MOV	DPTR, #StatusPort
+	MOVX	@DPTR, A
 
 	MOV	DPTR, #TextPort
 TextRAMReset:
 	MOV	R0, #00			; Clear bytes 0-255 of TEXT RAM
+	CLR	A
 TextRAMLoop:
 	MOVX	@DPTR, A
 	INC	DPTR
 	DJNZ	R0, TextRAMLoop
 
-	MOV	DPTR, #StatusPort	; enable resetting
-	MOVX	@DPTR, A		; the next 256 bytes in text RAM
+	;Clear statusbit, Status_TXT_1
+	;This points the output logic at the first 256 bytes so we can
+	;clear out the second 256.
+	CLR	Status_TXT_1		
+	MOV	A, Status
+	MOV	DPTR, #StatusPort
+	MOVX	@DPTR, A
 
 	MOV	DPTR, #TextPort+0100H
 
 	JBC	Tmp1Bit, TextRAMReset
-
-	MOV	A, Status
-	MOV	DPTR, #StatusPort
-	MOVX	@DPTR, A
 
 	;****************************************************************
 	;Initialize DAC
