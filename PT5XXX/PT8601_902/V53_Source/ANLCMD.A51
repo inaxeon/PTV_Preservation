@@ -1,13 +1,15 @@
 $NOMOD51			;Disable the predefined 8051 register set
 
-$INCLUDE( REG52.INC)		;Include the predefined 8052 register set
+$INCLUDE( REG320.INC)		;Include the predefined 8052 register set
 $INCLUDE( MACROS.INC)		;Include user defined macros
 
 ;************************************************************************
 ;* Copyright PHILIPS TV TEST EQUIPMENT A/S, BRONDBY 1997		*
 ;* Project: PT8601 Analog Test Signal generator				*
+;* 			PT8601/902 Recreation				*
 ;* Module:  ANLCMD.A51							*
 ;* Author:  Kim Engedahl, DEV						*
+;			Modified by Matt Millman 			*
 ;* Org.  :  970101							*
 ;* Rev.  :  990308, KEn DEV						*
 ;* Status:  Version 1.2							*
@@ -32,10 +34,12 @@ EXTRN CODE( TextTable)
 EXTRN CODE( GenericMSBPort)
 EXTRN CODE( SCFreqLSBPort, SCFreqMSBPort)
 
-EXTRN DATA( PatternType, MyAddress)
+EXTRN CODE( WriteOSDText, InsertOSDText)
+
+EXTRN DATA( PatternType, PatternAttr, MyAddress)
 EXTRN BIT( NewPattern)
 
-EXTRN DATA( Parameter, String, TmpBuffer, OSDText)
+EXTRN DATA( Parameter, String, TmpBuffer, OSDTextLN1, OSDTextLN2)
 
 EXTRN DATA( GenlockOffset, UserOffset)
 EXTRN DATA( OffsetCal, LineOffset, CoarseOffset, FineOffset)
@@ -48,7 +52,7 @@ EXTRN DATA( ErrorStatus)
 
 EXTRN BIT( Status_SYSSEL, Status_S0)
 EXTRN BIT( Illegal_Del, Illegal_Cmd, Illegal_Par, IIC_CheckSum)
-EXTRN BIT( TextPos, TextEnable, TmpBit)
+EXTRN BIT( TextPos, Text1Enable, Text2Enable)
 EXTRN BIT( CoarseGTMax)
 EXTRN BIT( PALSystem, NTSCSystem, HWRunning)
 
@@ -167,74 +171,6 @@ LoadDACSystem:
 	SETB	IIC_CheckSum
 
 EndLoadDACSystem:
-	RET
-
-;************************************************************************
-;* Name:	CopyTextRAM
-;* Function:	Write content of OSDText to screen RAM
-;* Revision:	1.0
-;* Date:	970603, KEn
-;* Input:	TextTable
-;* Output:	-
-;* Destroys:	-
-;* Calls	-
-;* Time:	-
-;************************************************************************
-CopyTextRAM:
-	MOV	C, TextEnable
-	MOV	TmpBit, C
-	CLR	TextEnable		;Disable TEXT while loading RAM
-
-	JB	Status_S0, $		;Wait for text bit to clear
-
-	MOV	DPTR, #0E0D0H		;Clear 26 bytes of TEXT RAM
-	MOV	R0, #026
-	CLR	A
-ResetTextLoop:
-	MOVX	@DPTR, A
-	INC	DPTR
-	DJNZ	R0, ResetTextLoop
-
-	MOV	DPTR, #0E0D0H		;Start of text RAM
-	MOV	A, #094
-	MOVX	@DPTR, A		;Write half a space to RAM
-
-	MOV	DPTR, #0E0D1H		;Start of text RAM
-	MOV	R0, #8
-	MOV	R1, #OSDText
-
-WriteText:
-	PUSH	DPH
-	PUSH	DPL
-
-	CLR	C
-	MOV	A, @R1
-	SUBB	A, #020H
-	RL	A
-	MOV	B, A			;Table entry
-	MOV	DPTR, #TextTable
-
-	MOVC	A, @A+DPTR
-	MOV	R2, A			;Get no of samples
-
-	MOV	A, B
-	INC	DPTR
-	MOVC	A, @A+DPTR		;Get address of 1st character
-
-	POP	DPL
-	POP	DPH
-
-NextSample:
-	MOVX	@DPTR, A		;Write character address to text RAM
-	INC	A
-	INC	DPTR
-	DJNZ	R2, NextSample
-
-	INC	R1
-	DJNZ	R0, WriteText
-
-	MOV	C, TmpBit
-	MOV	TextEnable, C
 	RET
 
 ;************************************************************************
@@ -753,11 +689,15 @@ PatternCommand:
 	MOV	A, @R0
 	CJNE	A, #';', PatternRequest
 
-	MOV	R0, #Parameter+3
+	MOV	R0, #Parameter+3	;A pattern number occupies 3 bytes
 	MOV	A, @R0
 	MOV	B, #03
 	MUL	AB
 	MOV	PatternType, A		;Save new pattern information
+
+	MOV	R0, #Parameter+7
+	MOV	A, @R0
+	MOV	PatternAttr, A		;Save new pattern attribute information
 
 	SETB	NewPattern		;Notisfy system about new pattern
 	RET
@@ -765,17 +705,29 @@ PatternCommand:
 PatternRequest:
 	CJNE	A, #'?', PatternError
 
+	MOV	TxChkSum, #0		;Reset checksum to be transmitted
+
 	MOV	A, PatternType
 	MOV	B, #03
 	DIV	AB
-
+	CJNE	A, #Philips4x3+1, ?PR01
+	DEC	A
+?PR01:
 	MOV	R7, A
 
 	CLR	A
 	MOV	R6, A
-	MOV	TxChkSum, A		;Reset checksum to be transmitted
 
 	LCALL	WriteInteger
+
+	MOV	A, #','
+	LCALL	WriteChar
+
+	MOV	R7, PatternAttr
+	CLR	A
+	MOV	R6, A
+	LCALL	WriteInteger
+
 	LJMP	WriteEndOfTx
 
 PatternError:
@@ -1001,7 +953,9 @@ TextONCommand:
 	MOV	A, @R0
 
 	RRC	A
-	MOV	TextEnable, C
+	MOV	Text1Enable, C
+	RRC	A
+	MOV	Text2Enable, C
 	RET
 
 TextONRequest:
@@ -1011,7 +965,9 @@ TextONRequest:
 	MOV	R6, A
 	MOV	TxChkSum, A		;Reset checksum to be transmitted
 
-	MOV	C, TextEnable
+	MOV	C, Text2Enable
+	RLC	A
+	MOV	C, Text1Enable
 	RLC	A
 	MOV	R7, A
 
@@ -1035,36 +991,76 @@ TextONEnd:
 ;* Time:	-
 ;************************************************************************
 TextCommand:
-	JNB	HWRunning, TextEnd
+	JNB	HWRunning, ?TextEnd
 
 	MOV	R0, #CmdDelimiter
 	MOV	A, @R0
-	CJNE	A, #';', TextRequest
+	CJNE	A, #';', ?TextRequest
 
+	MOV	R0, #Parameter+3	;Get the text line number
+	MOV	A, @R0
+
+	CJNE	A, #01H, ?TCLine2	;Text line 1 ??
+
+	MOV	R2, #8 ; Max 8 chars
+	MOV	A, PatternType
+	CJNE	A, #Philips4x3, ?TCShortLine1
+	MOV	R2, #10 ; Max 10 chars
+
+?TCShortLine1:
+	MOV	R1, #OSDtextLN1
+	LCALL	?TCCopyText
+
+	MOV	R1, #1
+	LJMP	WriteOSDText
+
+?TCLine2:
+	CJNE	A, #02H, ?TextError	;Text line 2 ??
+
+	MOV	R2, #16 ; Max 16 chars
+	MOV	R1, #OSDtextLN2
+	LCALL	?TCCopyText
+
+	MOV	R1, #2
+	LJMP	WriteOSDText
+
+?TextRequest:
+	CJNE	A, #'?', ?TextError
+
+	MOV	R0, #Parameter+3	;Get the text line number
+	MOV	A, @R0
+
+	CJNE	A, #01H, ?TCReqLine2	;Text line 1 ??
+	MOV	R0, #OSDTextLN1
+	SJMP	?TCWriteText
+
+?TCReqLine2:
+	CJNE	A, #02H, ?TextError	;Text line 2 ??
+	MOV	R0, #OSDTextLN2
+	SJMP	?TCWriteText
+
+?TCWriteText:
+	MOV	TxChkSum, #0		;Reset checksum to be transmitted
+	LCALL	WriteString
+	LJMP	WriteEndOfTx
+
+?TextError:
+	SETB	Illegal_Del
+?TextEnd:
+	RET
+
+?TCCopyText:
 	MOV	R0, #String
-	MOV	R1, #OSDtext
+
 NextOSDChar:
 	MOV	A, @R0
 	MOV	@R1, A
 	INC	R0
 	INC	R1
 
-	CJNE	R0, #String+8, NextOSDChar
-	LJMP	CopyTextRAM
+	DJNZ	R2, NextOSDChar
+	MOV	@R1, #00
 
-TextRequest:
-	CJNE	A, #'?', TextError
-
-	MOV	R0, #OSDText
-
-	MOV	TxChkSum, #0		;Reset checksum to be transmitted
-
-	LCALL	WriteString
-	LJMP	WriteEndOfTx
-
-TextError:
-	SETB	Illegal_Del
-TextEnd:
 	RET
 
 ;************************************************************************
@@ -1378,7 +1374,7 @@ MPhaseError:
 ;* Name:	ResetCommand
 ;* Function:	Reset ALL offsets and EEPROM
 ;* Revision:	1.2
-;* Date:	990308, KEn
+;* Date:	990421, KEn
 ;* Input:	-
 ;* Output:	-
 ;* Destroys:	-
@@ -1397,6 +1393,21 @@ ResetCommand:
 
 	SETB	HWRunning
 
+	MOV	R0, #Parameter+3	;Get reset parameter
+	MOV	A, @R0
+
+	CJNE	A, #01, ?RC_01		;Parameter equ 1, ie HW type reset ??
+					
+	MOV	TmpBuffer, #HWType
+	MOV	TmpBuffer+1, #HWVersion
+	MOV	TmpBuffer+2, #HWInformation
+
+	MOV	A, #PT_HWType	;Write Generator information
+	MOV	R1, #TmpBuffer
+	MOV	R2, #03
+	LJMP	Write_EEPROM
+
+?RC_01:					;Full reset
 	CLR	A
 	MOV	OffsetCal+3, A
 	MOV	OffsetCal+2, A
@@ -1422,7 +1433,7 @@ ResetCommand:
 	MOV	UserScHOffset+1, A
 	MOV	UserScHOffset, A
 
-	MOV	A, #128			;Preset DAC-offset & DAC-level to 128
+	MOV	A, #128
 	MOV	DACLevel, A
 	MOV	DACOffset, A
 
@@ -1458,13 +1469,12 @@ ResetLoopB:
 	PUSH	ACC
 	LCALL	Write_EEPROM
 
-	MOV	A, #128			;Preset DAC-offset & DAC-level to 128
+	MOV	A, #128
 	MOV	TmpBuffer, A
 	MOV	TmpBuffer+1, A
 	MOV	TmpBuffer+2, A
 	MOV	TmpBuffer+3, A
-
-	MOV	A, #IIC_DAC_Level	;Clear DAC-offset & DAC-level
+	MOV	A, #IIC_DAC_Level	;Preset DAC-offset & DAC-level
 	MOV	R1, #TmpBuffer
 	MOV	R2, #04
 	LCALL	Write_EEPROM
@@ -1475,10 +1485,11 @@ ResetLoopB:
 
 	MOV	TmpBuffer, #HWType
 	MOV	TmpBuffer+1, #HWVersion
+	MOV	TmpBuffer+2, #HWInformation
 
-	MOV	A, #PT_HWType		;Write Generator information
+	MOV	A, #PT_HWType	;Write Generator information
 	MOV	R1, #TmpBuffer
-	MOV	R2, #02
+	MOV	R2, #03
 	LCALL	Write_EEPROM
 
 	LJMP	CalculateOffset

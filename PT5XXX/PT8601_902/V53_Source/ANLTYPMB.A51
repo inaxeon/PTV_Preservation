@@ -1,6 +1,6 @@
 $NOMOD51		;Disable the predefined 8051 register set
 
-$INCLUDE( REG52.INC)		;Include the predefined 8052 register set
+$INCLUDE( REG320.INC)		;Include the predefined 8052 register set
 $INCLUDE( MACROS.INC)		;Include user defined macros
 
 ;************************************************************************
@@ -33,7 +33,7 @@ $INCLUDE( MACROS.INC)		;Include user defined macros
 ;* Type 6 pattern: 8,1,16,1,17,1,16,1,17,1,16,1,17,1,16,1,17,1,16,1,17,	*
 ;*		   1,16,1,17,1,16,1,7					*
 ;* 									*
-;* NB! Placering af tekst aftalt med BL‘ 970522, kl ca. 11.00. Han ta'r	*
+;* NB! Placering af tekst aftalt med BLï¿½ 970522, kl ca. 11.00. Han ta'r	*
 ;*     skraldet hvis der kommer klager					*
 ;************************************************************************
 
@@ -46,7 +46,7 @@ EXTRN CODE( GenericMSBPort, LineAdrPort)
 EXTRN DATA( StatusPort, Status)
 
 EXTRN DATA( PatternPtr)				;Used in ReturnLineCntIntr
-EXTRN BIT( TextEnable, Status_S0, Status_TXT_ON)
+EXTRN BIT( Text1Enable, Status_S0, Status_TXT_ON)
 
 ;************************************************************************
 
@@ -63,7 +63,7 @@ MB1_F1L20:
 	UpdateType1 -14, MB1_F1L34	;+20
 ;************************************************************************
 MB1_F1L34:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType1 -16, MB1_F1L50	;+20
@@ -77,7 +77,7 @@ MB1_F2L20:
 	UpdateType1 -14, MB1_F2L34	;+20
 ;************************************************************************
 MB1_F2L34:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType1 -16, MB1_F2L50	;+20
@@ -100,7 +100,7 @@ MB2_F1L20:
 	UpdateType2 1, -14, MB2_F1L34	;+30
 ;************************************************************************
 MB2_F1L34:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType2 0, -2, MB2_F1L36	;+20
@@ -138,7 +138,7 @@ MB2_F2L20:
 	UpdateType2 1, -14, MB2_F2L34	;+30
 ;************************************************************************
 MB2_F2L34:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType2 0, -2, MB2_F2L36	;+20
@@ -182,7 +182,7 @@ MB3_F1L20:
 	UpdateType2 1, -14, MB3_F1L34	;+30
 ;************************************************************************
 MB3_F1L34:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType2 0, -16, MB3_F1L50	;+20
@@ -205,7 +205,7 @@ MB3_F2L20:
 	UpdateType2 1, -14, MB3_F2L34	;+30
 ;************************************************************************
 MB3_F2L34:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType2 0, -16, MB3_F2L50	;+20
@@ -234,7 +234,7 @@ MB4_F1L20:
 	UpdateType2 1, -14, MB4_F1L34	;+30
 ;************************************************************************
 MB4_F1L34:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType2 0, -16, MB4_F1L50	;+20
@@ -266,7 +266,7 @@ MB4_F2L20:
 	UpdateType2 1, -14, MB4_F2L34	;+30
 ;************************************************************************
 MB4_F2L34:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType2 0, -16, MB4_F2L50	;+20
@@ -310,7 +310,7 @@ MB5_F1L33:
 	UpdateType2 1, -1, MB5_F1L34	;+30
 ;************************************************************************
 MB5_F1L34:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType2 0, -11, MB5_F1L45	;+30
@@ -369,7 +369,7 @@ MB5_F2L33:
 	UpdateType2 1, -1, MB5_F2L34	;+30
 ;************************************************************************
 MB5_F2L34:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType2 0, -11, MB5_F2L45	;+30
@@ -437,7 +437,7 @@ MB6_F1L29:
 	UpdateType2 1, -5, MB6_F1L34	;+30
 ;************************************************************************
 MB6_F1L34:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType2 0, -11, MB6_F1L45	;+30
@@ -538,7 +538,7 @@ MB6_F2L29:
 	UpdateType2 1, -5, MB6_F2L34	;+30
 ;************************************************************************
 MB6_F2L34:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType2 0, -11, MB6_F2L45	;+30

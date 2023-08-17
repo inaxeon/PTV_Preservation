@@ -23,8 +23,11 @@
 
 SWVersion		EQU	28
 HWType			EQU	01	;This IS PT8601
-HWVersion		EQU	0	;/900 version: 0=Normal 1,2,..= 901,902
+HWVersion		EQU	2	;/900 version: 0=Normal 1,2,..= 901,902
 HWInformation		EQU	0
+
+Philips4x3		EQU	3*15
+Philips4x3woAPAL	EQU	3*16
 
 SyncTypeUU_G		EQU	000H
 SyncTypeUV_G		EQU	001H
@@ -104,54 +107,114 @@ GreyScale10_M		EQU	04AH
 
 UpdateType1 MACRO NoOfLines, LineLabel
 
-	MOV	A, Status		;+1 Update status port with S1S0 etc.
-	MOV	DPTR, #StatusPort	;+2
-	MOVX	@DPTR, A		;+2
+	MOV	A, Status		;+2 Update status port with S1S0 etc.
+	MOV	DPTR, #StatusPort	;+3
+	MOVX	@DPTR, A		;+3
 
-	MOV	A, R6			;+1 NOTE: GenericMSBPort MUST contain 0
-	MOV	DPTR, #LineAdrPort	;+2
-	MOVX	@DPTR, A		;+2 Write update to line port
+	MOV	A, R6			;+2 NOTE: GenericMSBPort MUST contain 0
+	MOV	DPTR, #LineAdrPort	;+3
+	MOVX	@DPTR, A		;+3 Write update to line port
 
-	MOV	TH0, #HIGH( NoOfLines)	;+2
-	MOV	TL0, #LOW( NoOfLines)	;+2
+	MOV	TH0, #HIGH( NoOfLines)	;+3
+	MOV	TL0, #LOW( NoOfLines)	;+3
 
-	MOV	R3, #HIGH( LineLabel)	;+1
-	MOV	R4, #LOW( LineLabel)	;+1
+	MOV	R3, #HIGH( LineLabel)	;+2
+	MOV	R4, #LOW( LineLabel)	;+2
 
 	MOV	A, R7			;+1
+	POP	DPS			;+2
 	POP	DPH			;+2
 	POP	DPL			;+2
 	POP	PSW			;+2
-	RETI				;+2 -----> +25
+	RETI				;+3 -----> +36
 ENDM
 
 
 UpdateType2 MACRO UpdateLine, NoOfLines, LineLabel
 
-	MOV	A, Status		;+1
-	MOV	DPTR, #StatusPort	;+2
-	MOVX	@DPTR, A		;+2 Write update to line port
+	MOV	A, Status		;+2
+	MOV	DPTR, #StatusPort	;+3
+	MOVX	@DPTR, A		;+3 Write update to line port
 
 $IF ( UpdateLine)
 	MOV	DPH, R5			;+2 #LOW( StatusPort) = 0 -> DPL = 0
 
 	MOV	A, R6			;+1
-	MOVC	A, @A+DPTR		;+2
+	MOVC	A, @A+DPTR		;+3
 
-	MOV	DPTR, #LineAdrPort	;+2
-	MOVX	@DPTR, A		;+2 Write update to line port
+	MOV	DPTR, #LineAdrPort	;+3
+	MOVX	@DPTR, A		;+3 Write update to line port
 
 	INC	R6			;+1
 $ENDIF
-	MOV	TH0, #HIGH( NoOfLines)	;+2
-	MOV	TL0, #LOW( NoOfLines)	;+2
+	MOV	TH0, #HIGH( NoOfLines)	;+3
+	MOV	TL0, #LOW( NoOfLines)	;+3
 
-	MOV	R3, #HIGH( LineLabel)	;+1
-	MOV	R4, #LOW( LineLabel)	;+1
+	MOV	R3, #HIGH( LineLabel)	;+2
+	MOV	R4, #LOW( LineLabel)	;+2
 
 	MOV	A, R7			;+1
+	POP	DPS			;+2
 	POP	DPH			;+2
 	POP	DPL			;+2
 	POP	PSW			;+2
-	RETI				;+2 -----> +20/+30
+	RETI				;+3 -----> +28/+41
+ENDM
+
+
+UpdateType3 MACRO LineLabel
+	MOV	A, Status		;+2
+	MOV	DPTR, #StatusPort	;+3
+	MOVX	@DPTR, A		;+3 Write update to line port
+
+	MOV	A, ComplexPtr		;+2
+	ADD	A, #02			;+2
+	MOV	ComplexPtr, A		;+2
+	MOV	A, ComplexPtr+1		;+2
+	ADDC	A, #0			;+2
+
+	MOV	ComplexPtr+1, A		;+2
+	MOV	DPTR, #GenericMSBPort	;+3
+	MOVX	@DPTR, A		;+3 Write update to line port
+
+	MOV	A, ComplexPtr		;+2
+	MOV	DPTR, #LineAdrPort	;+3
+	MOVX	@DPTR, A		;+3 Write update to line port
+
+	CLR	A			;+1
+	MOV	DPTR, #GenericMSBPort	;+3
+	MOVX	@DPTR, A		;+3 Write update to line port
+
+	MOV	TH0, #HIGH( -1)		;+3
+	MOV	TL0, #LOW( -1)		;+3
+
+	MOV	R3, #HIGH( LineLabel)	;+2
+	MOV	R4, #LOW( LineLabel)	;+2
+
+	MOV	A, R7			;+1
+	POP	DPS			;+2
+	POP	DPH			;+2
+	POP	DPL			;+2
+	POP	PSW			;+2
+	RETI				;+3 -----> +61
+ENDM
+
+
+UpdateType4 MACRO NoOfLines, LineLabel
+	MOV	A, Status		;+2 Update status port with S1S0 etc.
+	MOV	DPTR, #StatusPort	;+3
+	MOVX	@DPTR, A		;+3
+
+	MOV	TH0, #HIGH( NoOfLines)	;+3
+	MOV	TL0, #LOW( NoOfLines)	;+3
+
+	MOV	R3, #HIGH( LineLabel)	;+2
+	MOV	R4, #LOW( LineLabel)	;+2
+
+	MOV	A, R7			;+1
+	POP	DPS			;+2
+	POP	DPH			;+2
+	POP	DPL			;+2
+	POP	PSW			;+2
+	RETI				;+3 -----> +28
 ENDM

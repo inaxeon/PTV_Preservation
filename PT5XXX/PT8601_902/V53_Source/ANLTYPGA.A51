@@ -1,6 +1,6 @@
 $NOMOD51			;Disable the predefined 8051 register set
 
-$INCLUDE( REG52.INC)		;Include the predefined 8052 register set
+$INCLUDE( REG320.INC)		;Include the predefined 8052 register set
 $INCLUDE( MACROS.INC)		;Include user defined macros
 
 ;************************************************************************
@@ -32,7 +32,7 @@ $INCLUDE( MACROS.INC)		;Include user defined macros
 ;* Type 5 pattern: 14,1,14,1,35,69,10,1,10,69,35,1,14,1,13		*
 ;* Type 6 pattern: 7,1,20,1,..,20,1,7					*
 ;*									*
-;* NB! Placering af tekst aftalt med BL‘ 970522, kl ca. 11.00. Han ta'r	*
+;* NB! Placering af tekst aftalt med BLï¿½ 970522, kl ca. 11.00. Han ta'r	*
 ;*     skraldet hvis der kommer klager					*
 ;************************************************************************
 
@@ -45,7 +45,7 @@ EXTRN CODE( GenericMSBPort, LineAdrPort)
 EXTRN DATA( StatusPort, Status)
 
 EXTRN DATA( PatternPtr)				;Used in ReturnLineCntIntr
-EXTRN BIT( TextEnable, Status_S0, Status_TXT_ON)
+EXTRN BIT( Text1Enable, Status_S0, Status_TXT_ON)
 
 ;************************************************************************
 
@@ -62,7 +62,7 @@ GA1_F1L22:
 	UpdateType1 -2, GA1_F1L24	;+20
 ;************************************************************************
 GA1_F1L24:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType1 -16, GA1_F1L40	;+20
@@ -76,7 +76,7 @@ GA1_F2L22:
 	UpdateType1 -2, GA1_F2L24	;+20
 ;************************************************************************
 GA1_F2L24:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType1 -16, GA1_F2L40	;+20
@@ -100,7 +100,7 @@ GA2_F1L22:
 	UpdateType2 1, -2, GA2_F1L24	;+30
 ;************************************************************************
 GA2_F1L24:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType2 0, -16, GA2_F1L40	;+20
@@ -138,7 +138,7 @@ GA2_F2L22:
 	UpdateType2 1, -2, GA2_F2L24	;+30
 ;************************************************************************
 GA2_F2L24:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType2 0, -16, GA2_F2L40	;+20
@@ -182,7 +182,7 @@ GA3_F1L22:
 	UpdateType2 1, -2, GA3_F1L24	;+30
 ;************************************************************************
 GA3_F1L24:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType2 0, -16, GA3_F1L40	;+20
@@ -202,7 +202,7 @@ GA3_F2L22:
 	UpdateType2 1, -2, GA3_F2L24	;+30
 ;************************************************************************
 GA3_F2L24:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType2 0, -16, GA3_F2L40	;+20
@@ -228,7 +228,7 @@ GA4_F1L22:
 	UpdateType2 1, -2, GA4_F1L24	;+30
 ;************************************************************************
 GA4_F1L24:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType2 0, -16, GA4_F1L40	;+20
@@ -260,7 +260,7 @@ GA4_F2L22:
 	UpdateType2 1, -2, GA4_F2L24	;+30
 ;************************************************************************
 GA4_F2L24:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType2 0, -16, GA4_F2L40	;+20
@@ -298,7 +298,7 @@ GA5_F1L22:
 	UpdateType2 1, -2, GA5_F1L24	;+30
 ;************************************************************************
 GA5_F1L24:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType2 0, -12, GA5_F1L36	;+20
@@ -357,7 +357,7 @@ GA5_F2L22:
 	UpdateType2 1, -2, GA5_F2L24	;+30
 ;************************************************************************
 GA5_F2L24:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType2 0, -12, GA5_F2L36	;+20
@@ -423,7 +423,7 @@ GA6_F1L22:
 	UpdateType2 1, -2, GA6_F1L24	;+30
 ;************************************************************************
 GA6_F1L24:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType2 0, -5, GA6_F1L29	;+20
@@ -524,7 +524,7 @@ GA6_F2L22:
 	UpdateType2 1, -2, GA6_F2L24	;+30
 ;************************************************************************
 GA6_F2L24:
-	MOV	C, TextEnable		;+1
+	MOV	C, Text1Enable		;+1
 	MOV	Status_TXT_ON, C	;+2
 
 	UpdateType2 0, -5, GA6_F2L29	;+20
