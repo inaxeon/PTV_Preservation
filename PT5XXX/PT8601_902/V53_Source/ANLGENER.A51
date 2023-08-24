@@ -440,7 +440,7 @@ ZeroLoop:			;Reset internal RAM, ie. clear 248 bytes
 	;
 	; DPRAM Memory map:
 	; 0x000-0x07F : Line 1 when blank (always zero'd)
-	; 0x080-0x0FF : Line 1 visible
+	; 0x080-0x0FF : Line 1 when visible
 	; 0x100-0x17F : Line 2 when blank (not used. Uses line 1 blank)
 	; 0x180-0x1FF : Line 2 when visible
 
