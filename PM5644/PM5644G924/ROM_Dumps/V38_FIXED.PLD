@@ -1,0 +1,130 @@
+/* This file containes a modified version of the PM5644G/924's V38
+ * PAL (12NC: 4008-002-00651) the original version of which contains a bug.
+ *
+ * When the date and time cut-outs are activated, a series of luminance
+ * pulses appear in the date cut-out rendering it unsable.
+ *
+ * It is thought that this verion of the PM5644 was possibly rushed
+ * out before the 16:9 logo generator was ready, and possibly this was
+ * missed in testing, or they didn't care, because the customer would never
+ * find it.
+ *
+ * The solution simple. The clock gate which removes the hatching in the
+ * clock area is simply delayed by a few clocks, to ensure that "black"
+ * is loaded into the pre-DAC latches during this time, when previously
+ * it was the last sample of hatching stuck in them instead.
+ */
+
+Name     V38 ;
+PartNo   00 ;
+Date     25/10/2023 ;
+Revision 01 ;
+Designer Matt Millman ;
+Company  - ;
+Assembly None ;
+Location  ;
+Device   g22v10 ;
+
+PIN 1=CLK;
+PIN 2=AP0;
+PIN 3=AP1;
+PIN 4=AP2;
+PIN 5=AP3;
+PIN 6=AP4;
+PIN 7=CARRY1;
+PIN 8=FIRST_nLAST;
+PIN 9=HALF_LINE;
+PIN 10=LSB_IN;
+PIN 12=GND;
+PIN 13=LSB_OUT;
+PIN 14=FH_REF;
+PIN 15=CARRY2;
+PIN 16=HALF_BLANK;
+PIN 17=CLK_GATE;
+PIN 18=SEL_OUT;
+PIN 19=AP9;
+PIN 20=AP8;
+PIN 21=AP7;
+PIN 22=AP6;
+PIN 23=AP5;
+
+/*
+    CLK_GATE goes to V37 i8 (which gates the clock to the latches before the DACs)
+    LSB_IN = 1 WHEN DATE ON
+        0 IN OTHER STATES
+    LSB_OUT = 1 WHEN DATE ON OR TIME ON
+        0 WHEN CLOCK OFF
+*/
+
+AP5.d = AP5 & !CARRY1
+    # !AP5 & CARRY1;
+
+AP5.oe = 'b'1;
+
+AP6.d = AP5 & !AP6 & CARRY1
+    # AP6 & !CARRY1
+    # !AP5 & AP6;
+
+AP6.oe = 'b'1;
+
+AP7.d = AP5 & AP6 & !AP7 & CARRY1
+    # AP7 & !CARRY1
+    # !AP6 & AP7
+    # !AP5 & AP7;
+
+AP7.oe = 'b'1;
+
+AP8.d = AP5 & AP6 & AP7 & !AP8 & !SEL_OUT & CARRY1
+    # AP5 & AP6 & AP7 & !AP8 & AP9 & CARRY1
+    # AP8 & !CARRY1
+    # !AP7 & AP8
+    # !AP6 & AP8
+    # !AP5 & AP8;
+
+AP8.oe = 'b'1;
+
+AP9.d = AP5 & AP6 & AP7 & AP8 & !AP9 & CARRY1
+    # AP9 & !CARRY1
+    # !AP8 & AP9
+    # !AP7 & AP9
+    # !AP6 & AP9
+    # !AP5 & AP9;
+
+AP9.oe = 'b'1;
+
+SEL_OUT.d = AP5 & AP6 & AP7 & AP8 & AP9 & !SEL_OUT & CARRY1
+    # AP8 & !AP9 & SEL_OUT
+    # !AP8 & AP9 & SEL_OUT
+    # SEL_OUT & !CARRY1
+    # !AP7 & SEL_OUT
+    # !AP6 & SEL_OUT
+    # !AP5 & SEL_OUT;
+
+SEL_OUT.oe = 'b'1;
+
+/* The fix is here. AND'ing with AP4 delays the clock gate
+ * sufficiently to remove the defect.
+ */
+CLK_GATE.d = AP4 & !AP5 & !AP6 & !AP7 & !AP8 & AP9 & LSB_IN
+    # !AP5 & AP6 & !AP7 & AP8 & AP9 & LSB_OUT
+    # CLK_GATE & !HALF_BLANK;
+
+CLK_GATE.oe = 'b'1;
+
+HALF_BLANK.d = !AP5 & !AP6 & AP7 & !AP8 & AP9
+    # !AP5 & AP6 & AP7 & AP8 & AP9;
+
+HALF_BLANK.oe = 'b'1;
+
+!CARRY2.d = AP5 & AP6 & AP7 & !AP8 & !AP9 & SEL_OUT & !CARRY1
+    # !AP5 & AP6 & AP7 & !AP8 & !AP9 & SEL_OUT & CARRY1;
+
+CARRY2.oe = 'b'1;
+
+FH_REF.d = AP6 & !AP1 & !AP7 & !AP2 & !AP8 & !AP3 & !AP9 & !AP4 & !SEL_OUT
+    # AP5 & !AP6 & AP1 & !AP7 & !AP8 & !AP9 & AP4 & !SEL_OUT
+    # AP5 & !AP6 & !AP7 & AP2 & !AP8 & !AP9 & AP4 & !SEL_OUT
+    # AP5 & !AP6 & !AP7 & !AP8 & AP3 & !AP9 & AP4 & !SEL_OUT
+    # !AP5 & AP6 & !AP7 & !AP8 & !AP9 & !SEL_OUT;
+
+FH_REF.oe = 'b'1;
