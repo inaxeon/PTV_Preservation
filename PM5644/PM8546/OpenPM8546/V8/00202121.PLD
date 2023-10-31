@@ -1,0 +1,80 @@
+Title           PM5644 LOGO TIDSCODE V8
+Pattern         TIMECODE/DECODER
+Revision        03
+Author          SVEN NORMANN JORGENSEN
+Company         PHILIPS
+Date            930614
+12-NC		4008 002 02011
+
+DENNE PLD ER BEREGNET TIL AT ERSTATTE 3 ONE-SHOTS DER SIDDER
+MELLEM DEN ANALOGE INTERFACE OG MIKROPROCCESSOREN PAE TEXT- 
+GENERATOREN
+DEN BRUGES SAMTIDIG TIL ADRESSE DECODER
+
+
+CLK is the clock signal.(FH I KREDSLOEBET)
+denne version har rd og wd med i endualport
+
+|PAL22V10   1:CLK,
+|            2:IDATA,
+|            3:A13,
+|            4:A14,
+|            5:A15,
+|            6:WD,
+|            7:RD,
+|            8:-,
+|            9:-,
+|           10:-,
+|           11:-,
+|           13:-,
+|           14:TICOD_MODE,
+|           15:IDATADEL, 
+|           16:ENDUALPORT, 
+|           17:LD2,
+|           18:LD1,
+|           19:Q0,
+|           20:Q1,
+|           21:IDATADEL2,
+|           22:TICODATA_OUT,   |TO uP TIME CODE DATA
+|           23:Q2              |TO uP INT'
+|
+|
+|REGISTERS: CLK // Q[2..0],IDATADEL,IDATADEL2
+|
+|ACTIVE-LOW:  ENDUALPORT,LD1,LD2,Q2,WD,RD
+|
+|
+|P = ((IDATADEL & IDATADEL2)#(IDATADEL' & IDATADEL2'))
+|
+|MAP: Q[2..0] -> Q[2..0]
+| { gray(n)  ->gray(n+1)    ,P  & (n/=6) & (n/=7) & TICOD_MODE
+|   gray(n)  ->gray(6)      ,P  & (n==6) & TICOD_MODE
+|   gray(n)  ->gray(0)      ,P  & (n==7) & TICOD_MODE
+|   gray(n)  ->gray(n+1)    ,P' & (n< 4) & TICOD_MODE
+|   gray(n)  ->gray(7)      ,P' & ((n==4)#(n==5)#(n==6))  & TICOD_MODE 
+|   gray(n)  ->gray(0)      ,P' & (n==7) & TICOD_MODE  }
+|
+|Q2 = TICODATA_OUT' & TICOD_MODE'
+|
+|TICODATA_OUT  = (TICOD_MODE  & (Q[2..0]/=gray(0)) & TICODATA_OUT ) 
+|              # (TICOD_MODE  & (Q[2..0]/=gray(0)) & P' & (Q[2..0]==gray(1))) 
+|              # (TICOD_MODE  & (Q[2..0]/=gray(0)) & P' & (Q[2..0]==gray(2))) 
+|              # (TICOD_MODE  & (Q[2..0]/=gray(0)) & P' & (Q[2..0]==gray(3)))
+|              # (TICOD_MODE' & IDATA & TICODATA_OUT  )
+|              # (TICOD_MODE' & IDATA & Q2 )
+|              # (TICOD_MODE' & TICODATA_OUT & Q2 )
+|
+|IDATADEL2      = IDATADEL
+|
+|IDATADEL       =IDATA
+|
+|LD1             = WD & A13' & A14' & A15
+|
+|LD2             = WD &  A13 & A14' & A15
+|    
+|ENDUALPORT      = A15'& (rd # wd)
+|
+a15 & a14 & a13     timecode   write
+a15 & a14 & a13'    secund pulse
+|TICOD_MODE = ( WD & A15 & A14 & A13) 
+|           # (TICOD_MODE & ( WD & A15 & A14 & A13')') 

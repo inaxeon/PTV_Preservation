@@ -1,0 +1,97 @@
+%SIGNAL
+PIN   7 =  B_DATA 
+PIN   4 =  B_DATA_DELAYED 
+PIN  10 =  DELAY_ON 
+PIN   1 =  GCLK 
+PIN   6 =  G_DATA 
+PIN   3 =  G_DATA_DELAYED 
+PIN   9 =  RGB_MODE 
+PIN   8 =  R_DATA 
+PIN   5 =  R_DATA_DELAYED 
+PIN  20 =  Y0 
+PIN  19 =  Y1 
+PIN  18 =  Y2 
+PIN  17 =  Y3 
+PIN  16 =  Y4 
+PIN  15 =  Y5 
+PIN  14 =  Y6 
+PIN   2 =  nTEXT_BLANK 
+%END
+
+%FIELD
+%END
+
+%EQUATION
+Y0 =>
+    0 
+
+Y0.ar Y1.ar Y2.ar Y3.ar Y4.ar Y5.ar Y6.ar  =>
+    0 
+
+Y0.sp Y1.sp Y2.sp Y3.sp Y4.sp Y5.sp Y6.sp  =>
+    0 
+
+Y1 =>
+    0 
+
+Y1.ar  =>
+    
+Y1.sp  =>
+    
+Y2.d  =>
+    G_DATA & nTEXT_BLANK
+
+Y2.ar  =>
+    
+Y2.sp  =>
+    
+Y3 =>
+    0 
+
+Y3.ar  =>
+    
+Y3.sp  =>
+    
+Y4 =>
+    0 
+
+Y4.ar  =>
+    
+Y4.sp  =>
+    
+Y5 =>
+    0 
+
+Y5.ar  =>
+    
+Y5.sp  =>
+    
+Y6.d  =>
+    G_DATA & nTEXT_BLANK
+
+Y6.ar  =>
+    
+Y6.sp  =>
+    
+Y0.oe  =>
+    1 
+
+Y1.oe  =>
+    1 
+
+Y2.oe  =>
+    1 
+
+Y3.oe  =>
+    1 
+
+Y4.oe  =>
+    1 
+
+Y5.oe  =>
+    1 
+
+Y6.oe  =>
+    1 
+
+%END

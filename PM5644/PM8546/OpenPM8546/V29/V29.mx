@@ -1,0 +1,35 @@
+Name     V29 ;
+PartNo   00 ;
+Date     29/09/2023 ;
+Revision 01 ;
+Designer Matt Millman ;
+Company  - ;
+Assembly None ;
+Location  ;
+Device   g22v10 ;
+
+/* &=AND #=OR $=XOR */
+
+PIN 1 = GCLK;
+PIN 2 = nTEXT_BLANK;
+PIN 6 = G_DATA;
+PIN 7 = B_DATA;
+PIN 8 = R_DATA;
+PIN 9 = RGB_MODE;
+PIN 10 = DELAY_ON;
+PIN 13 = IDX;
+
+PIN [23..19] = [V0..4];
+PIN [18..14] = [U0..4];
+
+V0 = 'b'0;
+V1 = 'b'0;
+V2 = 'b'0;
+V3 = 'b'0;
+V4 = 'b'1;
+
+U0 = 'b'0;
+U1 = 'b'0;
+U2 = 'b'0;
+U3 = 'b'0;
+U4 = 'b'1;

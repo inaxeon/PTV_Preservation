@@ -1,0 +1,62 @@
+LISTING FOR LOGIC DESCRIPTION FILE: V28.pld                          Page 1
+
+CUPL(WM): Universal Compiler for Programmable Logic
+Version 5.0a Serial# MW-10400000
+Copyright (c) 1983, 1998 Logical Devices, Inc.
+Created Sun Oct 22 07:30:19 2023
+
+  1:Name     V28 ;
+  2:PartNo   00 ;
+  3:Date     29/09/2023 ;
+  4:Revision 01 ;
+  5:Designer Matt Millman ;
+  6:Company  - ;
+  7:Assembly None ;
+  8:Location  ;
+  9:Device   g22v10 ;
+ 10:
+ 11:/* &=AND #=OR $=XOR */
+ 12:
+ 13:PIN 1 = GCLK;
+ 14:PIN 2 = nTEXT_BLANK;
+ 15:PIN 3 = G_DATA_DELAYED;
+ 16:PIN 4 = B_DATA_DELAYED;
+ 17:PIN 5 = R_DATA_DELAYED;
+ 18:PIN 6 = G_DATA;
+ 19:PIN 7 = B_DATA;
+ 20:PIN 8 = R_DATA;
+ 21:PIN 9 = RGB_MODE;
+ 22:PIN 10 = DELAY_ON;
+ 23:
+ 24:PIN [20..14] = [Y0..6];
+ 25:
+ 26:Y0.sp = 'b'0;
+ 27:Y1.sp = 'b'0;
+ 28:Y2.sp = 'b'0;
+ 29:Y3.sp = 'b'0;
+ 30:Y4.sp = 'b'0;
+ 31:Y5.sp = 'b'0;
+ 32:Y6.sp = 'b'0;
+ 33:
+ 34:Y0.ar = 'b'0;
+ 35:Y1.ar = 'b'0;
+ 36:Y2.ar = 'b'0;
+ 37:Y3.ar = 'b'0;
+ 38:Y4.ar = 'b'0;
+ 39:Y5.ar = 'b'0;
+ 40:Y6.ar = 'b'0;
+ 41:
+ 42:Y0 = 'b'0;
+ 43:Y1 = 'b'0;
+ 44:Y2.d = G_DATA & nTEXT_BLANK;
+ 45:Y3 = 'b'0;
+ 46:Y4 = 'b'0;
+ 47:Y5 = 'b'0;
+ 48:Y6.d = G_DATA & nTEXT_BLANK;
+ 49:
+ 50:
+
+
+
+Jedec Fuse Checksum       (3539)
+Jedec Transmit Checksum   (f934)

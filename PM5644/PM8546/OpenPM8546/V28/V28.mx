@@ -1,0 +1,48 @@
+Name     V28 ;
+PartNo   00 ;
+Date     29/09/2023 ;
+Revision 01 ;
+Designer Matt Millman ;
+Company  - ;
+Assembly None ;
+Location  ;
+Device   g22v10 ;
+
+/* &=AND #=OR $=XOR */
+
+PIN 1 = GCLK;
+PIN 2 = nTEXT_BLANK;
+PIN 3 = G_DATA_DELAYED;
+PIN 4 = B_DATA_DELAYED;
+PIN 5 = R_DATA_DELAYED;
+PIN 6 = G_DATA;
+PIN 7 = B_DATA;
+PIN 8 = R_DATA;
+PIN 9 = RGB_MODE;
+PIN 10 = DELAY_ON;
+
+PIN [20..14] = [Y0..6];
+
+Y0.sp = 'b'0;
+Y1.sp = 'b'0;
+Y2.sp = 'b'0;
+Y3.sp = 'b'0;
+Y4.sp = 'b'0;
+Y5.sp = 'b'0;
+Y6.sp = 'b'0;
+
+Y0.ar = 'b'0;
+Y1.ar = 'b'0;
+Y2.ar = 'b'0;
+Y3.ar = 'b'0;
+Y4.ar = 'b'0;
+Y5.ar = 'b'0;
+Y6.ar = 'b'0;
+
+Y0 = 'b'0;
+Y1 = 'b'0;
+Y2.d = G_DATA & nTEXT_BLANK;
+Y3 = 'b'0;
+Y4 = 'b'0;
+Y5 = 'b'0;
+Y6.d = G_DATA & nTEXT_BLANK;

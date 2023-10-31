@@ -1,0 +1,75 @@
+Name     V15 ;
+PartNo   00 ;
+Date     26/09/2023 ;
+Revision 01 ;
+Designer Matt Millman ;
+Company  - ;
+Assembly None ;
+Location  ;
+Device   g22v10 ;
+
+/* &=AND #=OR $=XOR */
+
+PIN 1 = GCLK;
+PIN 2 = LCNT_IN; /* Output of 'HC161/AC00 */
+PIN 3 = nFH_IN; /* Horizontal sync */
+PIN [4..11] = [SH0..7];
+PIN 13 = SH8;
+PIN 14 = nSHIFT_LOAD;
+PIN 15 = H2;
+PIN 16 = H4;
+PIN 17 = H6;
+PIN 18 = H8;
+PIN 19 = H7;
+PIN 20 = H5;
+PIN 21 = H3;
+PIN 22 = H1;
+PIN 23 = H0;
+
+H0.oe = 'b'1;
+H1.oe = 'b'1;
+H2.oe = 'b'1;
+H3.oe = 'b'1;
+H4.oe = 'b'1;
+H5.oe = 'b'1;
+H6.oe = 'b'1;
+H7.oe = 'b'1;
+H8.oe = 'b'1;
+
+H0.sp = 'b'0;
+H1.sp = 'b'0;
+H2.sp = 'b'0;
+H3.sp = 'b'0;
+H4.sp = 'b'0;
+H5.sp = 'b'0;
+H6.sp = 'b'0;
+H7.sp = 'b'0;
+H8.sp = 'b'0;
+
+H0.ar = !nFH_IN;
+H1.ar = !nFH_IN;
+H2.ar = !nFH_IN;
+H3.ar = !nFH_IN;
+H4.ar = !nFH_IN;
+H5.ar = !nFH_IN;
+H6.ar = !nFH_IN;
+H7.ar = !nFH_IN;
+H8.ar = !nFH_IN;
+H9.ar = !nFH_IN;
+
+H0.d = nSHIFT_LOAD $ !H0;
+H1.d = H1 $ H0 & !nSHIFT_LOAD;
+H2.d = H2 $ H1 & H0 & !nSHIFT_LOAD;
+H3.d = H3 $ H2 & H1 & H0 & !nSHIFT_LOAD;
+H4.d = H4 $ H3 & H2 & H1 & H0 & !nSHIFT_LOAD;
+H5.d = H5 $ H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD;
+H6.d = H6 $ H5 & H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD;
+H7.d = H7 $ H6 & H5 & H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD;
+H8.d = H8 $ H7 & H6 & H5 & H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD;
+
+
+
+nSHIFT_LOAD.sp = 'b'0;
+nSHIFT_LOAD.ar = !nFH_IN;
+nSHIFT_LOAD.oe = 'b'1;
+nSHIFT_LOAD.d = LCNT_IN # !nSHIFT_LOAD;

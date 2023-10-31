@@ -1,0 +1,1 @@
+c:\Wincupl\shared\cupl -m1lxfjnaes -u C:\Wincupl\Shared\cupl.dl V15.PLD

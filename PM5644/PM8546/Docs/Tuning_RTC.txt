@@ -1,0 +1,9 @@
+1) Ensure RTC battery is installed
+	PCB Mount 1/3 Cell on mainboard underneath logo generator
+	(Same type of battern as the generator board)
+2) Switch off PM5644
+3) Fit jumper PP8
+4) Connect calibrated frequency counter to TP1
+5) Adjust C51 to achieve exactly 1Hz
+	If 1Hz cannot be achieved, crystal likely has incorrect characteristics.
+6) Remove jumper PP8

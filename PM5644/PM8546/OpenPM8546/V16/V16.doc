@@ -1,0 +1,394 @@
+
+*******************************************************************************
+                                      V16
+*******************************************************************************
+
+CUPL(WM)        5.0a Serial# MW-10400000
+Device          g22v10  Library DLIB-h-40-1
+Created         Sat Sep 30 07:29:47 2023
+Name            V16 
+Partno          00 
+Revision        01 
+Date            27/09/2023 
+Designer        Matt Millman 
+Company         - 
+Assembly        None 
+Location        
+
+===============================================================================
+                            Expanded Product Terms
+===============================================================================
+
+BANK_OUT.d  =>
+    BANK_SEL
+
+BANK_OUT.ar  =>
+    0 
+
+BANK_OUT.oe  =>
+    1 
+
+BANK_OUT.sp  =>
+    0 
+
+IDX_OUT =>
+    ID_IN
+
+IDX_OUT.oe  =>
+    1 
+
+SEL0_OUT.d  =>
+    SEL0_IN
+
+SEL0_OUT.ar  =>
+    0 
+
+SEL0_OUT.oe  =>
+    1 
+
+SEL0_OUT.sp  =>
+    0 
+
+SEL1_OUT.d  =>
+    SEL1_IN
+
+SEL1_OUT.ar  =>
+    0 
+
+SEL1_OUT.oe  =>
+    1 
+
+SEL1_OUT.sp  =>
+    0 
+
+V0 =>
+    !RI
+
+V0.ar  =>
+    0 
+
+V0.oe  =>
+    1 
+
+V0.sp  =>
+    0 
+
+V1.d  =>
+    START & !V1
+
+V1.ar  =>
+    0 
+
+V1.oe  =>
+    1 
+
+V1.sp  =>
+    0 
+
+V2.d  =>
+    START & !V1 & V2
+  # !START & V1
+  # V1 & !V2
+
+V2.ar  =>
+    0 
+
+V2.oe  =>
+    1 
+
+V2.sp  =>
+    0 
+
+V3.d  =>
+    START & !V2 & V3
+  # START & !V1 & V3
+  # !START & V1 & V2
+  # V1 & V2 & !V3
+
+V3.ar  =>
+    0 
+
+V3.oe  =>
+    1 
+
+V3.sp  =>
+    0 
+
+V4.d  =>
+    START & !V3 & V4
+  # START & !V2 & V4
+  # START & !V1 & V4
+  # !START & V1 & V2 & V3
+  # V1 & V2 & V3 & !V4
+
+V4.ar  =>
+    0 
+
+V4.oe  =>
+    1 
+
+V4.sp  =>
+    0 
+
+V5.d  =>
+    START & !V4 & V5
+  # START & !V3 & V5
+  # START & !V2 & V5
+  # START & !V1 & V5
+  # !START & V1 & V2 & V3 & V4
+  # V1 & V2 & V3 & V4 & !V5
+
+V5.ar  =>
+    0 
+
+V5.oe  =>
+    1 
+
+V5.sp  =>
+    0 
+
+
+===============================================================================
+                                 Symbol Table
+===============================================================================
+
+Pin Variable                                    Pterms   Max     Min    
+Pol   Name              Ext     Pin     Type     Used   Pterms  Level   
+--- --------            ---     ---     ----    ------  ------  -----   
+
+    BANK_OUT                    15       V        -       -       -     
+    BANK_OUT            d       15       X        1       10      1     
+    BANK_OUT            ar      15       X        1       1       1     
+    BANK_OUT            oe      15       X        1       1       1     
+    BANK_OUT            sp      15       X        1       1       1     
+    BANK_SEL                    6        V        -       -       -     
+    GCLK                        1        V        -       -       -     
+    IDX_OUT                     14       V        1       8       1     
+    IDX_OUT             oe      14       X        1       1       1     
+    ID_IN                       13       V        -       -       -     
+    RI                          2        V        -       -       -     
+    SEL0_IN                     3        V        -       -       -     
+    SEL0_OUT                    23       V        -       -       -     
+    SEL0_OUT            d       23       X        1       8       1     
+    SEL0_OUT            ar      23       X        1       1       1     
+    SEL0_OUT            oe      23       X        1       1       1     
+    SEL0_OUT            sp      23       X        1       1       1     
+    SEL1_IN                     4        V        -       -       -     
+    SEL1_OUT                    22       V        -       -       -     
+    SEL1_OUT            d       22       X        1       10      1     
+    SEL1_OUT            ar      22       X        1       1       1     
+    SEL1_OUT            oe      22       X        1       1       1     
+    SEL1_OUT            sp      22       X        1       1       1     
+    START                       5        V        -       -       -     
+    V0                          21       V        1       12      1     
+    V0                  ar      21       X        1       1       1     
+    V0                  oe      21       X        1       1       1     
+    V0                  sp      21       X        1       1       1     
+    V1                          20       V        -       -       -     
+    V1                  d       20       X        1       14      1     
+    V1                  ar      20       X        1       1       1     
+    V1                  oe      20       X        1       1       1     
+    V1                  sp      20       X        1       1       1     
+    V2                          19       V        -       -       -     
+    V2                  d       19       X        3       16      1     
+    V2                  ar      19       X        1       1       1     
+    V2                  oe      19       X        1       1       1     
+    V2                  sp      19       X        1       1       1     
+    V3                          18       V        -       -       -     
+    V3                  d       18       X        4       16      1     
+    V3                  ar      18       X        1       1       1     
+    V3                  oe      18       X        1       1       1     
+    V3                  sp      18       X        1       1       1     
+    V4                          17       V        -       -       -     
+    V4                  d       17       X        5       14      1     
+    V4                  ar      17       X        1       1       1     
+    V4                  oe      17       X        1       1       1     
+    V4                  sp      17       X        1       1       1     
+    V5                          16       V        -       -       -     
+    V5                  d       16       X        6       12      1     
+    V5                  ar      16       X        1       1       1     
+    V5                  oe      16       X        1       1       1     
+    V5                  sp      16       X        1       1       1     
+
+
+LEGEND    D : default variable         F : field      G : group
+          I : intermediate variable    N : node       M : extended node
+          U : undefined                V : variable   X : extended variable
+          T : function
+
+
+===============================================================================
+                                   Fuse Plot
+===============================================================================
+
+SP 
+ 05764 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+
+AR 
+ 00000 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+
+Pin #23  05808 Mode  -x 
+ 00044 -------------------------------------------- 
+ 00088 --------x----------------------------------- 
+ 00132 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 00176 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 00220 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 00264 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 00308 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 00352 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 00396 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+Pin #22  05810 Mode  -x 
+ 00440 -------------------------------------------- 
+ 00484 ------------x------------------------------- 
+ 00528 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 00572 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 00616 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 00660 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 00704 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 00748 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 00792 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 00836 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 00880 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+Pin #21  05812 Mode  -- 
+ 00924 -------------------------------------------- 
+ 00968 -----x-------------------------------------- 
+ 01012 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 01056 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 01100 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 01144 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 01188 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 01232 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 01276 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 01320 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 01364 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 01408 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 01452 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+Pin #20  05814 Mode  -x 
+ 01496 -------------------------------------------- 
+ 01540 --------------x-x--------------------------- 
+ 01584 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 01628 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 01672 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 01716 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 01760 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 01804 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 01848 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 01892 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 01936 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 01980 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 02024 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 02068 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 02112 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+Pin #19  05816 Mode  -x 
+ 02156 -------------------------------------------- 
+ 02200 --------------x-x--x------------------------ 
+ 02244 ---------------x-x-------------------------- 
+ 02288 ---------------x--x------------------------- 
+ 02332 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 02376 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 02420 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 02464 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 02508 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 02552 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 02596 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 02640 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 02684 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 02728 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 02772 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 02816 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 02860 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+Pin #18  05818 Mode  -x 
+ 02904 -------------------------------------------- 
+ 02948 ----------------x-x----x-------------------- 
+ 02992 --------------x-x------x-------------------- 
+ 03036 ---------------x-x-x------------------------ 
+ 03080 ---------------x---x--x--------------------- 
+ 03124 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 03168 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 03212 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 03256 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 03300 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 03344 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 03388 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 03432 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 03476 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 03520 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 03564 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 03608 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+Pin #17  05820 Mode  -x 
+ 03652 -------------------------------------------- 
+ 03696 ----------------x-----x----x---------------- 
+ 03740 ----------------x-x--------x---------------- 
+ 03784 --------------x-x----------x---------------- 
+ 03828 ---------------x-x-x---x-------------------- 
+ 03872 ---------------x---x---x--x----------------- 
+ 03916 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 03960 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 04004 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 04048 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 04092 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 04136 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 04180 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 04224 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 04268 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+Pin #16  05822 Mode  -x 
+ 04312 -------------------------------------------- 
+ 04356 ----------------x---------x----x------------ 
+ 04400 ----------------x-----x--------x------------ 
+ 04444 ----------------x-x------------x------------ 
+ 04488 --------------x-x--------------x------------ 
+ 04532 ---------------x-x-x---x---x---------------- 
+ 04576 ---------------x---x---x---x--x------------- 
+ 04620 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 04664 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 04708 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 04752 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 04796 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 04840 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+Pin #15  05824 Mode  -x 
+ 04884 -------------------------------------------- 
+ 04928 --------------------x----------------------- 
+ 04972 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 05016 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 05060 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 05104 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 05148 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 05192 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 05236 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 05280 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 05324 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+Pin #14  05826 Mode  -- 
+ 05368 -------------------------------------------- 
+ 05412 ------------------------------------------x- 
+ 05456 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 05500 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 05544 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 05588 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 05632 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 05676 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 05720 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+
+
+LEGEND    X : fuse not blown 
+          - : fuse blown 
+
+===============================================================================
+                                 Chip Diagram
+===============================================================================
+
+                               ______________
+                              |     V16      |
+                     GCLK x---|1           24|---x Vcc                      
+                       RI x---|2           23|---x SEL0_OUT                 
+                  SEL0_IN x---|3           22|---x SEL1_OUT                 
+                  SEL1_IN x---|4           21|---x V0                       
+                    START x---|5           20|---x V1                       
+                 BANK_SEL x---|6           19|---x V2                       
+                          x---|7           18|---x V3                       
+                          x---|8           17|---x V4                       
+                          x---|9           16|---x V5                       
+                          x---|10          15|---x BANK_OUT                 
+                          x---|11          14|---x IDX_OUT                  
+                      GND x---|12          13|---x ID_IN                    
+                              |______________|
+

@@ -1,0 +1,48 @@
+LISTING FOR LOGIC DESCRIPTION FILE: V29.pld                          Page 1
+
+CUPL(WM): Universal Compiler for Programmable Logic
+Version 5.0a Serial# MW-10400000
+Copyright (c) 1983, 1998 Logical Devices, Inc.
+Created Fri Sep 29 06:24:57 2023
+
+  1:Name     V29 ;
+  2:PartNo   00 ;
+  3:Date     29/09/2023 ;
+  4:Revision 01 ;
+  5:Designer Matt Millman ;
+  6:Company  - ;
+  7:Assembly None ;
+  8:Location  ;
+  9:Device   g22v10 ;
+ 10:
+ 11:/* &=AND #=OR $=XOR */
+ 12:
+ 13:PIN 1 = GCLK;
+ 14:PIN 2 = nTEXT_BLANK;
+ 15:PIN 6 = G_DATA;
+ 16:PIN 7 = B_DATA;
+ 17:PIN 8 = R_DATA;
+ 18:PIN 9 = RGB_MODE;
+ 19:PIN 10 = DELAY_ON;
+ 20:PIN 13 = IDX;
+ 21:
+ 22:PIN [23..19] = [V0..4];
+ 23:PIN [18..14] = [U0..4];
+ 24:
+ 25:V0 = 'b'0;
+ 26:V1 = 'b'0;
+ 27:V2 = 'b'0;
+ 28:V3 = 'b'0;
+ 29:V4 = 'b'1;
+ 30:
+ 31:U0 = 'b'0;
+ 32:U1 = 'b'0;
+ 33:U2 = 'b'0;
+ 34:U3 = 'b'0;
+ 35:U4 = 'b'1;
+ 36:
+
+
+
+Jedec Fuse Checksum       (458b)
+Jedec Transmit Checksum   (3ebc)

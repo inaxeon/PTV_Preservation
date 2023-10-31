@@ -1,0 +1,96 @@
+LISTING FOR LOGIC DESCRIPTION FILE: V15.pld                          Page 1
+
+CUPL(WM): Universal Compiler for Programmable Logic
+Version 5.0a Serial# MW-10400000
+Copyright (c) 1983, 1998 Logical Devices, Inc.
+Created Sun Oct 01 06:18:32 2023
+
+  1:Name     V15 ;
+  2:PartNo   00 ;
+  3:Date     26/09/2023 ;
+  4:Revision 01 ;
+  5:Designer Matt Millman ;
+  6:Company  - ;
+  7:Assembly None ;
+  8:Location  ;
+  9:Device   g22v10 ;
+ 10:
+ 11:/* &=AND #=OR $=XOR */
+ 12:
+ 13:PIN 1 = GCLK;
+ 14:PIN 2 = LCNT_IN; /* Output of 'HC161/AC00 */
+ 15:PIN 3 = nFH_IN; /* Horizontal sync */
+ 16:PIN [4..11] = [SH0..7];
+ 17:PIN 13 = SH8;
+ 18:PIN 14 = nSHIFT_LOAD;
+ 19:PIN 15 = H2;
+ 20:PIN 16 = H4;
+ 21:PIN 17 = H6;
+ 22:PIN 18 = H8;
+ 23:PIN 19 = H7;
+ 24:PIN 20 = H5;
+ 25:PIN 21 = H3;
+ 26:PIN 22 = H1;
+ 27:PIN 23 = H0;
+ 28:
+ 29:H0.oe = 'b'1;
+ 30:H1.oe = 'b'1;
+ 31:H2.oe = 'b'1;
+ 32:H3.oe = 'b'1;
+ 33:H4.oe = 'b'1;
+ 34:H5.oe = 'b'1;
+ 35:H6.oe = 'b'1;
+ 36:H7.oe = 'b'1;
+ 37:H8.oe = 'b'1;
+ 38:
+ 39:H0.sp = 'b'0;
+ 40:H1.sp = 'b'0;
+ 41:H2.sp = 'b'0;
+ 42:H3.sp = 'b'0;
+ 43:H4.sp = 'b'0;
+ 44:H5.sp = 'b'0;
+ 45:H6.sp = 'b'0;
+ 46:H7.sp = 'b'0;
+ 47:H8.sp = 'b'0;
+ 48:
+ 49:H0.ar = !nFH_IN;
+ 50:H1.ar = !nFH_IN;
+ 51:H2.ar = !nFH_IN;
+ 52:H3.ar = !nFH_IN;
+ 53:H4.ar = !nFH_IN;
+
+LISTING FOR LOGIC DESCRIPTION FILE: V15.pld                          Page 2
+
+CUPL(WM): Universal Compiler for Programmable Logic
+Version 5.0a Serial# MW-10400000
+Copyright (c) 1983, 1998 Logical Devices, Inc.
+Created Sun Oct 01 06:18:32 2023
+
+ 54:H5.ar = !nFH_IN;
+ 55:H6.ar = !nFH_IN;
+ 56:H7.ar = !nFH_IN;
+ 57:H8.ar = !nFH_IN;
+ 58:H9.ar = !nFH_IN;
+ 59:
+ 60:H0.d = nSHIFT_LOAD $ !H0;
+ 61:H1.d = H1 $ H0 & !nSHIFT_LOAD;
+ 62:H2.d = H2 $ H1 & H0 & !nSHIFT_LOAD;
+ 63:H3.d = H3 $ H2 & H1 & H0 & !nSHIFT_LOAD;
+ 64:H4.d = H4 $ H3 & H2 & H1 & H0 & !nSHIFT_LOAD;
+ 65:H5.d = H5 $ H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD;
+ 66:H6.d = H6 $ H5 & H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD;
+ 67:H7.d = H7 $ H6 & H5 & H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD;
+ 68:H8.d = H8 $ H7 & H6 & H5 & H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD;
+ 69:
+ 70:
+ 71:
+ 72:nSHIFT_LOAD.sp = 'b'0;
+ 73:nSHIFT_LOAD.ar = !nFH_IN;
+ 74:nSHIFT_LOAD.oe = 'b'1;
+ 75:nSHIFT_LOAD.d = LCNT_IN # !nSHIFT_LOAD;
+ 76:
+
+
+
+Jedec Fuse Checksum       (540f)
+Jedec Transmit Checksum   (7f37)

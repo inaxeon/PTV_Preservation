@@ -1,0 +1,1 @@
+c:\Wincupl\shared\cupl -m1lxfjnae -u C:\Wincupl\Shared\cupl.dl V8.PLD

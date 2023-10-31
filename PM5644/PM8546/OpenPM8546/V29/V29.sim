@@ -1,0 +1,86 @@
+%SIGNAL
+PIN   7 =  B_DATA 
+PIN  10 =  DELAY_ON 
+PIN   1 =  GCLK 
+PIN   6 =  G_DATA 
+PIN  13 =  IDX 
+PIN   9 =  RGB_MODE 
+PIN   8 =  R_DATA 
+PIN  18 =  U0 
+PIN  17 =  U1 
+PIN  16 =  U2 
+PIN  15 =  U3 
+PIN  14 =  U4 
+PIN  23 =  V0 
+PIN  22 =  V1 
+PIN  21 =  V2 
+PIN  20 =  V3 
+PIN  19 =  V4 
+PIN   2 =  nTEXT_BLANK 
+%END
+
+%FIELD
+%END
+
+%EQUATION
+U0 =>
+    0 
+
+U1 =>
+    0 
+
+U2 =>
+    0 
+
+U3 =>
+    0 
+
+U4 =>
+    1 
+
+V0 =>
+    0 
+
+V1 =>
+    0 
+
+V2 =>
+    0 
+
+V3 =>
+    0 
+
+V4 =>
+    1 
+
+U0.oe  =>
+    1 
+
+U1.oe  =>
+    1 
+
+U2.oe  =>
+    1 
+
+U3.oe  =>
+    1 
+
+U4.oe  =>
+    1 
+
+V0.oe  =>
+    1 
+
+V1.oe  =>
+    1 
+
+V2.oe  =>
+    1 
+
+V3.oe  =>
+    1 
+
+V4.oe  =>
+    1 
+
+%END

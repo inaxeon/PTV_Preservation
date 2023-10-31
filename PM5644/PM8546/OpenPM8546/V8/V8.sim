@@ -1,0 +1,56 @@
+%SIGNAL
+PIN   3 =  A13 
+PIN   4 =  A14 
+PIN   5 =  A15 
+PIN   1 =  CLK 
+PIN  16 =  ENDUALPORT 
+PIN   2 =  IDATA 
+PIN  15 =  IDATADEL 
+PIN  21 =  IDATADEL2 
+PIN  18 =  LD1 
+PIN  17 =  LD2 
+PIN  19 =  Q0 
+PIN  20 =  Q1 
+PIN  23 =  Q2 
+PIN   7 =  RD 
+PIN  22 =  TICODATA_OUT 
+PIN  14 =  TICOD_MODE 
+PIN   6 =  WD 
+%END
+
+%FIELD
+%END
+
+%EQUATION
+!ENDUALPORT =>
+    !A15 & !RD
+  # !A15 & !WD
+
+ENDUALPORT.oe  =>
+    1 
+
+LD1 =>
+    !A13 & !A14 & A15 & WD
+
+LD1.oe  =>
+    1 
+
+LD2 =>
+    A13 & !A14 & A15 & WD
+
+LD2.oe  =>
+    1 
+
+Q2 =>
+    1 
+
+Q2.oe  =>
+    1 
+
+TICODATA_OUT =>
+    0 
+
+TICODATA_OUT.oe  =>
+    1 
+
+%END

@@ -1,0 +1,51 @@
+Name     V8 ;
+PartNo   00 ;
+Date     26/09/2023 ;
+Revision 01 ;
+Designer Matt Millman ;
+Company  - ;
+Assembly None ;
+Location  ;
+Device   g22v10 ;
+
+/*
+    MEMORY MAP:
+    0xA000: WR V12 (V Control)
+    0x8000: WR V11 (H Preset)
+    0x4000: WR/RD (DPRAM)
+*/
+
+/* &=AND #=OR $=XOR */
+
+PIN 1=CLK;
+PIN 2=IDATA;
+PIN 3=A13;
+PIN 4=A14;
+PIN 5=A15;
+PIN 6=WD;
+PIN 7=RD;
+PIN 14=TICOD_MODE;
+PIN 15=IDATADEL;
+PIN 16=ENDUALPORT;
+PIN 17=LD2;
+PIN 18=LD1;
+PIN 19=Q0;
+PIN 20=Q1;
+PIN 21=IDATADEL2;
+PIN 22=TICODATA_OUT;   /* TO uP TIME CODE DATA */
+PIN 23=Q2;             /* TO uP INT */
+
+Q2.oe = 'b'1;
+Q2 = 'b'1; /* Int off */
+
+TICODATA_OUT.oe = 'b'1;
+TICODATA_OUT = 'b'0;
+
+LD1.oe = 'b'1;
+LD1 = WD & !A13 & !A14 & A15;
+
+LD2.oe = 'b'1;
+LD2 = WD & A13 & !A14 & A15;
+
+ENDUALPORT.oe = 'b'1;
+!ENDUALPORT = !A15 & (!RD # !WD);
