@@ -34,6 +34,12 @@
  *   with text. The exception is the "PTV" logo at the end of the first
  *   bank, which is treated as a single large character.
  *
+ *   As with the text editor, we have to think about overvoltage quite a
+ *   bit in here. We cannot render the clock while the base is still showing
+ *   the grid. Thus we must wait until the next field before switching it on
+ *   and switch it off -immediately- when the base says so otherwise it will
+ *   write the grid over our clock, and we get an overvoltage condition.
+ *
  *   This is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 2 of the License, or
@@ -92,6 +98,8 @@ static void clear_all(void);
 static void clear_line(uint8_t line);
 static void put_clock_char(uint16_t *dpram_ptr, char chr);
 static void set_flags(uint8_t mask, uint8_t flags);
+static void clear_time(void);
+static void clear_date(void);
 
 extern code char _standard_texta[];
 extern code char _standard_textb[];
@@ -361,11 +369,6 @@ void logogen_update_clock(void)
             put_clock_char(&dpram_ptr, '0' + (tmp % 10));
         }
     }
-    else
-    {
-        for (tmp = 0; tmp < 16; tmp++)
-            DPRAM(dpram_ptr + tmp) = SPACE;
-    }
 
     dpram_ptr = (LINE_LEN * 2) + TIME_OFFSET;
 
@@ -397,11 +400,6 @@ void logogen_update_clock(void)
         tmp = clock_get_second();
         put_clock_char(&dpram_ptr, '0' + (tmp / 10));
         put_clock_char(&dpram_ptr, '0' + (tmp % 10));
-    }
-    else
-    {
-        for (tmp = 0; tmp < 16; tmp++)
-            DPRAM(dpram_ptr + tmp) = SPACE;
     }
 }
 
@@ -454,15 +452,29 @@ void logogen_ctrl(uint8_t mask, uint8_t config)
     _ctrl &= ~mask;
     _ctrl |= config;
 
+    if (!(ctrl_old & FORMAT_nDATE_ON) && (_ctrl & FORMAT_nDATE_ON))
+        clear_date(); // Date has been switched off. Do it fast to avoid overvoltage.
+
+    if (!(ctrl_old & FORMAT_nTIME_ON) && (_ctrl & FORMAT_nTIME_ON))
+        clear_time(); // Time has been switched off. Do it fast to avoid overvoltage.
+
+    if (// Date or time format has changed
+        ((_ctrl & (FORMAT_DATEFMT_MASK | FORMAT_TIMEFMT_MASK))
+        != (ctrl_old & (FORMAT_DATEFMT_MASK | FORMAT_TIMEFMT_MASK))) ||
+        // Date has been switched on.
+        ((ctrl_old & FORMAT_nDATE_ON) && !(_ctrl & FORMAT_nDATE_ON)) ||
+        // Time has been switched on.
+        ((ctrl_old & FORMAT_nTIME_ON) && !(_ctrl & FORMAT_nTIME_ON))
+    )
+    {
+        logogen_update_clock();
+    }
+
     if (!(_ctrl & FORMAT_nDATE_ON) || !(_ctrl & FORMAT_nTIME_ON))
         _text_flags |= LOGOGEN_ACTIVATE_CLOCK; // Delay to avoid overvoltage
 
     if ((_ctrl & FORMAT_nDATE_ON) && (_ctrl & FORMAT_nTIME_ON))
         _text_flags &= ~LOGOGEN_CLOCK_ON;
-
-    if ((_ctrl & (FORMAT_nDATE_ON | FORMAT_nTIME_ON | FORMAT_DATEFMT_MASK | FORMAT_TIMEFMT_MASK))
-     != (ctrl_old & (FORMAT_nDATE_ON | FORMAT_nTIME_ON | FORMAT_DATEFMT_MASK | FORMAT_TIMEFMT_MASK)))
-        logogen_update_clock();
 
     if (_ctrl & FORMAT_LG_ON)
     {
@@ -569,6 +581,42 @@ static void clear_line(uint8_t line)
 
     if (line == 3)
         _text_flags &= ~LOGOGEN_LOGO2_ON;
+}
+
+static void clear_time(void)
+{
+    uint16_t dpram_ptr;
+    uint8_t tmp;
+    dpram_ptr = (LINE_LEN * 2) + TIME_OFFSET;
+
+    // Don't clear if clock is being rendered
+    while (_text_state == TS_CLOCK)
+    {
+        uint8_t tl0_copy = TL0;
+        // Wait until last line completes
+        while (TL0 == tl0_copy);
+    }
+
+    for (tmp = 0; tmp < 16; tmp++)
+        DPRAM(dpram_ptr + tmp) = SPACE;
+}
+
+static void clear_date(void)
+{
+    uint16_t dpram_ptr;
+    uint8_t tmp;
+    dpram_ptr = (LINE_LEN * 2) + DATE_OFFSET;
+
+    // Don't clear if clock is being rendered
+    while (_text_state == TS_CLOCK)
+    {
+        uint8_t tl0_copy = TL0;
+        // Wait until last line completes
+        while (TL0 == tl0_copy);
+    }
+
+    for (tmp = 0; tmp < 16; tmp++)
+        DPRAM(dpram_ptr + tmp) = SPACE;
 }
 
 static void set_flags(uint8_t mask, uint8_t flags)
