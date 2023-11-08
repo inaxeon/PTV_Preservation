@@ -23,6 +23,40 @@ PIN 10 = DELAY_ON;
 
 PIN [20..14] = [Y0..6];
 
+Field COL_IN = [nTEXT_BLANK, DELAY_ON, G_DATA, B_DATA, R_DATA, G_DATA_DELAYED, B_DATA_DELAYED, R_DATA_DELAYED];
+Field Y_OUT = [Y6..0];
+
+Table  COL_IN => Y_OUT {
+/*  COL_IN         Y_OUT */
+   'b'0xxxxxxx   =>   'd'0;  /* OFF */
+   
+   'b'10111xxx   =>   'd'68; /* WHITE */
+   'b'10101xxx   =>   'd'45; /* YELLOW */
+   'b'10110xxx   =>   'd'35; /* CYAN */
+   'b'10100xxx   =>   'd'30; /* GREEN */
+   'b'10011xxx   =>   'd'20; /* MAGENTA */
+   'b'10001xxx   =>   'd'14; /* RED */
+   'b'10010xxx   =>   'd'6;  /* BLUE */
+   'b'10000xxx   =>   'd'0;  /* BLACK */
+
+   'b'11xxx111   =>   'd'68; /* WHITE */
+   'b'11xxx101   =>   'd'45; /* YELLOW */
+   'b'11xxx110   =>   'd'35; /* CYAN */
+   'b'11xxx100   =>   'd'30; /* GREEN */
+   'b'11xxx011   =>   'd'20; /* MAGENTA */
+   'b'11xxx001   =>   'd'14; /* RED */
+   'b'11xxx010   =>   'd'6;  /* BLUE */
+   'b'11xxx000   =>   'd'0;  /* BLACK */
+}
+
+Y0.oe = 'b'1;
+Y1.oe = 'b'1;
+Y2.oe = 'b'1;
+Y3.oe = 'b'1;
+Y4.oe = 'b'1;
+Y5.oe = 'b'1;
+Y6.oe = 'b'1;
+
 Y0.sp = 'b'0;
 Y1.sp = 'b'0;
 Y2.sp = 'b'0;
@@ -38,11 +72,3 @@ Y3.ar = 'b'0;
 Y4.ar = 'b'0;
 Y5.ar = 'b'0;
 Y6.ar = 'b'0;
-
-Y0 = 'b'0;
-Y1 = 'b'0;
-Y2.d = G_DATA & nTEXT_BLANK;
-Y3 = 'b'0;
-Y4 = 'b'0;
-Y5 = 'b'0;
-Y6.d = G_DATA & nTEXT_BLANK;

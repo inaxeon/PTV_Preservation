@@ -3,7 +3,7 @@ LISTING FOR LOGIC DESCRIPTION FILE: V29.pld                          Page 1
 CUPL(WM): Universal Compiler for Programmable Logic
 Version 5.0a Serial# MW-10400000
 Copyright (c) 1983, 1998 Logical Devices, Inc.
-Created Fri Sep 29 06:24:57 2023
+Created Tue Nov 07 05:45:44 2023
 
   1:Name     V29 ;
   2:PartNo   00 ;
@@ -29,20 +29,82 @@ Created Fri Sep 29 06:24:57 2023
  22:PIN [23..19] = [V0..4];
  23:PIN [18..14] = [U0..4];
  24:
- 25:V0 = 'b'0;
- 26:V1 = 'b'0;
- 27:V2 = 'b'0;
- 28:V3 = 'b'0;
- 29:V4 = 'b'1;
- 30:
- 31:U0 = 'b'0;
- 32:U1 = 'b'0;
- 33:U2 = 'b'0;
- 34:U3 = 'b'0;
- 35:U4 = 'b'1;
- 36:
+ 25:Field COL_IN = [nTEXT_BLANK, G_DATA, B_DATA, R_DATA];
+ 26:Field COL_IDX_IN = [nTEXT_BLANK, IDX, G_DATA, B_DATA, R_DATA];
+ 27:Field U_OUT = [U4..0];
+ 28:Field V_OUT = [V4..0];
+ 29:
+ 30:Table  COL_IN => U_OUT {
+ 31:/*  COL_IN         U_OUT */
+ 32:   'b'0xxx   =>   'b'10000; /* OFF */
+ 33:   
+ 34:   'b'1111   =>   'b'10000; /* WHITE */
+ 35:   'b'1101   =>   'd'24; /* YELLOW */
+ 36:   'b'1110   =>   'd'14; /* CYAN */
+ 37:   'b'1100   =>   'd'21; /* GREEN */
+ 38:   'b'1011   =>   'd'10; /* MAGENTA */
+ 39:   'b'1001   =>   'd'18; /* RED */
+ 40:   'b'1010   =>   'd'8; /* BLUE */
+ 41:   'b'1000   =>   'b'10000; /* BLACK */
+ 42:}
+ 43:
+ 44:Table COL_IDX_IN => V_OUT {
+ 45:/*  COL_IDX_IN      V_OUT */
+ 46:   'b'0xxxx   =>   'd'16; /* OFF */
+ 47:
+ 48:   'b'10111   =>   'd'16; /* WHITE */
+ 49:   'b'10101   =>   'd'14; /* YELLOW */
+ 50:   'b'10110   =>   'd'26; /* CYAN */
+ 51:   'b'10100   =>   'd'24; /* GREEN */
+ 52:   'b'10011   =>   'd'8;  /* MAGENTA */
+ 53:   'b'10001   =>   'd'6;  /* RED */
+
+LISTING FOR LOGIC DESCRIPTION FILE: V29.pld                          Page 2
+
+CUPL(WM): Universal Compiler for Programmable Logic
+Version 5.0a Serial# MW-10400000
+Copyright (c) 1983, 1998 Logical Devices, Inc.
+Created Tue Nov 07 05:45:44 2023
+
+ 54:   'b'10010   =>   'd'18; /* BLUE */
+ 55:   'b'10000   =>   'd'16; /* BLACK */
+ 56:
+ 57:   'b'11111   =>   'd'16; /* WHITE */
+ 58:   'b'11101   =>   'd'18; /* YELLOW */
+ 59:   'b'11110   =>   'd'6;  /* CYAN */
+ 60:   'b'11100   =>   'd'8;  /* GREEN */
+ 61:   'b'11011   =>   'd'24; /* MAGENTA */
+ 62:   'b'11001   =>   'd'26; /* RED */
+ 63:   'b'11010   =>   'd'14; /* BLUE */
+ 64:   'b'11000   =>   'd'16; /* BLACK */
+ 65:}
+ 66:
+ 67:V0.oe = 'b'1;
+ 68:V1.oe = 'b'1;
+ 69:V2.oe = 'b'1;
+ 70:V3.oe = 'b'1;
+ 71:V4.oe = 'b'1;
+ 72:
+ 73:U0.oe = 'b'1;
+ 74:U1.oe = 'b'1;
+ 75:U2.oe = 'b'1;
+ 76:U3.oe = 'b'1;
+ 77:U4.oe = 'b'1;
+ 78:
+ 79:V0.sp = 'b'0;
+ 80:V1.sp = 'b'0;
+ 81:V2.sp = 'b'0;
+ 82:V3.sp = 'b'0;
+ 83:V4.sp = 'b'0;
+ 84:
+ 85:U0.ar = 'b'0;
+ 86:U1.ar = 'b'0;
+ 87:U2.ar = 'b'0;
+ 88:U3.ar = 'b'0;
+ 89:U4.ar = 'b'0;
+ 90:
 
 
 
-Jedec Fuse Checksum       (458b)
-Jedec Transmit Checksum   (3ebc)
+Jedec Fuse Checksum       (c809)
+Jedec Transmit Checksum   (3859)

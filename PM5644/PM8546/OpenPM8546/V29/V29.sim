@@ -20,67 +20,111 @@ PIN   2 =  nTEXT_BLANK
 %END
 
 %FIELD
+FIELD COL_IDX_IN = nTEXT_BLANK,IDX,G_DATA,B_DATA,R_DATA
+FIELD COL_IN = nTEXT_BLANK,G_DATA,B_DATA,R_DATA
+FIELD U_OUT = U4,U3,U2,U1,U0
+FIELD V_OUT = V4,V3,V2,V1,V0
 %END
 
 %EQUATION
 U0 =>
+    !B_DATA & G_DATA & !R_DATA & nTEXT_BLANK
+
+U0.ar U1.ar U2.ar U3.ar U4.ar  =>
     0 
+
+U0.oe  =>
+    1 
 
 U1 =>
-    0 
+    !G_DATA & R_DATA & nTEXT_BLANK
+  # B_DATA & G_DATA & !R_DATA & nTEXT_BLANK
+
+U1.ar  =>
+    
+U1.oe  =>
+    1 
 
 U2 =>
-    0 
+    G_DATA & !R_DATA & nTEXT_BLANK
+
+U2.ar  =>
+    
+U2.oe  =>
+    1 
 
 U3 =>
-    0 
+    B_DATA & !G_DATA & R_DATA & nTEXT_BLANK
+  # !B_DATA & G_DATA & R_DATA & nTEXT_BLANK
+  # B_DATA & !R_DATA & nTEXT_BLANK
+
+U3.ar  =>
+    
+U3.oe  =>
+    1 
 
 U4 =>
+    !nTEXT_BLANK
+  # G_DATA & R_DATA & nTEXT_BLANK
+  # !B_DATA & !G_DATA & R_DATA & nTEXT_BLANK
+  # !B_DATA & !R_DATA & nTEXT_BLANK
+
+U4.ar  =>
+    
+U4.oe  =>
     1 
 
 V0 =>
     0 
 
-V1 =>
-    0 
-
-V2 =>
-    0 
-
-V3 =>
-    0 
-
-V4 =>
-    1 
-
-U0.oe  =>
-    1 
-
-U1.oe  =>
-    1 
-
-U2.oe  =>
-    1 
-
-U3.oe  =>
-    1 
-
-U4.oe  =>
-    1 
-
 V0.oe  =>
     1 
+
+V0.sp V1.sp V2.sp V3.sp V4.sp  =>
+    0 
+
+V1 =>
+    B_DATA & !R_DATA & nTEXT_BLANK
+  # !B_DATA & R_DATA & nTEXT_BLANK
 
 V1.oe  =>
     1 
 
+V1.sp  =>
+    
+V2 =>
+    B_DATA & IDX & !R_DATA & nTEXT_BLANK
+  # !B_DATA & !IDX & R_DATA & nTEXT_BLANK
+
 V2.oe  =>
     1 
+
+V2.sp  =>
+    
+V3 =>
+    B_DATA & !G_DATA & IDX & !R_DATA & nTEXT_BLANK
+  # !B_DATA & G_DATA & !IDX & nTEXT_BLANK
+  # B_DATA & G_DATA & !IDX & !R_DATA & nTEXT_BLANK
+  # B_DATA & !G_DATA & R_DATA & nTEXT_BLANK
+  # !B_DATA & G_DATA & IDX & !R_DATA & nTEXT_BLANK
+  # !B_DATA & !G_DATA & IDX & R_DATA & nTEXT_BLANK
 
 V3.oe  =>
     1 
 
+V3.sp  =>
+    
+V4 =>
+    !nTEXT_BLANK
+  # B_DATA & G_DATA & !IDX & nTEXT_BLANK
+  # !B_DATA & !G_DATA & IDX & !R_DATA & nTEXT_BLANK
+  # !B_DATA & !IDX & !R_DATA & nTEXT_BLANK
+  # B_DATA & !G_DATA & !IDX & !R_DATA & nTEXT_BLANK
+  # IDX & R_DATA & nTEXT_BLANK
+
 V4.oe  =>
     1 
 
+V4.sp  =>
+    
 %END

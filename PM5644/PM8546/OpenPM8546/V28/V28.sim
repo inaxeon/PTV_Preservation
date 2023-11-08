@@ -19,79 +19,104 @@ PIN   2 =  nTEXT_BLANK
 %END
 
 %FIELD
+FIELD COL_IN = nTEXT_BLANK,DELAY_ON,G_DATA,B_DATA,R_DATA,G_DATA_DELAYED,B_DATA_DELAYED,R_DATA_DELAYED
+FIELD Y_OUT = Y6,Y5,Y4,Y3,Y2,Y1,Y0
 %END
 
 %EQUATION
 Y0 =>
-    0 
+    B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & !R_DATA_DELAYED & nTEXT_BLANK
+  # !B_DATA & !DELAY_ON & G_DATA & R_DATA & nTEXT_BLANK
+  # B_DATA & !DELAY_ON & G_DATA & !R_DATA & nTEXT_BLANK
+  # !B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & R_DATA_DELAYED & nTEXT_BLANK
 
 Y0.ar Y1.ar Y2.ar Y3.ar Y4.ar Y5.ar Y6.ar  =>
     0 
+
+Y0.oe  =>
+    1 
 
 Y0.sp Y1.sp Y2.sp Y3.sp Y4.sp Y5.sp Y6.sp  =>
     0 
 
 Y1 =>
-    0 
+    B_DATA_DELAYED & DELAY_ON & !G_DATA_DELAYED & !R_DATA_DELAYED & nTEXT_BLANK
+  # !DELAY_ON & G_DATA & !R_DATA & nTEXT_BLANK
+  # !B_DATA & !DELAY_ON & !G_DATA & R_DATA & nTEXT_BLANK
+  # B_DATA & !DELAY_ON & !G_DATA & !R_DATA & nTEXT_BLANK
+  # DELAY_ON & G_DATA_DELAYED & !R_DATA_DELAYED & nTEXT_BLANK
+  # !B_DATA_DELAYED & DELAY_ON & !G_DATA_DELAYED & R_DATA_DELAYED & nTEXT_BLANK
 
 Y1.ar  =>
     
-Y1.sp  =>
-    
-Y2.d  =>
-    G_DATA & nTEXT_BLANK
-
-Y2.ar  =>
-    
-Y2.sp  =>
-    
-Y3 =>
-    0 
-
-Y3.ar  =>
-    
-Y3.sp  =>
-    
-Y4 =>
-    0 
-
-Y4.ar  =>
-    
-Y4.sp  =>
-    
-Y5 =>
-    0 
-
-Y5.ar  =>
-    
-Y5.sp  =>
-    
-Y6.d  =>
-    G_DATA & nTEXT_BLANK
-
-Y6.ar  =>
-    
-Y6.sp  =>
-    
-Y0.oe  =>
-    1 
-
 Y1.oe  =>
     1 
 
+Y1.sp  =>
+    
+Y2 =>
+    B_DATA_DELAYED & DELAY_ON & !G_DATA_DELAYED & !R_DATA_DELAYED & nTEXT_BLANK
+  # !B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & !R_DATA_DELAYED & nTEXT_BLANK
+  # !B_DATA & !DELAY_ON & G_DATA & !R_DATA & nTEXT_BLANK
+  # !DELAY_ON & R_DATA & nTEXT_BLANK
+  # B_DATA & !DELAY_ON & !G_DATA & !R_DATA & nTEXT_BLANK
+  # DELAY_ON & R_DATA_DELAYED & nTEXT_BLANK
+
+Y2.ar  =>
+    
 Y2.oe  =>
     1 
 
+Y2.sp  =>
+    
+Y3 =>
+    !B_DATA_DELAYED & DELAY_ON & !G_DATA_DELAYED & R_DATA_DELAYED & nTEXT_BLANK
+  # !B_DATA & !DELAY_ON & G_DATA & nTEXT_BLANK
+  # !B_DATA & !DELAY_ON & !G_DATA & R_DATA & nTEXT_BLANK
+  # !B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & nTEXT_BLANK
+
+Y3.ar  =>
+    
 Y3.oe  =>
     1 
 
+Y3.sp  =>
+    
+Y4 =>
+    B_DATA_DELAYED & DELAY_ON & !G_DATA_DELAYED & R_DATA_DELAYED & nTEXT_BLANK
+  # !B_DATA & !DELAY_ON & G_DATA & !R_DATA & nTEXT_BLANK
+  # B_DATA & !DELAY_ON & !G_DATA & R_DATA & nTEXT_BLANK
+  # !B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & !R_DATA_DELAYED & nTEXT_BLANK
+
+Y4.ar  =>
+    
 Y4.oe  =>
     1 
 
+Y4.sp  =>
+    
+Y5 =>
+    B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & !R_DATA_DELAYED & nTEXT_BLANK
+  # !B_DATA & !DELAY_ON & G_DATA & R_DATA & nTEXT_BLANK
+  # B_DATA & !DELAY_ON & G_DATA & !R_DATA & nTEXT_BLANK
+  # !B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & R_DATA_DELAYED & nTEXT_BLANK
+
+Y5.ar  =>
+    
 Y5.oe  =>
     1 
 
+Y5.sp  =>
+    
+Y6 =>
+    B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & R_DATA_DELAYED & nTEXT_BLANK
+  # B_DATA & !DELAY_ON & G_DATA & R_DATA & nTEXT_BLANK
+
+Y6.ar  =>
+    
 Y6.oe  =>
     1 
 
+Y6.sp  =>
+    
 %END

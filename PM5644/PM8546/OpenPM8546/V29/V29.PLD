@@ -22,14 +22,68 @@ PIN 13 = IDX;
 PIN [23..19] = [V0..4];
 PIN [18..14] = [U0..4];
 
-V0 = 'b'0;
-V1 = 'b'0;
-V2 = 'b'0;
-V3 = 'b'0;
-V4 = 'b'1;
+Field COL_IN = [nTEXT_BLANK, G_DATA, B_DATA, R_DATA];
+Field COL_IDX_IN = [nTEXT_BLANK, IDX, G_DATA, B_DATA, R_DATA];
+Field U_OUT = [U4..0];
+Field V_OUT = [V4..0];
 
-U0 = 'b'0;
-U1 = 'b'0;
-U2 = 'b'0;
-U3 = 'b'0;
-U4 = 'b'1;
+Table  COL_IN => U_OUT {
+   /* OFF */
+   'b'0xxx   =>   'd'16;
+   /* U */
+   'b'1111   =>   'd'16;  /* WHITE */
+   'b'1101   =>   'd'24;  /* YELLOW */
+   'b'1110   =>   'd'14;  /* CYAN */
+   'b'1100   =>   'd'21;  /* GREEN */
+   'b'1011   =>   'd'10;  /* MAGENTA */
+   'b'1001   =>   'd'18;  /* RED */
+   'b'1010   =>   'd'8;   /* BLUE */
+   'b'1000   =>   'd'16;  /* BLACK */
+}
+
+Table COL_IDX_IN => V_OUT {
+   /* OFF */
+   'b'0xxxx   =>   'd'16;
+   /* V- */
+   'b'10111   =>   'd'16; /* WHITE */
+   'b'10101   =>   'd'14; /* YELLOW */
+   'b'10110   =>   'd'26; /* CYAN */
+   'b'10100   =>   'd'24; /* GREEN */
+   'b'10011   =>   'd'8;  /* MAGENTA */
+   'b'10001   =>   'd'6;  /* RED */
+   'b'10010   =>   'd'18; /* BLUE */
+   'b'10000   =>   'd'16; /* BLACK */
+   /* V+ */
+   'b'11111   =>   'd'16; /* WHITE */
+   'b'11101   =>   'd'18; /* YELLOW */
+   'b'11110   =>   'd'6;  /* CYAN */
+   'b'11100   =>   'd'8;  /* GREEN */
+   'b'11011   =>   'd'24; /* MAGENTA */
+   'b'11001   =>   'd'26; /* RED */
+   'b'11010   =>   'd'14; /* BLUE */
+   'b'11000   =>   'd'16; /* BLACK */
+}
+
+V0.oe = 'b'1;
+V1.oe = 'b'1;
+V2.oe = 'b'1;
+V3.oe = 'b'1;
+V4.oe = 'b'1;
+
+U0.oe = 'b'1;
+U1.oe = 'b'1;
+U2.oe = 'b'1;
+U3.oe = 'b'1;
+U4.oe = 'b'1;
+
+V0.sp = 'b'0;
+V1.sp = 'b'0;
+V2.sp = 'b'0;
+V3.sp = 'b'0;
+V4.sp = 'b'0;
+
+U0.ar = 'b'0;
+U1.ar = 'b'0;
+U2.ar = 'b'0;
+U3.ar = 'b'0;
+U4.ar = 'b'0;

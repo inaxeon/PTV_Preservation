@@ -3,7 +3,7 @@ LISTING FOR LOGIC DESCRIPTION FILE: V28.pld                          Page 1
 CUPL(WM): Universal Compiler for Programmable Logic
 Version 5.0a Serial# MW-10400000
 Copyright (c) 1983, 1998 Logical Devices, Inc.
-Created Sun Oct 22 07:30:19 2023
+Created Tue Nov 07 06:20:29 2023
 
   1:Name     V28 ;
   2:PartNo   00 ;
@@ -30,33 +30,66 @@ Created Sun Oct 22 07:30:19 2023
  23:
  24:PIN [20..14] = [Y0..6];
  25:
- 26:Y0.sp = 'b'0;
- 27:Y1.sp = 'b'0;
- 28:Y2.sp = 'b'0;
- 29:Y3.sp = 'b'0;
- 30:Y4.sp = 'b'0;
- 31:Y5.sp = 'b'0;
- 32:Y6.sp = 'b'0;
- 33:
- 34:Y0.ar = 'b'0;
- 35:Y1.ar = 'b'0;
- 36:Y2.ar = 'b'0;
- 37:Y3.ar = 'b'0;
- 38:Y4.ar = 'b'0;
- 39:Y5.ar = 'b'0;
- 40:Y6.ar = 'b'0;
+ 26:Field COL_IN = [nTEXT_BLANK, DELAY_ON, G_DATA, B_DATA, R_DATA, G_DATA_DELAYED, B_DATA_DELAYED, R_DATA_DELAYED];
+ 27:Field Y_OUT = [Y6..0];
+ 28:
+ 29:Table  COL_IN => Y_OUT {
+ 30:/*  COL_IN         Y_OUT */
+ 31:   'b'0xxxxxxx   =>   'd'0;  /* OFF */
+ 32:   
+ 33:   'b'10111xxx   =>   'd'68; /* WHITE */
+ 34:   'b'10101xxx   =>   'd'45; /* YELLOW */
+ 35:   'b'10110xxx   =>   'd'35; /* CYAN */
+ 36:   'b'10100xxx   =>   'd'30; /* GREEN */
+ 37:   'b'10011xxx   =>   'd'20; /* MAGENTA */
+ 38:   'b'10001xxx   =>   'd'14; /* RED */
+ 39:   'b'10010xxx   =>   'd'6;  /* BLUE */
+ 40:   'b'10000xxx   =>   'd'0;  /* BLACK */
  41:
- 42:Y0 = 'b'0;
- 43:Y1 = 'b'0;
- 44:Y2.d = G_DATA & nTEXT_BLANK;
- 45:Y3 = 'b'0;
- 46:Y4 = 'b'0;
- 47:Y5 = 'b'0;
- 48:Y6.d = G_DATA & nTEXT_BLANK;
- 49:
- 50:
+ 42:   'b'11xxx111   =>   'd'68; /* WHITE */
+ 43:   'b'11xxx101   =>   'd'45; /* YELLOW */
+ 44:   'b'11xxx110   =>   'd'35; /* CYAN */
+ 45:   'b'11xxx100   =>   'd'30; /* GREEN */
+ 46:   'b'11xxx011   =>   'd'20; /* MAGENTA */
+ 47:   'b'11xxx001   =>   'd'14; /* RED */
+ 48:   'b'11xxx010   =>   'd'6;  /* BLUE */
+ 49:   'b'11xxx000   =>   'd'0;  /* BLACK */
+ 50:}
+ 51:
+ 52:Y0.oe = 'b'1;
+ 53:Y1.oe = 'b'1;
+
+LISTING FOR LOGIC DESCRIPTION FILE: V28.pld                          Page 2
+
+CUPL(WM): Universal Compiler for Programmable Logic
+Version 5.0a Serial# MW-10400000
+Copyright (c) 1983, 1998 Logical Devices, Inc.
+Created Tue Nov 07 06:20:29 2023
+
+ 54:Y2.oe = 'b'1;
+ 55:Y3.oe = 'b'1;
+ 56:Y4.oe = 'b'1;
+ 57:Y5.oe = 'b'1;
+ 58:Y6.oe = 'b'1;
+ 59:
+ 60:Y0.sp = 'b'0;
+ 61:Y1.sp = 'b'0;
+ 62:Y2.sp = 'b'0;
+ 63:Y3.sp = 'b'0;
+ 64:Y4.sp = 'b'0;
+ 65:Y5.sp = 'b'0;
+ 66:Y6.sp = 'b'0;
+ 67:
+ 68:Y0.ar = 'b'0;
+ 69:Y1.ar = 'b'0;
+ 70:Y2.ar = 'b'0;
+ 71:Y3.ar = 'b'0;
+ 72:Y4.ar = 'b'0;
+ 73:Y5.ar = 'b'0;
+ 74:Y6.ar = 'b'0;
+ 75:
 
 
 
-Jedec Fuse Checksum       (3539)
-Jedec Transmit Checksum   (f934)
+Jedec Fuse Checksum       (c7ab)
+Jedec Transmit Checksum   (197f)
