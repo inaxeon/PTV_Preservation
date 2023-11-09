@@ -74,10 +74,15 @@ void edit_vsync_isr(void)
     {
         if (!--_blink_timeout)
         {
-            if (_g_text_buf[_field_len - 1] == '_' || _g_text_buf[_field_len - 1] == '.')
+            if (_g_text_buf[_field_len - 1] == '_')
             {
                 // Cursor off
-                _g_text_buf[_field_len - 1] = ' ';
+                _g_text_buf[_field_len - 1] = 0x7F; // Double space
+            }
+            else if (_g_text_buf[_field_len - 1] == '.')
+            {
+                // Cursor off
+                _g_text_buf[_field_len - 1] = ' '; // Single space
             }
             else
             {
@@ -142,10 +147,10 @@ static bool get_next_logo(char current_logo, char *next_logo, uint8_t blocks_ava
 
     current_logo &= ~CHAR_LOGO_FLAG;
 
-    if (current_logo == LAST_LOGO)
+    if (current_logo == _g_last_logo)
         return false;
 
-    for (i = current_logo + 1; i < (LAST_LOGO + 1); i++)
+    for (i = current_logo + 1; i < (_g_last_logo + 1); i++)
     {
         // Find the next char which will fit in the available space
         const promblock_t* pb = &_g_logo_blocks[i];

@@ -36,10 +36,9 @@
 #define MAX_TEXT            32 /* 31 + null terminator */
 
 #define FIRST_CHAR          0x20
-#define LAST_CHAR           0x7F
+#define LAST_CHAR           0x7E
 #define CHAR_LOGO_FLAG      0x80
 #define FIRST_LOGO          0x00
-#define LAST_LOGO           0x03
 
 typedef struct 
 {
@@ -58,5 +57,7 @@ void logogen_vsync_isr(void);
 int logogen_get_text_len(const char *str, int maxblocks, uint8_t *maxchars);
 void logogen_ctrl(uint8_t mask, uint8_t config);
 void logogen_update_clock(void);
+
+extern const uint8_t _g_last_logo;
 
 #endif /* __LOGOGEN_H__ */
