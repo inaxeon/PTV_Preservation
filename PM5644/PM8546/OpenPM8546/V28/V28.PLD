@@ -8,6 +8,26 @@ Assembly None ;
 Location  ;
 Device   g22v10 ;
 
+/*
+ *   Philips PM8546 Logo Generator
+ *   Open source recreation
+ * 
+ *   File        : V29.pld
+ *   Author      : Matt Millman
+ *   Description : Y/G encoder PAL
+ *
+ *   This is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 2 of the License, or
+ *   (at your option) any later version.
+ *   This software is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *   You should have received a copy of the GNU General Public License
+ *   along with this software.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /* &=AND #=OR $=XOR */
 
 PIN 1 = GCLK;
@@ -23,30 +43,52 @@ PIN 10 = DELAY_ON;
 
 PIN [20..14] = [Y0..6];
 
-Field COL_IN = [nTEXT_BLANK, DELAY_ON, G_DATA, B_DATA, R_DATA, G_DATA_DELAYED, B_DATA_DELAYED, R_DATA_DELAYED];
+Field COL_IN = [RGB_MODE, nTEXT_BLANK, DELAY_ON, G_DATA, B_DATA, R_DATA, G_DATA_DELAYED, B_DATA_DELAYED, R_DATA_DELAYED];
 Field Y_OUT = [Y6..0];
 
-Table  COL_IN => Y_OUT {
-/*  COL_IN         Y_OUT */
-   'b'0xxxxxxx   =>   'd'0;  /* OFF */
-   
-   'b'10111xxx   =>   'd'68; /* WHITE */
-   'b'10101xxx   =>   'd'45; /* YELLOW */
-   'b'10110xxx   =>   'd'35; /* CYAN */
-   'b'10100xxx   =>   'd'30; /* GREEN */
-   'b'10011xxx   =>   'd'20; /* MAGENTA */
-   'b'10001xxx   =>   'd'14; /* RED */
-   'b'10010xxx   =>   'd'6;  /* BLUE */
-   'b'10000xxx   =>   'd'0;  /* BLACK */
+/*
+ * Y/G CHANNEL COLOUR LOOKUP TABLE:
+ *
+ * How these values were derived: The hardware appears to be designed such
+ * that half of the range of the DAC is full-scale for the Y channel (black to
+ * white) and, it is AC coupled, thus, valid Y ranges could be 0-63, 64-127,
+ * or anything in between.
+ *
+ * The values for each colour were selected simply as the closest match for
+ * the desired colour, using the PM5644 in EBU colour bar mode as a reference.
+ *
+ * What to do here then? Well I've decided to park the DAC at its mid-point
+ * (64) as the black level, then offset from there, as is done in the UV PAL.
+ * This allows the possibility of "blacker than black" output.
+ *
+ * No idea if the value chosen for RGB mode is correct. No surviving RGB
+ * PM5644's are known to verify it but this is how it was implemented.
+ */
 
-   'b'11xxx111   =>   'd'68; /* WHITE */
-   'b'11xxx101   =>   'd'45; /* YELLOW */
-   'b'11xxx110   =>   'd'35; /* CYAN */
-   'b'11xxx100   =>   'd'30; /* GREEN */
-   'b'11xxx011   =>   'd'20; /* MAGENTA */
-   'b'11xxx001   =>   'd'14; /* RED */
-   'b'11xxx010   =>   'd'6;  /* BLUE */
-   'b'11xxx000   =>   'd'0;  /* BLACK */
+Table  COL_IN => Y_OUT.d {
+/*  COL_IN         Y_OUT */
+   'b'x0xxxxxxx   =>   'd'64;  /* BLANK */
+   /* RGB: G */
+   'b'11x0xxxxx   =>   'd'64;  /* OFF */
+   'b'11x1xxxxx   =>   'd'127; /* ON (Unverified value) */
+   /* YUV: Y DELAY OFF */
+   'b'010111xxx   =>   'd'127; /* WHITE */
+   'b'010101xxx   =>   'd'106; /* YELLOW */
+   'b'010110xxx   =>   'd'97;  /* CYAN */
+   'b'010100xxx   =>   'd'91;  /* GREEN */
+   'b'010011xxx   =>   'd'83;  /* MAGENTA */
+   'b'010001xxx   =>   'd'77;  /* RED */
+   'b'010010xxx   =>   'd'70;  /* BLUE */
+   'b'010000xxx   =>   'd'64;  /* BLACK */
+   /* YUV: Y DELAY ON */
+   'b'011xxx111   =>   'd'127; /* WHITE */
+   'b'011xxx101   =>   'd'106; /* YELLOW */
+   'b'011xxx110   =>   'd'97;  /* CYAN */
+   'b'011xxx100   =>   'd'91;  /* GREEN */
+   'b'011xxx011   =>   'd'83;  /* MAGENTA */
+   'b'011xxx001   =>   'd'77;  /* RED */
+   'b'011xxx010   =>   'd'70;  /* BLUE */
+   'b'011xxx000   =>   'd'64;  /* BLACK */
 }
 
 Y0.oe = 'b'1;

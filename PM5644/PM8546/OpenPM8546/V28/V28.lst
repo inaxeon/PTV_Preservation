@@ -3,7 +3,7 @@ LISTING FOR LOGIC DESCRIPTION FILE: V28.pld                          Page 1
 CUPL(WM): Universal Compiler for Programmable Logic
 Version 5.0a Serial# MW-10400000
 Copyright (c) 1983, 1998 Logical Devices, Inc.
-Created Tue Nov 07 06:20:29 2023
+Created Sat Nov 11 05:40:12 2023
 
   1:Name     V28 ;
   2:PartNo   00 ;
@@ -30,66 +30,88 @@ Created Tue Nov 07 06:20:29 2023
  23:
  24:PIN [20..14] = [Y0..6];
  25:
- 26:Field COL_IN = [nTEXT_BLANK, DELAY_ON, G_DATA, B_DATA, R_DATA, G_DATA_DELAYED, B_DATA_DELAYED, R_DATA_DELAYED];
+ 26:Field COL_IN = [RGB_MODE, nTEXT_BLANK, DELAY_ON, G_DATA, B_DATA, R_DATA, G_DATA_DELAYED, B_DATA_DELAYED, R_DATA_DELAYED];
  27:Field Y_OUT = [Y6..0];
  28:
- 29:Table  COL_IN => Y_OUT {
- 30:/*  COL_IN         Y_OUT */
- 31:   'b'0xxxxxxx   =>   'd'0;  /* OFF */
- 32:   
- 33:   'b'10111xxx   =>   'd'68; /* WHITE */
- 34:   'b'10101xxx   =>   'd'45; /* YELLOW */
- 35:   'b'10110xxx   =>   'd'35; /* CYAN */
- 36:   'b'10100xxx   =>   'd'30; /* GREEN */
- 37:   'b'10011xxx   =>   'd'20; /* MAGENTA */
- 38:   'b'10001xxx   =>   'd'14; /* RED */
- 39:   'b'10010xxx   =>   'd'6;  /* BLUE */
- 40:   'b'10000xxx   =>   'd'0;  /* BLACK */
- 41:
- 42:   'b'11xxx111   =>   'd'68; /* WHITE */
- 43:   'b'11xxx101   =>   'd'45; /* YELLOW */
- 44:   'b'11xxx110   =>   'd'35; /* CYAN */
- 45:   'b'11xxx100   =>   'd'30; /* GREEN */
- 46:   'b'11xxx011   =>   'd'20; /* MAGENTA */
- 47:   'b'11xxx001   =>   'd'14; /* RED */
- 48:   'b'11xxx010   =>   'd'6;  /* BLUE */
- 49:   'b'11xxx000   =>   'd'0;  /* BLACK */
- 50:}
- 51:
- 52:Y0.oe = 'b'1;
- 53:Y1.oe = 'b'1;
+ 29:/*
+ 30: * Y/G CHANNEL COLOUR LOOKUP TABLE:
+ 31: *
+ 32: * How these values were derived: The hardware appears to be designed such
+ 33: * that half of the range of the DAC is full-scale for the Y channel (black to
+ 34: * white) and, it is AC coupled, thus, valid Y ranges could be 0-63, 64-127,
+ 35: * or anything in between.
+ 36: *
+ 37: * The values for each colour were selected simply as the closest match for
+ 38: * the desired colour, using the PM5644 in EBU colour bar mode as a reference.
+ 39: *
+ 40: * What to do here then? Well I've decided to park the DAC at its mid-point
+ 41: * (64) as the black level, then offset from there, as is done in the UV PAL.
+ 42: * This allows the possibility of "blacker than black" output.
+ 43: *
+ 44: * No idea if the value chosen for RGB mode is correct. No surviving RGB
+ 45: * PM5644's are known to verify it but this is how it was implemented.
+ 46: */
+ 47:
+ 48:Table  COL_IN => Y_OUT.d {
+ 49:/*  COL_IN         Y_OUT */
+ 50:   'b'x0xxxxxxx   =>   'd'64;  /* BLANK */
+ 51:   /* RGB: G */
+ 52:   'b'11x0xxxxx   =>   'd'64;  /* OFF */
+ 53:   'b'11x1xxxxx   =>   'd'127; /* ON (Unverified value) */
 
 LISTING FOR LOGIC DESCRIPTION FILE: V28.pld                          Page 2
 
 CUPL(WM): Universal Compiler for Programmable Logic
 Version 5.0a Serial# MW-10400000
 Copyright (c) 1983, 1998 Logical Devices, Inc.
-Created Tue Nov 07 06:20:29 2023
+Created Sat Nov 11 05:40:12 2023
 
- 54:Y2.oe = 'b'1;
- 55:Y3.oe = 'b'1;
- 56:Y4.oe = 'b'1;
- 57:Y5.oe = 'b'1;
- 58:Y6.oe = 'b'1;
- 59:
- 60:Y0.sp = 'b'0;
- 61:Y1.sp = 'b'0;
- 62:Y2.sp = 'b'0;
- 63:Y3.sp = 'b'0;
- 64:Y4.sp = 'b'0;
- 65:Y5.sp = 'b'0;
- 66:Y6.sp = 'b'0;
- 67:
- 68:Y0.ar = 'b'0;
- 69:Y1.ar = 'b'0;
- 70:Y2.ar = 'b'0;
- 71:Y3.ar = 'b'0;
- 72:Y4.ar = 'b'0;
- 73:Y5.ar = 'b'0;
- 74:Y6.ar = 'b'0;
- 75:
+ 54:   /* YUV: Y DELAY OFF */
+ 55:   'b'010111xxx   =>   'd'127; /* WHITE */
+ 56:   'b'010101xxx   =>   'd'106; /* YELLOW */
+ 57:   'b'010110xxx   =>   'd'97;  /* CYAN */
+ 58:   'b'010100xxx   =>   'd'91;  /* GREEN */
+ 59:   'b'010011xxx   =>   'd'83;  /* MAGENTA */
+ 60:   'b'010001xxx   =>   'd'77;  /* RED */
+ 61:   'b'010010xxx   =>   'd'70;  /* BLUE */
+ 62:   'b'010000xxx   =>   'd'64;  /* BLACK */
+ 63:   /* YUV: Y DELAY ON */
+ 64:   'b'011xxx111   =>   'd'127; /* WHITE */
+ 65:   'b'011xxx101   =>   'd'106; /* YELLOW */
+ 66:   'b'011xxx110   =>   'd'97;  /* CYAN */
+ 67:   'b'011xxx100   =>   'd'91;  /* GREEN */
+ 68:   'b'011xxx011   =>   'd'83;  /* MAGENTA */
+ 69:   'b'011xxx001   =>   'd'77;  /* RED */
+ 70:   'b'011xxx010   =>   'd'70;  /* BLUE */
+ 71:   'b'011xxx000   =>   'd'64;  /* BLACK */
+ 72:}
+ 73:
+ 74:Y0.oe = 'b'1;
+ 75:Y1.oe = 'b'1;
+ 76:Y2.oe = 'b'1;
+ 77:Y3.oe = 'b'1;
+ 78:Y4.oe = 'b'1;
+ 79:Y5.oe = 'b'1;
+ 80:Y6.oe = 'b'1;
+ 81:
+ 82:Y0.sp = 'b'0;
+ 83:Y1.sp = 'b'0;
+ 84:Y2.sp = 'b'0;
+ 85:Y3.sp = 'b'0;
+ 86:Y4.sp = 'b'0;
+ 87:Y5.sp = 'b'0;
+ 88:Y6.sp = 'b'0;
+ 89:
+ 90:Y0.ar = 'b'0;
+ 91:Y1.ar = 'b'0;
+ 92:Y2.ar = 'b'0;
+ 93:Y3.ar = 'b'0;
+ 94:Y4.ar = 'b'0;
+ 95:Y5.ar = 'b'0;
+ 96:Y6.ar = 'b'0;
+ 97:
 
 
 
-Jedec Fuse Checksum       (c7ab)
-Jedec Transmit Checksum   (197f)
+Jedec Fuse Checksum       (f504)
+Jedec Transmit Checksum   (7e67)

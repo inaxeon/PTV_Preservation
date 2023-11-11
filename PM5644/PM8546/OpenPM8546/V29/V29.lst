@@ -3,7 +3,7 @@ LISTING FOR LOGIC DESCRIPTION FILE: V29.pld                          Page 1
 CUPL(WM): Universal Compiler for Programmable Logic
 Version 5.0a Serial# MW-10400000
 Copyright (c) 1983, 1998 Logical Devices, Inc.
-Created Tue Nov 07 05:45:44 2023
+Created Sat Nov 11 05:40:20 2023
 
   1:Name     V29 ;
   2:PartNo   00 ;
@@ -29,82 +29,122 @@ Created Tue Nov 07 05:45:44 2023
  22:PIN [23..19] = [V0..4];
  23:PIN [18..14] = [U0..4];
  24:
- 25:Field COL_IN = [nTEXT_BLANK, G_DATA, B_DATA, R_DATA];
- 26:Field COL_IDX_IN = [nTEXT_BLANK, IDX, G_DATA, B_DATA, R_DATA];
- 27:Field U_OUT = [U4..0];
- 28:Field V_OUT = [V4..0];
- 29:
- 30:Table  COL_IN => U_OUT {
- 31:/*  COL_IN         U_OUT */
- 32:   'b'0xxx   =>   'b'10000; /* OFF */
- 33:   
- 34:   'b'1111   =>   'b'10000; /* WHITE */
- 35:   'b'1101   =>   'd'24; /* YELLOW */
- 36:   'b'1110   =>   'd'14; /* CYAN */
- 37:   'b'1100   =>   'd'21; /* GREEN */
- 38:   'b'1011   =>   'd'10; /* MAGENTA */
- 39:   'b'1001   =>   'd'18; /* RED */
- 40:   'b'1010   =>   'd'8; /* BLUE */
- 41:   'b'1000   =>   'b'10000; /* BLACK */
- 42:}
- 43:
- 44:Table COL_IDX_IN => V_OUT {
- 45:/*  COL_IDX_IN      V_OUT */
- 46:   'b'0xxxx   =>   'd'16; /* OFF */
- 47:
- 48:   'b'10111   =>   'd'16; /* WHITE */
- 49:   'b'10101   =>   'd'14; /* YELLOW */
- 50:   'b'10110   =>   'd'26; /* CYAN */
- 51:   'b'10100   =>   'd'24; /* GREEN */
- 52:   'b'10011   =>   'd'8;  /* MAGENTA */
- 53:   'b'10001   =>   'd'6;  /* RED */
+ 25:Field COL_IN = [RGB_MODE, nTEXT_BLANK, IDX, G_DATA, B_DATA, R_DATA];
+ 26:Field U_OUT = [U4..0];
+ 27:Field V_OUT = [V4..0];
+ 28:
+ 29:/*
+ 30: * UV/BR CHANNEL COLOUR LOOKUP TABLE:
+ 31: *
+ 32: * How these values were derived: The hardware appears to be designed such
+ 33: * that nearly the full range of the DAC is used to generate the U/V signals.
+ 34: * Making an educated guess as to the original workings is more difficult.
+ 35: *
+ 36: * To derive the below values the U/V trimmers were set half-way, then the
+ 37: * voltages at the -S input to the colour encoder were compared to +S when the
+ 38: * PM5644 is in EBU colour bar mode. This will give values -close- to the
+ 39: * orignials, and certainly the ability to tune to perfection as desired.
+ 40: *
+ 41: * No idea if the value chosen for RGB mode is correct. No surviving RGB
+ 42: * PM5644's are known to verify it but this is how it was implemented.
+ 43: */
+ 44:
+ 45:Table  COL_IN => U_OUT.d {
+ 46:   'b'x0xxxx   =>   'd'16;  /* BLANK */
+ 47:   /* RGB: B */
+ 48:   'b'11xx0x   =>   'd'16;  /* OFF */
+ 49:   'b'11xx1x   =>   'd'31;  /* ON (Unverified value) */
+ 50:   /* YUV: U */
+ 51:   'b'01x111   =>   'd'16;  /* WHITE */
+ 52:   'b'01x101   =>   'd'24;  /* YELLOW */
+ 53:   'b'01x110   =>   'd'14;  /* CYAN */
 
 LISTING FOR LOGIC DESCRIPTION FILE: V29.pld                          Page 2
 
 CUPL(WM): Universal Compiler for Programmable Logic
 Version 5.0a Serial# MW-10400000
 Copyright (c) 1983, 1998 Logical Devices, Inc.
-Created Tue Nov 07 05:45:44 2023
+Created Sat Nov 11 05:40:20 2023
 
- 54:   'b'10010   =>   'd'18; /* BLUE */
- 55:   'b'10000   =>   'd'16; /* BLACK */
- 56:
- 57:   'b'11111   =>   'd'16; /* WHITE */
- 58:   'b'11101   =>   'd'18; /* YELLOW */
- 59:   'b'11110   =>   'd'6;  /* CYAN */
- 60:   'b'11100   =>   'd'8;  /* GREEN */
- 61:   'b'11011   =>   'd'24; /* MAGENTA */
- 62:   'b'11001   =>   'd'26; /* RED */
- 63:   'b'11010   =>   'd'14; /* BLUE */
- 64:   'b'11000   =>   'd'16; /* BLACK */
- 65:}
- 66:
- 67:V0.oe = 'b'1;
- 68:V1.oe = 'b'1;
- 69:V2.oe = 'b'1;
- 70:V3.oe = 'b'1;
- 71:V4.oe = 'b'1;
- 72:
- 73:U0.oe = 'b'1;
- 74:U1.oe = 'b'1;
- 75:U2.oe = 'b'1;
- 76:U3.oe = 'b'1;
- 77:U4.oe = 'b'1;
- 78:
- 79:V0.sp = 'b'0;
- 80:V1.sp = 'b'0;
- 81:V2.sp = 'b'0;
- 82:V3.sp = 'b'0;
- 83:V4.sp = 'b'0;
- 84:
- 85:U0.ar = 'b'0;
- 86:U1.ar = 'b'0;
- 87:U2.ar = 'b'0;
- 88:U3.ar = 'b'0;
- 89:U4.ar = 'b'0;
- 90:
+ 54:   'b'01x100   =>   'd'21;  /* GREEN */
+ 55:   'b'01x011   =>   'd'10;  /* MAGENTA */
+ 56:   'b'01x001   =>   'd'18;  /* RED */
+ 57:   'b'01x010   =>   'd'8;   /* BLUE */
+ 58:   'b'01x000   =>   'd'16;  /* BLACK */
+ 59:}
+ 60:
+ 61:Table COL_IN => V_OUT.d {
+ 62:   'b'x0xxxx   =>   'd'16;  /* BLANK */
+ 63:   /* RGB: R */
+ 64:   'b'11xxx0   =>   'd'16;  /* OFF */
+ 65:   'b'11xxx1   =>   'd'31;  /* ON (Unverified value) */
+ 66:   /* YUV: V- */
+ 67:   'b'010111   =>   'd'16;  /* WHITE */
+ 68:   'b'010101   =>   'd'14;  /* YELLOW */
+ 69:   'b'010110   =>   'd'26;  /* CYAN */
+ 70:   'b'010100   =>   'd'24;  /* GREEN */
+ 71:   'b'010011   =>   'd'8;   /* MAGENTA */
+ 72:   'b'010001   =>   'd'6;   /* RED */
+ 73:   'b'010010   =>   'd'18;  /* BLUE */
+ 74:   'b'010000   =>   'd'16;  /* BLACK */
+ 75:   /* YUV: V+ */
+ 76:   'b'011111   =>   'd'16;  /* WHITE */
+ 77:   'b'011101   =>   'd'18;  /* YELLOW */
+ 78:   'b'011110   =>   'd'6;   /* CYAN */
+ 79:   'b'011100   =>   'd'8;   /* GREEN */
+ 80:   'b'011011   =>   'd'24;  /* MAGENTA */
+ 81:   'b'011001   =>   'd'26;  /* RED */
+ 82:   'b'011010   =>   'd'14;  /* BLUE */
+ 83:   'b'011000   =>   'd'16;  /* BLACK */
+ 84:}
+ 85:
+ 86:V0.oe = 'b'1;
+ 87:V1.oe = 'b'1;
+ 88:V2.oe = 'b'1;
+ 89:V3.oe = 'b'1;
+ 90:V4.oe = 'b'1;
+ 91:
+ 92:U0.oe = 'b'1;
+ 93:U1.oe = 'b'1;
+ 94:U2.oe = 'b'1;
+ 95:U3.oe = 'b'1;
+ 96:U4.oe = 'b'1;
+ 97:
+ 98:V0.sp = 'b'0;
+ 99:V1.sp = 'b'0;
+100:V2.sp = 'b'0;
+101:V3.sp = 'b'0;
+102:V4.sp = 'b'0;
+103:
+104:U0.sp = 'b'0;
+105:U1.sp = 'b'0;
+106:U2.sp = 'b'0;
+107:U3.sp = 'b'0;
+
+LISTING FOR LOGIC DESCRIPTION FILE: V29.pld                          Page 3
+
+CUPL(WM): Universal Compiler for Programmable Logic
+Version 5.0a Serial# MW-10400000
+Copyright (c) 1983, 1998 Logical Devices, Inc.
+Created Sat Nov 11 05:40:20 2023
+
+108:U4.sp = 'b'0;
+109:
+110:V0.ar = 'b'0;
+111:V1.ar = 'b'0;
+112:V2.ar = 'b'0;
+113:V3.ar = 'b'0;
+114:V4.ar = 'b'0;
+115:
+116:U0.ar = 'b'0;
+117:U1.ar = 'b'0;
+118:U2.ar = 'b'0;
+119:U3.ar = 'b'0;
+120:U4.ar = 'b'0;
+121:
+122:
 
 
 
-Jedec Fuse Checksum       (c809)
-Jedec Transmit Checksum   (3859)
+Jedec Fuse Checksum       (fafb)
+Jedec Transmit Checksum   (a556)

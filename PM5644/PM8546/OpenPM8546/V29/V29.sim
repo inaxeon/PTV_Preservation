@@ -20,108 +20,136 @@ PIN   2 =  nTEXT_BLANK
 %END
 
 %FIELD
-FIELD COL_IDX_IN = nTEXT_BLANK,IDX,G_DATA,B_DATA,R_DATA
-FIELD COL_IN = nTEXT_BLANK,G_DATA,B_DATA,R_DATA
+FIELD COL_IN = RGB_MODE,nTEXT_BLANK,IDX,G_DATA,B_DATA,R_DATA
 FIELD U_OUT = U4,U3,U2,U1,U0
 FIELD V_OUT = V4,V3,V2,V1,V0
 %END
 
 %EQUATION
-U0 =>
-    !B_DATA & G_DATA & !R_DATA & nTEXT_BLANK
+U0.d  =>
+    !B_DATA & G_DATA & !RGB_MODE & !R_DATA & nTEXT_BLANK
+  # B_DATA & RGB_MODE & nTEXT_BLANK
 
-U0.ar U1.ar U2.ar U3.ar U4.ar  =>
+U0.ar U1.ar U2.ar U3.ar U4.ar V0.ar V1.ar V2.ar V3.ar V4.ar  =>
     0 
 
 U0.oe  =>
     1 
 
-U1 =>
-    !G_DATA & R_DATA & nTEXT_BLANK
-  # B_DATA & G_DATA & !R_DATA & nTEXT_BLANK
+U0.sp U1.sp U2.sp U3.sp U4.sp V0.sp V1.sp V2.sp V3.sp V4.sp  =>
+    0 
+
+U1.d  =>
+    !G_DATA & !RGB_MODE & R_DATA & nTEXT_BLANK
+  # B_DATA & RGB_MODE & nTEXT_BLANK
+  # B_DATA & G_DATA & !RGB_MODE & !R_DATA & nTEXT_BLANK
 
 U1.ar  =>
     
 U1.oe  =>
     1 
 
-U2 =>
-    G_DATA & !R_DATA & nTEXT_BLANK
+U1.sp  =>
+    
+U2.d  =>
+    G_DATA & !RGB_MODE & !R_DATA & nTEXT_BLANK
+  # B_DATA & RGB_MODE & nTEXT_BLANK
 
 U2.ar  =>
     
 U2.oe  =>
     1 
 
-U3 =>
-    B_DATA & !G_DATA & R_DATA & nTEXT_BLANK
-  # !B_DATA & G_DATA & R_DATA & nTEXT_BLANK
-  # B_DATA & !R_DATA & nTEXT_BLANK
+U2.sp  =>
+    
+U3.d  =>
+    B_DATA & !G_DATA & !RGB_MODE & R_DATA & nTEXT_BLANK
+  # B_DATA & RGB_MODE & nTEXT_BLANK
+  # !B_DATA & G_DATA & !RGB_MODE & R_DATA & nTEXT_BLANK
+  # B_DATA & !RGB_MODE & !R_DATA & nTEXT_BLANK
 
 U3.ar  =>
     
 U3.oe  =>
     1 
 
-U4 =>
+U3.sp  =>
+    
+U4.d  =>
     !nTEXT_BLANK
-  # G_DATA & R_DATA & nTEXT_BLANK
-  # !B_DATA & !G_DATA & R_DATA & nTEXT_BLANK
-  # !B_DATA & !R_DATA & nTEXT_BLANK
+  # RGB_MODE & nTEXT_BLANK
+  # G_DATA & !RGB_MODE & R_DATA & nTEXT_BLANK
+  # !B_DATA & !G_DATA & !RGB_MODE & R_DATA & nTEXT_BLANK
+  # !B_DATA & !RGB_MODE & !R_DATA & nTEXT_BLANK
 
 U4.ar  =>
     
 U4.oe  =>
     1 
 
-V0 =>
-    0 
+U4.sp  =>
+    
+V0.d  =>
+    RGB_MODE & R_DATA & nTEXT_BLANK
 
+V0.ar  =>
+    
 V0.oe  =>
     1 
 
-V0.sp V1.sp V2.sp V3.sp V4.sp  =>
-    0 
+V0.sp  =>
+    
+V1.d  =>
+    B_DATA & !RGB_MODE & !R_DATA & nTEXT_BLANK
+  # RGB_MODE & R_DATA & nTEXT_BLANK
+  # !B_DATA & !RGB_MODE & R_DATA & nTEXT_BLANK
 
-V1 =>
-    B_DATA & !R_DATA & nTEXT_BLANK
-  # !B_DATA & R_DATA & nTEXT_BLANK
-
+V1.ar  =>
+    
 V1.oe  =>
     1 
 
 V1.sp  =>
     
-V2 =>
-    B_DATA & IDX & !R_DATA & nTEXT_BLANK
-  # !B_DATA & !IDX & R_DATA & nTEXT_BLANK
+V2.d  =>
+    B_DATA & IDX & !RGB_MODE & !R_DATA & nTEXT_BLANK
+  # RGB_MODE & R_DATA & nTEXT_BLANK
+  # !B_DATA & !IDX & !RGB_MODE & R_DATA & nTEXT_BLANK
 
+V2.ar  =>
+    
 V2.oe  =>
     1 
 
 V2.sp  =>
     
-V3 =>
-    B_DATA & !G_DATA & IDX & !R_DATA & nTEXT_BLANK
-  # !B_DATA & G_DATA & !IDX & nTEXT_BLANK
-  # B_DATA & G_DATA & !IDX & !R_DATA & nTEXT_BLANK
-  # B_DATA & !G_DATA & R_DATA & nTEXT_BLANK
-  # !B_DATA & G_DATA & IDX & !R_DATA & nTEXT_BLANK
-  # !B_DATA & !G_DATA & IDX & R_DATA & nTEXT_BLANK
+V3.d  =>
+    B_DATA & !G_DATA & IDX & !RGB_MODE & !R_DATA & nTEXT_BLANK
+  # RGB_MODE & R_DATA & nTEXT_BLANK
+  # !B_DATA & G_DATA & !IDX & !RGB_MODE & nTEXT_BLANK
+  # B_DATA & G_DATA & !IDX & !RGB_MODE & !R_DATA & nTEXT_BLANK
+  # B_DATA & !G_DATA & !RGB_MODE & R_DATA & nTEXT_BLANK
+  # !B_DATA & G_DATA & IDX & !RGB_MODE & !R_DATA & nTEXT_BLANK
+  # !B_DATA & !G_DATA & IDX & !RGB_MODE & R_DATA & nTEXT_BLANK
 
+V3.ar  =>
+    
 V3.oe  =>
     1 
 
 V3.sp  =>
     
-V4 =>
+V4.d  =>
     !nTEXT_BLANK
-  # B_DATA & G_DATA & !IDX & nTEXT_BLANK
-  # !B_DATA & !G_DATA & IDX & !R_DATA & nTEXT_BLANK
-  # !B_DATA & !IDX & !R_DATA & nTEXT_BLANK
-  # B_DATA & !G_DATA & !IDX & !R_DATA & nTEXT_BLANK
-  # IDX & R_DATA & nTEXT_BLANK
+  # RGB_MODE & nTEXT_BLANK
+  # B_DATA & G_DATA & !IDX & !RGB_MODE & nTEXT_BLANK
+  # !B_DATA & !G_DATA & IDX & !RGB_MODE & !R_DATA & nTEXT_BLANK
+  # !B_DATA & !IDX & !RGB_MODE & !R_DATA & nTEXT_BLANK
+  # B_DATA & !G_DATA & !IDX & !RGB_MODE & !R_DATA & nTEXT_BLANK
+  # IDX & !RGB_MODE & R_DATA & nTEXT_BLANK
 
+V4.ar  =>
+    
 V4.oe  =>
     1 
 

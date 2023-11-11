@@ -8,6 +8,26 @@ Assembly None ;
 Location  ;
 Device   g22v10 ;
 
+/*
+ *   Philips PM8546 Logo Generator
+ *   Open source recreation
+ * 
+ *   File        : V15.pld
+ *   Author      : Matt Millman
+ *   Description : Horizontal counter PAL
+ *
+ *   This is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 2 of the License, or
+ *   (at your option) any later version.
+ *   This software is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *   You should have received a copy of the GNU General Public License
+ *   along with this software.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /* &=AND #=OR $=XOR */
 
 PIN 1 = GCLK;
@@ -46,30 +66,27 @@ H6.sp = 'b'0;
 H7.sp = 'b'0;
 H8.sp = 'b'0;
 
-H0.ar = !nFH_IN;
-H1.ar = !nFH_IN;
-H2.ar = !nFH_IN;
-H3.ar = !nFH_IN;
-H4.ar = !nFH_IN;
-H5.ar = !nFH_IN;
-H6.ar = !nFH_IN;
-H7.ar = !nFH_IN;
-H8.ar = !nFH_IN;
-H9.ar = !nFH_IN;
+H0.ar = 'b'0;
+H1.ar = 'b'0;
+H2.ar = 'b'0;
+H3.ar = 'b'0;
+H4.ar = 'b'0;
+H5.ar = 'b'0;
+H6.ar = 'b'0;
+H7.ar = 'b'0;
+H8.ar = 'b'0;
 
-H0.d = nSHIFT_LOAD $ !H0;
-H1.d = H1 $ H0 & !nSHIFT_LOAD;
-H2.d = H2 $ H1 & H0 & !nSHIFT_LOAD;
-H3.d = H3 $ H2 & H1 & H0 & !nSHIFT_LOAD;
-H4.d = H4 $ H3 & H2 & H1 & H0 & !nSHIFT_LOAD;
-H5.d = H5 $ H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD;
-H6.d = H6 $ H5 & H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD;
-H7.d = H7 $ H6 & H5 & H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD;
-H8.d = H8 $ H7 & H6 & H5 & H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD;
-
-
+H0.d = ((nSHIFT_LOAD $ !H0) & nFH_IN) $ (!nFH_IN & SH0);
+H1.d = ((H1 $ (H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH1);
+H2.d = ((H2 $ (H1 & H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH2);
+H3.d = ((H3 $ (H2 & H1 & H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH3);
+H4.d = ((H4 $ (H3 & H2 & H1 & H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH4);
+H5.d = ((H5 $ (H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH5);
+H6.d = ((H6 $ (H5 & H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH6);
+H7.d = ((H7 $ (H6 & H5 & H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH7);
+H8.d = ((H8 $ (H7 & H6 & H5 & H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH8);
 
 nSHIFT_LOAD.sp = 'b'0;
-nSHIFT_LOAD.ar = !nFH_IN;
+nSHIFT_LOAD.ar = 'b'0;
 nSHIFT_LOAD.oe = 'b'1;
 nSHIFT_LOAD.d = LCNT_IN # !nSHIFT_LOAD;

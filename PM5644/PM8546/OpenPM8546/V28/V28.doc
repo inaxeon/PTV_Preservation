@@ -5,7 +5,7 @@
 
 CUPL(WM)        5.0a Serial# MW-10400000
 Device          g22v10  Library DLIB-h-40-1
-Created         Tue Nov 07 06:20:29 2023
+Created         Sat Nov 11 05:40:13 2023
 Name            V28 
 Partno          00 
 Revision        01 
@@ -20,15 +20,17 @@ Location
 ===============================================================================
 
 COL_IN =>
-    nTEXT_BLANK , DELAY_ON , G_DATA , B_DATA , R_DATA , G_DATA_DELAYED , 
-      B_DATA_DELAYED , R_DATA_DELAYED
+    RGB_MODE , nTEXT_BLANK , DELAY_ON , G_DATA , B_DATA , R_DATA , 
+      G_DATA_DELAYED , B_DATA_DELAYED , R_DATA_DELAYED
 
-Y0 =>
-    B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & !R_DATA_DELAYED & 
-      nTEXT_BLANK
-  # !B_DATA & !DELAY_ON & G_DATA & R_DATA & nTEXT_BLANK
-  # B_DATA & !DELAY_ON & G_DATA & !R_DATA & nTEXT_BLANK
-  # !B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & R_DATA_DELAYED & 
+Y0.d  =>
+    DELAY_ON & !G_DATA_DELAYED & !RGB_MODE & R_DATA_DELAYED & nTEXT_BLANK
+  # G_DATA & RGB_MODE & nTEXT_BLANK
+  # B_DATA & !DELAY_ON & G_DATA & !RGB_MODE & nTEXT_BLANK
+  # !B_DATA & !DELAY_ON & G_DATA & !RGB_MODE & !R_DATA & nTEXT_BLANK
+  # !DELAY_ON & !G_DATA & !RGB_MODE & R_DATA & nTEXT_BLANK
+  # B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & !RGB_MODE & nTEXT_BLANK
+  # !B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & !RGB_MODE & !R_DATA_DELAYED & 
       nTEXT_BLANK
 
 Y0.ar  =>
@@ -40,14 +42,14 @@ Y0.oe  =>
 Y0.sp  =>
     0 
 
-Y1 =>
-    B_DATA_DELAYED & DELAY_ON & !G_DATA_DELAYED & !R_DATA_DELAYED & 
-      nTEXT_BLANK
-  # !DELAY_ON & G_DATA & !R_DATA & nTEXT_BLANK
-  # !B_DATA & !DELAY_ON & !G_DATA & R_DATA & nTEXT_BLANK
-  # B_DATA & !DELAY_ON & !G_DATA & !R_DATA & nTEXT_BLANK
-  # DELAY_ON & G_DATA_DELAYED & !R_DATA_DELAYED & nTEXT_BLANK
-  # !B_DATA_DELAYED & DELAY_ON & !G_DATA_DELAYED & R_DATA_DELAYED & 
+Y1.d  =>
+    B_DATA_DELAYED & DELAY_ON & !G_DATA_DELAYED & !RGB_MODE & nTEXT_BLANK
+  # G_DATA & RGB_MODE & nTEXT_BLANK
+  # !DELAY_ON & G_DATA & !RGB_MODE & R_DATA & nTEXT_BLANK
+  # !B_DATA & !DELAY_ON & G_DATA & !RGB_MODE & !R_DATA & nTEXT_BLANK
+  # B_DATA & !DELAY_ON & !G_DATA & !RGB_MODE & nTEXT_BLANK
+  # DELAY_ON & G_DATA_DELAYED & !RGB_MODE & R_DATA_DELAYED & nTEXT_BLANK
+  # !B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & !RGB_MODE & !R_DATA_DELAYED & 
       nTEXT_BLANK
 
 Y1.ar  =>
@@ -59,15 +61,17 @@ Y1.oe  =>
 Y1.sp  =>
     0 
 
-Y2 =>
-    B_DATA_DELAYED & DELAY_ON & !G_DATA_DELAYED & !R_DATA_DELAYED & 
+Y2.d  =>
+    B_DATA_DELAYED & DELAY_ON & !G_DATA_DELAYED & !RGB_MODE & !R_DATA_DELAYED & 
       nTEXT_BLANK
-  # !B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & !R_DATA_DELAYED & 
+  # G_DATA & RGB_MODE & nTEXT_BLANK
+  # B_DATA & !DELAY_ON & G_DATA & !RGB_MODE & R_DATA & nTEXT_BLANK
+  # !B_DATA & !DELAY_ON & !G_DATA & !RGB_MODE & R_DATA & nTEXT_BLANK
+  # B_DATA & !DELAY_ON & !G_DATA & !RGB_MODE & !R_DATA & nTEXT_BLANK
+  # B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & !RGB_MODE & R_DATA_DELAYED & 
       nTEXT_BLANK
-  # !B_DATA & !DELAY_ON & G_DATA & !R_DATA & nTEXT_BLANK
-  # !DELAY_ON & R_DATA & nTEXT_BLANK
-  # B_DATA & !DELAY_ON & !G_DATA & !R_DATA & nTEXT_BLANK
-  # DELAY_ON & R_DATA_DELAYED & nTEXT_BLANK
+  # !B_DATA_DELAYED & DELAY_ON & !G_DATA_DELAYED & !RGB_MODE & R_DATA_DELAYED & 
+      nTEXT_BLANK
 
 Y2.ar  =>
     0 
@@ -78,12 +82,16 @@ Y2.oe  =>
 Y2.sp  =>
     0 
 
-Y3 =>
-    !B_DATA_DELAYED & DELAY_ON & !G_DATA_DELAYED & R_DATA_DELAYED & 
+Y3.d  =>
+    !B_DATA_DELAYED & DELAY_ON & !G_DATA_DELAYED & !RGB_MODE & R_DATA_DELAYED & 
       nTEXT_BLANK
-  # !B_DATA & !DELAY_ON & G_DATA & nTEXT_BLANK
-  # !B_DATA & !DELAY_ON & !G_DATA & R_DATA & nTEXT_BLANK
-  # !B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & nTEXT_BLANK
+  # G_DATA & RGB_MODE & nTEXT_BLANK
+  # !DELAY_ON & G_DATA & !RGB_MODE & R_DATA & nTEXT_BLANK
+  # !B_DATA & !DELAY_ON & G_DATA & !RGB_MODE & !R_DATA & nTEXT_BLANK
+  # !B_DATA & !DELAY_ON & !G_DATA & !RGB_MODE & R_DATA & nTEXT_BLANK
+  # DELAY_ON & G_DATA_DELAYED & !RGB_MODE & R_DATA_DELAYED & nTEXT_BLANK
+  # !B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & !RGB_MODE & !R_DATA_DELAYED & 
+      nTEXT_BLANK
 
 Y3.ar  =>
     0 
@@ -94,13 +102,13 @@ Y3.oe  =>
 Y3.sp  =>
     0 
 
-Y4 =>
-    B_DATA_DELAYED & DELAY_ON & !G_DATA_DELAYED & R_DATA_DELAYED & 
+Y4.d  =>
+    !B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & !RGB_MODE & !R_DATA_DELAYED & 
       nTEXT_BLANK
-  # !B_DATA & !DELAY_ON & G_DATA & !R_DATA & nTEXT_BLANK
-  # B_DATA & !DELAY_ON & !G_DATA & R_DATA & nTEXT_BLANK
-  # !B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & !R_DATA_DELAYED & 
-      nTEXT_BLANK
+  # G_DATA & RGB_MODE & nTEXT_BLANK
+  # B_DATA & !DELAY_ON & !RGB_MODE & R_DATA & nTEXT_BLANK
+  # !B_DATA & !DELAY_ON & G_DATA & !RGB_MODE & !R_DATA & nTEXT_BLANK
+  # B_DATA_DELAYED & DELAY_ON & !RGB_MODE & R_DATA_DELAYED & nTEXT_BLANK
 
 Y4.ar  =>
     0 
@@ -111,13 +119,13 @@ Y4.oe  =>
 Y4.sp  =>
     0 
 
-Y5 =>
-    B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & !R_DATA_DELAYED & 
+Y5.d  =>
+    B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & !RGB_MODE & !R_DATA_DELAYED & 
       nTEXT_BLANK
-  # !B_DATA & !DELAY_ON & G_DATA & R_DATA & nTEXT_BLANK
-  # B_DATA & !DELAY_ON & G_DATA & !R_DATA & nTEXT_BLANK
-  # !B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & R_DATA_DELAYED & 
-      nTEXT_BLANK
+  # G_DATA & RGB_MODE & nTEXT_BLANK
+  # !DELAY_ON & G_DATA & !RGB_MODE & R_DATA & nTEXT_BLANK
+  # B_DATA & !DELAY_ON & G_DATA & !RGB_MODE & !R_DATA & nTEXT_BLANK
+  # DELAY_ON & G_DATA_DELAYED & !RGB_MODE & R_DATA_DELAYED & nTEXT_BLANK
 
 Y5.ar  =>
     0 
@@ -128,9 +136,8 @@ Y5.oe  =>
 Y5.sp  =>
     0 
 
-Y6 =>
-    B_DATA_DELAYED & DELAY_ON & G_DATA_DELAYED & R_DATA_DELAYED & nTEXT_BLANK
-  # B_DATA & !DELAY_ON & G_DATA & R_DATA & nTEXT_BLANK
+Y6.d  =>
+    1 
 
 Y6.ar  =>
     0 
@@ -163,31 +170,38 @@ Pol   Name              Ext     Pin     Type     Used   Pterms  Level
     RGB_MODE                    9        V        -       -       -     
     R_DATA                      8        V        -       -       -     
     R_DATA_DELAYED              5        V        -       -       -     
-    Y0                          20       V        4       14      1     
+    Y0                          20       V        -       -       -     
+    Y0                  d       20       X        7       14      1     
     Y0                  ar      20       X        1       1       1     
     Y0                  oe      20       X        1       1       1     
     Y0                  sp      20       X        1       1       1     
-    Y1                          19       V        6       16      1     
+    Y1                          19       V        -       -       -     
+    Y1                  d       19       X        7       16      1     
     Y1                  ar      19       X        1       1       1     
     Y1                  oe      19       X        1       1       1     
     Y1                  sp      19       X        1       1       1     
-    Y2                          18       V        6       16      1     
+    Y2                          18       V        -       -       -     
+    Y2                  d       18       X        7       16      1     
     Y2                  ar      18       X        1       1       1     
     Y2                  oe      18       X        1       1       1     
     Y2                  sp      18       X        1       1       1     
-    Y3                          17       V        4       14      1     
+    Y3                          17       V        -       -       -     
+    Y3                  d       17       X        7       14      1     
     Y3                  ar      17       X        1       1       1     
     Y3                  oe      17       X        1       1       1     
     Y3                  sp      17       X        1       1       1     
-    Y4                          16       V        4       12      1     
+    Y4                          16       V        -       -       -     
+    Y4                  d       16       X        5       12      1     
     Y4                  ar      16       X        1       1       1     
     Y4                  oe      16       X        1       1       1     
     Y4                  sp      16       X        1       1       1     
-    Y5                          15       V        4       10      1     
+    Y5                          15       V        -       -       -     
+    Y5                  d       15       X        5       10      1     
     Y5                  ar      15       X        1       1       1     
     Y5                  oe      15       X        1       1       1     
     Y5                  sp      15       X        1       1       1     
-    Y6                          14       V        2       8       1     
+    Y6                          14       V        -       -       -     
+    Y6                  d       14       X        1       8       1     
     Y6                  ar      14       X        1       1       1     
     Y6                  oe      14       X        1       1       1     
     Y6                  sp      14       X        1       1       1     
@@ -247,15 +261,15 @@ Pin #21  05812 Mode  xx
  01364 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  01408 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  01452 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
-Pin #20  05814 Mode  -- 
+Pin #20  05814 Mode  -x 
  01496 -------------------------------------------- 
- 01540 ----x---x---x----x------------------x------- 
- 01584 ----x---------------x----x--x--------x------ 
- 01628 ----x---------------x---x----x-------x------ 
- 01672 ----x---x----x--x-------------------x------- 
- 01716 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
- 01760 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
- 01804 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 01540 ----x----x------x----------------x--x------- 
+ 01584 ----x---------------x-----------x----------- 
+ 01628 ----x---------------x---x--------x---x------ 
+ 01672 ----x---------------x----x---x---x---x------ 
+ 01716 ----x----------------x------x----x---x------ 
+ 01760 ----x---x---x--------------------x--x------- 
+ 01804 ----x---x----x---x---------------x--x------- 
  01848 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  01892 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  01936 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
@@ -263,15 +277,15 @@ Pin #20  05814 Mode  --
  02024 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  02068 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  02112 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
-Pin #19  05816 Mode  -- 
+Pin #19  05816 Mode  -x 
  02156 -------------------------------------------- 
- 02200 ----x----x--x----x------------------x------- 
- 02244 ----x---------------x--------x-------x------ 
- 02288 ----x----------------x---x--x--------x------ 
- 02332 ----x----------------x--x----x-------x------ 
- 02376 ----x---x--------x------------------x------- 
- 02420 ----x----x---x--x-------------------x------- 
- 02464 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 02200 ----x----x--x--------------------x--x------- 
+ 02244 ----x---------------x-----------x----------- 
+ 02288 ----x---------------x-------x----x---x------ 
+ 02332 ----x---------------x----x---x---x---x------ 
+ 02376 ----x----------------x--x--------x---x------ 
+ 02420 ----x---x-------x----------------x--x------- 
+ 02464 ----x---x----x---x---------------x--x------- 
  02508 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  02552 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  02596 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
@@ -281,15 +295,15 @@ Pin #19  05816 Mode  --
  02772 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  02816 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  02860 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
-Pin #18  05818 Mode  -- 
+Pin #18  05818 Mode  -x 
  02904 -------------------------------------------- 
- 02948 ----x----x--x----x------------------x------- 
- 02992 ----x---x----x---x------------------x------- 
- 03036 ----x---------------x----x---x-------x------ 
- 03080 ----x-----------------------x--------x------ 
- 03124 ----x----------------x--x----x-------x------ 
- 03168 ----x-----------x-------------------x------- 
- 03212 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 02948 ----x----x--x----x---------------x--x------- 
+ 02992 ----x---------------x-----------x----------- 
+ 03036 ----x---------------x---x---x----x---x------ 
+ 03080 ----x----------------x---x--x----x---x------ 
+ 03124 ----x----------------x--x----x---x---x------ 
+ 03168 ----x---x---x---x----------------x--x------- 
+ 03212 ----x----x---x--x----------------x--x------- 
  03256 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  03300 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  03344 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
@@ -299,15 +313,15 @@ Pin #18  05818 Mode  --
  03520 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  03564 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  03608 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
-Pin #17  05820 Mode  -- 
+Pin #17  05820 Mode  -x 
  03652 -------------------------------------------- 
- 03696 ----x----x---x--x-------------------x------- 
- 03740 ----x---------------x----x-----------x------ 
- 03784 ----x----------------x---x--x--------x------ 
- 03828 ----x---x----x----------------------x------- 
- 03872 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
- 03916 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
- 03960 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 03696 ----x----x---x--x----------------x--x------- 
+ 03740 ----x---------------x-----------x----------- 
+ 03784 ----x---------------x-------x----x---x------ 
+ 03828 ----x---------------x----x---x---x---x------ 
+ 03872 ----x----------------x---x--x----x---x------ 
+ 03916 ----x---x-------x----------------x--x------- 
+ 03960 ----x---x----x---x---------------x--x------- 
  04004 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  04048 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  04092 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
@@ -315,13 +329,13 @@ Pin #17  05820 Mode  --
  04180 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  04224 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  04268 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
-Pin #16  05822 Mode  -- 
+Pin #16  05822 Mode  -x 
  04312 -------------------------------------------- 
- 04356 ----x----x--x---x-------------------x------- 
- 04400 ----x---------------x----x---x-------x------ 
- 04444 ----x----------------x--x---x--------x------ 
- 04488 ----x---x----x---x------------------x------- 
- 04532 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 04356 ----x---x----x---x---------------x--x------- 
+ 04400 ----x---------------x-----------x----------- 
+ 04444 ----x-------------------x---x----x---x------ 
+ 04488 ----x---------------x----x---x---x---x------ 
+ 04532 ----x-------x---x----------------x--x------- 
  04576 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  04620 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  04664 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
@@ -329,22 +343,22 @@ Pin #16  05822 Mode  --
  04752 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  04796 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  04840 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
-Pin #15  05824 Mode  -- 
+Pin #15  05824 Mode  -x 
  04884 -------------------------------------------- 
- 04928 ----x---x---x----x------------------x------- 
- 04972 ----x---------------x----x--x--------x------ 
- 05016 ----x---------------x---x----x-------x------ 
- 05060 ----x---x----x--x-------------------x------- 
- 05104 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 04928 ----x---x---x----x---------------x--x------- 
+ 04972 ----x---------------x-----------x----------- 
+ 05016 ----x---------------x-------x----x---x------ 
+ 05060 ----x---------------x---x----x---x---x------ 
+ 05104 ----x---x-------x----------------x--x------- 
  05148 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  05192 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  05236 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  05280 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  05324 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
-Pin #14  05826 Mode  -- 
+Pin #14  05826 Mode  -x 
  05368 -------------------------------------------- 
- 05412 ----x---x---x---x-------------------x------- 
- 05456 ----x---------------x---x---x--------x------ 
+ 05412 -------------------------------------------- 
+ 05456 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  05500 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  05544 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
  05588 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 

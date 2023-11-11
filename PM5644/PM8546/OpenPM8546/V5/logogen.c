@@ -67,9 +67,11 @@
 #define SPACE           0x3F
 #define CENTER          80
 #define LOGO_OFFSET     65
-#define DATE_OFFSET     54
-#define TIME_OFFSET     92
+#define DATE_OFFSET     53
+#define TIME_OFFSET     91
 #define LINE_HEIGHT     21 /* Per field. 42 lines total */
+
+#define DEFAULT_PRESET  4 /* Fine tune text H position */
 
 #define VC_SEL0         (1 << 4)
 #define VC_SEL1         (1 << 5)
@@ -442,7 +444,7 @@ void logogen_init(void)
 {
     clear_all();
 
-    HPRESET = 0x00;
+    HPRESET = DEFAULT_PRESET;
     VCONTROL = 0x00;
     _text_state = TS_LINE1;
     _text_flags = 0;

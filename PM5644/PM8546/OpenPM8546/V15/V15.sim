@@ -28,11 +28,12 @@ PIN  14 =  nSHIFT_LOAD
 
 %EQUATION
 H0.d  =>
-    !H0 & !nSHIFT_LOAD
-  # H0 & nSHIFT_LOAD
+    !H0 & nFH_IN & !nSHIFT_LOAD
+  # H0 & nFH_IN & nSHIFT_LOAD
+  # SH0 & !nFH_IN
 
 H0.ar H1.ar H2.ar H3.ar H4.ar H5.ar H6.ar H7.ar H8.ar nSHIFT_LOAD.ar  =>
-    !nFH_IN
+    0 
 
 H0.oe  =>
     1 
@@ -41,9 +42,10 @@ H0.sp H1.sp H2.sp H3.sp H4.sp H5.sp H6.sp H7.sp H8.sp nSHIFT_LOAD.sp  =>
     0 
 
 H1.d  =>
-    H0 & !H1
-  # !H1 & !nSHIFT_LOAD
-  # !H0 & H1 & nSHIFT_LOAD
+    !H0 & H1 & nFH_IN & nSHIFT_LOAD
+  # H0 & !H1 & nFH_IN
+  # !H1 & nFH_IN & !nSHIFT_LOAD
+  # SH1 & !nFH_IN
 
 H1.ar  =>
     
@@ -53,10 +55,11 @@ H1.oe  =>
 H1.sp  =>
     
 H2.d  =>
-    H1 & !H2
-  # H0 & !H2
-  # !H2 & !nSHIFT_LOAD
-  # !H0 & !H1 & H2 & nSHIFT_LOAD
+    !H0 & !H1 & H2 & nFH_IN & nSHIFT_LOAD
+  # H1 & !H2 & nFH_IN
+  # H0 & !H2 & nFH_IN
+  # !H2 & nFH_IN & !nSHIFT_LOAD
+  # SH2 & !nFH_IN
 
 H2.ar  =>
     
@@ -66,11 +69,12 @@ H2.oe  =>
 H2.sp  =>
     
 H3.d  =>
-    H2 & !H3
-  # H1 & !H3
-  # H0 & !H3
-  # !H3 & !nSHIFT_LOAD
-  # !H0 & !H1 & !H2 & H3 & nSHIFT_LOAD
+    !H0 & !H1 & !H2 & H3 & nFH_IN & nSHIFT_LOAD
+  # H2 & !H3 & nFH_IN
+  # H1 & !H3 & nFH_IN
+  # H0 & !H3 & nFH_IN
+  # !H3 & nFH_IN & !nSHIFT_LOAD
+  # SH3 & !nFH_IN
 
 H3.ar  =>
     
@@ -80,12 +84,13 @@ H3.oe  =>
 H3.sp  =>
     
 H4.d  =>
-    H3 & !H4
-  # H2 & !H4
-  # H1 & !H4
-  # H0 & !H4
-  # !H4 & !nSHIFT_LOAD
-  # !H0 & !H1 & !H2 & !H3 & H4 & nSHIFT_LOAD
+    !H0 & !H1 & !H2 & !H3 & H4 & nFH_IN & nSHIFT_LOAD
+  # H3 & !H4 & nFH_IN
+  # H2 & !H4 & nFH_IN
+  # H1 & !H4 & nFH_IN
+  # H0 & !H4 & nFH_IN
+  # !H4 & nFH_IN & !nSHIFT_LOAD
+  # SH4 & !nFH_IN
 
 H4.ar  =>
     
@@ -95,13 +100,14 @@ H4.oe  =>
 H4.sp  =>
     
 H5.d  =>
-    H4 & !H5
-  # H3 & !H5
-  # H2 & !H5
-  # H1 & !H5
-  # H0 & !H5
-  # !H5 & !nSHIFT_LOAD
-  # !H0 & !H1 & !H2 & !H3 & !H4 & H5 & nSHIFT_LOAD
+    !H0 & !H1 & !H2 & !H3 & !H4 & H5 & nFH_IN & nSHIFT_LOAD
+  # H4 & !H5 & nFH_IN
+  # H3 & !H5 & nFH_IN
+  # H2 & !H5 & nFH_IN
+  # H1 & !H5 & nFH_IN
+  # H0 & !H5 & nFH_IN
+  # !H5 & nFH_IN & !nSHIFT_LOAD
+  # SH5 & !nFH_IN
 
 H5.ar  =>
     
@@ -111,14 +117,15 @@ H5.oe  =>
 H5.sp  =>
     
 H6.d  =>
-    H5 & !H6
-  # H4 & !H6
-  # H3 & !H6
-  # H2 & !H6
-  # H1 & !H6
-  # H0 & !H6
-  # !H6 & !nSHIFT_LOAD
-  # !H0 & !H1 & !H2 & !H3 & !H4 & !H5 & H6 & nSHIFT_LOAD
+    !H0 & !H1 & !H2 & !H3 & !H4 & !H5 & H6 & nFH_IN & nSHIFT_LOAD
+  # H5 & !H6 & nFH_IN
+  # H4 & !H6 & nFH_IN
+  # H3 & !H6 & nFH_IN
+  # H2 & !H6 & nFH_IN
+  # H1 & !H6 & nFH_IN
+  # H0 & !H6 & nFH_IN
+  # !H6 & nFH_IN & !nSHIFT_LOAD
+  # SH6 & !nFH_IN
 
 H6.ar  =>
     
@@ -128,15 +135,16 @@ H6.oe  =>
 H6.sp  =>
     
 H7.d  =>
-    H6 & !H7
-  # H5 & !H7
-  # H4 & !H7
-  # H3 & !H7
-  # H2 & !H7
-  # H1 & !H7
-  # H0 & !H7
-  # !H7 & !nSHIFT_LOAD
-  # !H0 & !H1 & !H2 & !H3 & !H4 & !H5 & !H6 & H7 & nSHIFT_LOAD
+    !H0 & !H1 & !H2 & !H3 & !H4 & !H5 & !H6 & H7 & nFH_IN & nSHIFT_LOAD
+  # H6 & !H7 & nFH_IN
+  # H5 & !H7 & nFH_IN
+  # H4 & !H7 & nFH_IN
+  # H3 & !H7 & nFH_IN
+  # H2 & !H7 & nFH_IN
+  # H1 & !H7 & nFH_IN
+  # H0 & !H7 & nFH_IN
+  # !H7 & nFH_IN & !nSHIFT_LOAD
+  # SH7 & !nFH_IN
 
 H7.ar  =>
     
@@ -146,16 +154,17 @@ H7.oe  =>
 H7.sp  =>
     
 H8.d  =>
-    H7 & !H8
-  # H6 & !H8
-  # H5 & !H8
-  # H4 & !H8
-  # H3 & !H8
-  # H2 & !H8
-  # H1 & !H8
-  # H0 & !H8
-  # !H8 & !nSHIFT_LOAD
-  # !H0 & !H1 & !H2 & !H3 & !H4 & !H5 & !H6 & !H7 & H8 & nSHIFT_LOAD
+    !H0 & !H1 & !H2 & !H3 & !H4 & !H5 & !H6 & !H7 & H8 & nFH_IN & nSHIFT_LOAD
+  # H7 & !H8 & nFH_IN
+  # H6 & !H8 & nFH_IN
+  # H5 & !H8 & nFH_IN
+  # H4 & !H8 & nFH_IN
+  # H3 & !H8 & nFH_IN
+  # H2 & !H8 & nFH_IN
+  # H1 & !H8 & nFH_IN
+  # H0 & !H8 & nFH_IN
+  # !H8 & nFH_IN & !nSHIFT_LOAD
+  # SH8 & !nFH_IN
 
 H8.ar  =>
     
@@ -164,9 +173,6 @@ H8.oe  =>
 
 H8.sp  =>
     
-H9 =>
-    !nFH_IN
-
 nSHIFT_LOAD.d  =>
     LCNT_IN
   # nSHIFT_LOAD

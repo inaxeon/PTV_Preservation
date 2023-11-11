@@ -22,46 +22,65 @@ PIN 13 = IDX;
 PIN [23..19] = [V0..4];
 PIN [18..14] = [U0..4];
 
-Field COL_IN = [nTEXT_BLANK, G_DATA, B_DATA, R_DATA];
-Field COL_IDX_IN = [nTEXT_BLANK, IDX, G_DATA, B_DATA, R_DATA];
+Field COL_IN = [RGB_MODE, nTEXT_BLANK, IDX, G_DATA, B_DATA, R_DATA];
 Field U_OUT = [U4..0];
 Field V_OUT = [V4..0];
 
-Table  COL_IN => U_OUT {
-/*  COL_IN         U_OUT */
-   'b'0xxx   =>   'b'10000; /* OFF */
-   
-   'b'1111   =>   'b'10000; /* WHITE */
-   'b'1101   =>   'd'24; /* YELLOW */
-   'b'1110   =>   'd'14; /* CYAN */
-   'b'1100   =>   'd'21; /* GREEN */
-   'b'1011   =>   'd'10; /* MAGENTA */
-   'b'1001   =>   'd'18; /* RED */
-   'b'1010   =>   'd'8; /* BLUE */
-   'b'1000   =>   'b'10000; /* BLACK */
+/*
+ * UV/BR CHANNEL COLOUR LOOKUP TABLE:
+ *
+ * How these values were derived: The hardware appears to be designed such
+ * that nearly the full range of the DAC is used to generate the U/V signals.
+ * Making an educated guess as to the original workings is more difficult.
+ *
+ * To derive the below values the U/V trimmers were set half-way, then the
+ * voltages at the -S input to the colour encoder were compared to +S when the
+ * PM5644 is in EBU colour bar mode. This will give values -close- to the
+ * orignials, and certainly the ability to tune to perfection as desired.
+ *
+ * No idea if the value chosen for RGB mode is correct. No surviving RGB
+ * PM5644's are known to verify it but this is how it was implemented.
+ */
+
+Table  COL_IN => U_OUT.d {
+   'b'x0xxxx   =>   'd'16;  /* BLANK */
+   /* RGB: B */
+   'b'11xx0x   =>   'd'16;  /* OFF */
+   'b'11xx1x   =>   'd'31;  /* ON (Unverified value) */
+   /* YUV: U */
+   'b'01x111   =>   'd'16;  /* WHITE */
+   'b'01x101   =>   'd'24;  /* YELLOW */
+   'b'01x110   =>   'd'14;  /* CYAN */
+   'b'01x100   =>   'd'21;  /* GREEN */
+   'b'01x011   =>   'd'10;  /* MAGENTA */
+   'b'01x001   =>   'd'18;  /* RED */
+   'b'01x010   =>   'd'8;   /* BLUE */
+   'b'01x000   =>   'd'16;  /* BLACK */
 }
 
-Table COL_IDX_IN => V_OUT {
-/*  COL_IDX_IN      V_OUT */
-   'b'0xxxx   =>   'd'16; /* OFF */
-
-   'b'10111   =>   'd'16; /* WHITE */
-   'b'10101   =>   'd'14; /* YELLOW */
-   'b'10110   =>   'd'26; /* CYAN */
-   'b'10100   =>   'd'24; /* GREEN */
-   'b'10011   =>   'd'8;  /* MAGENTA */
-   'b'10001   =>   'd'6;  /* RED */
-   'b'10010   =>   'd'18; /* BLUE */
-   'b'10000   =>   'd'16; /* BLACK */
-
-   'b'11111   =>   'd'16; /* WHITE */
-   'b'11101   =>   'd'18; /* YELLOW */
-   'b'11110   =>   'd'6;  /* CYAN */
-   'b'11100   =>   'd'8;  /* GREEN */
-   'b'11011   =>   'd'24; /* MAGENTA */
-   'b'11001   =>   'd'26; /* RED */
-   'b'11010   =>   'd'14; /* BLUE */
-   'b'11000   =>   'd'16; /* BLACK */
+Table COL_IN => V_OUT.d {
+   'b'x0xxxx   =>   'd'16;  /* BLANK */
+   /* RGB: R */
+   'b'11xxx0   =>   'd'16;  /* OFF */
+   'b'11xxx1   =>   'd'31;  /* ON (Unverified value) */
+   /* YUV: V- */
+   'b'010111   =>   'd'16;  /* WHITE */
+   'b'010101   =>   'd'14;  /* YELLOW */
+   'b'010110   =>   'd'26;  /* CYAN */
+   'b'010100   =>   'd'24;  /* GREEN */
+   'b'010011   =>   'd'8;   /* MAGENTA */
+   'b'010001   =>   'd'6;   /* RED */
+   'b'010010   =>   'd'18;  /* BLUE */
+   'b'010000   =>   'd'16;  /* BLACK */
+   /* YUV: V+ */
+   'b'011111   =>   'd'16;  /* WHITE */
+   'b'011101   =>   'd'18;  /* YELLOW */
+   'b'011110   =>   'd'6;   /* CYAN */
+   'b'011100   =>   'd'8;   /* GREEN */
+   'b'011011   =>   'd'24;  /* MAGENTA */
+   'b'011001   =>   'd'26;  /* RED */
+   'b'011010   =>   'd'14;  /* BLUE */
+   'b'011000   =>   'd'16;  /* BLACK */
 }
 
 V0.oe = 'b'1;
@@ -81,6 +100,18 @@ V1.sp = 'b'0;
 V2.sp = 'b'0;
 V3.sp = 'b'0;
 V4.sp = 'b'0;
+
+U0.sp = 'b'0;
+U1.sp = 'b'0;
+U2.sp = 'b'0;
+U3.sp = 'b'0;
+U4.sp = 'b'0;
+
+V0.ar = 'b'0;
+V1.ar = 'b'0;
+V2.ar = 'b'0;
+V3.ar = 'b'0;
+V4.ar = 'b'0;
 
 U0.ar = 'b'0;
 U1.ar = 'b'0;
