@@ -1,0 +1,113 @@
+LISTING FOR LOGIC DESCRIPTION FILE: V28.pld                          Page 1
+
+CUPL(WM): Universal Compiler for Programmable Logic
+Version 5.0a Serial# MW-10400000
+Copyright (c) 1983, 1998 Logical Devices, Inc.
+Created Sat Nov 11 07:35:14 2023
+
+  1:Name     V28 ;
+  2:PartNo   00 ;
+  3:Date     29/09/2023 ;
+  4:Revision 01 ;
+  5:Designer Matt Millman ;
+  6:Company  - ;
+  7:Assembly None ;
+  8:Location  ;
+  9:Device   g22v10 ;
+ 10:
+ 11:/*
+ 12: *   Philips PM8546 Logo Generator
+ 13: *   Open source recreation
+ 14: * 
+ 15: *   File        : V29.pld
+ 16: *   Author      : Matt Millman
+ 17: *   Description : Y/G encoder PAL (Monochrome version)
+ 18: *
+ 19: *   This is free software: you can redistribute it and/or modify
+ 20: *   it under the terms of the GNU General Public License as published by
+ 21: *   the Free Software Foundation, either version 2 of the License, or
+ 22: *   (at your option) any later version.
+ 23: *   This software is distributed in the hope that it will be useful,
+ 24: *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ 25: *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ 26: *   GNU General Public License for more details.
+ 27: *   You should have received a copy of the GNU General Public License
+ 28: *   along with this software.  If not, see <http://www.gnu.org/licenses/>.
+ 29: */
+ 30:
+ 31:/* &=AND #=OR $=XOR */
+ 32:
+ 33:PIN 1 = GCLK;
+ 34:PIN 2 = nTEXT_BLANK;
+ 35:PIN 3 = G_DATA_DELAYED;
+ 36:PIN 4 = B_DATA_DELAYED;
+ 37:PIN 5 = R_DATA_DELAYED;
+ 38:PIN 6 = G_DATA;
+ 39:PIN 7 = B_DATA;
+ 40:PIN 8 = R_DATA;
+ 41:PIN 9 = RGB_MODE;
+ 42:PIN 10 = DELAY_ON;
+ 43:
+ 44:PIN [20..14] = [Y0..6];
+ 45:
+ 46:Field COL_IN = [RGB_MODE, nTEXT_BLANK, DELAY_ON, G_DATA, B_DATA, R_DATA, G_DATA_DELAYED, B_DATA_DELAYED, R_DATA_DELAYED];
+ 47:Field Y_OUT = [Y6..0];
+ 48:
+ 49:/*
+ 50: * Y/G CHANNEL COLOUR LOOKUP TABLE:
+ 51: *
+ 52: * How these values were derived: The hardware appears to be designed such
+ 53: * that half of the range of the DAC is full-scale for the Y channel (black to
+
+LISTING FOR LOGIC DESCRIPTION FILE: V28.pld                          Page 2
+
+CUPL(WM): Universal Compiler for Programmable Logic
+Version 5.0a Serial# MW-10400000
+Copyright (c) 1983, 1998 Logical Devices, Inc.
+Created Sat Nov 11 07:35:14 2023
+
+ 54: * white) and, it is AC coupled, thus, valid Y ranges could be 0-63, 64-127,
+ 55: * or anything in between.
+ 56: *
+ 57: * The below table is for monochrome builds where U/V components are not
+ 58: * populated.
+ 59: *
+ 60: */
+ 61:
+ 62:Table  COL_IN => Y_OUT.d {
+ 63:/*  COL_IN         Y_OUT */
+ 64:   'b'x0xxxxxxx   =>   'd'64;  /* BLANK */
+ 65:   /* YUV (ALL) */
+ 66:   'b'x1x1xxxxx   =>   'd'127; /* WHITE */
+ 67:   'b'x1x0xxxxx   =>   'd'64;  /* BLACK */
+ 68:}
+ 69:
+ 70:Y0.oe = 'b'1;
+ 71:Y1.oe = 'b'1;
+ 72:Y2.oe = 'b'1;
+ 73:Y3.oe = 'b'1;
+ 74:Y4.oe = 'b'1;
+ 75:Y5.oe = 'b'1;
+ 76:Y6.oe = 'b'1;
+ 77:
+ 78:Y0.sp = 'b'0;
+ 79:Y1.sp = 'b'0;
+ 80:Y2.sp = 'b'0;
+ 81:Y3.sp = 'b'0;
+ 82:Y4.sp = 'b'0;
+ 83:Y5.sp = 'b'0;
+ 84:Y6.sp = 'b'0;
+ 85:
+ 86:Y0.ar = 'b'0;
+ 87:Y1.ar = 'b'0;
+ 88:Y2.ar = 'b'0;
+ 89:Y3.ar = 'b'0;
+ 90:Y4.ar = 'b'0;
+ 91:Y5.ar = 'b'0;
+ 92:Y6.ar = 'b'0;
+ 93:
+
+
+
+Jedec Fuse Checksum       (4ea7)
+Jedec Transmit Checksum   (2fdb)
