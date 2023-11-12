@@ -45,15 +45,17 @@
 #define SUBCMD_ADVANCE          0x18
 #define SUBCMD_STANDARD         0x1D
 #define SUBCMD_USER             0x1E
-#define SUBCMD_SAVE             0x21
-#define SUBCMD_READ_NEXT        0x23
-#define SUBCMD_BANKSEL          0x2A
-#define SUBCMD_LOGOGEN_ON       0x41
-#define SUBCMD_LOGOGEN_OFF      0x42
-#define SUBCMD_SET_DATE         0x44
-#define SUBCMD_SET_TIME         0x54
-#define SUBCMD_LOGOGEN_IS_ON    0x61
-#define SUBCMD_LOGOGEN_IS_OFF   0x62
+#define SUBCMD_SAVE             0x21 // !
+#define SUBCMD_READ_NEXT        0x23 // #
+#define SUBCMD_BANKSEL          0x2A // *
+#define SUBCMD_QUERY            0x3F // ?
+#define SUBCMD_LOGOGEN_ON       0x41 // A
+#define SUBCMD_LOGOGEN_OFF      0x42 // B
+#define SUBCMD_INCREMENT        0x49 // I
+#define SUBCMD_SET_DATE         0x44 // D
+#define SUBCMD_SET_TIME         0x54 // T
+#define SUBCMD_LOGOGEN_IS_ON    0x61 // a
+#define SUBCMD_LOGOGEN_IS_OFF   0x62 // b
 
 static void process(char cmd, uint8_t param);
 static void handle_reset(uint8_t param);
@@ -175,7 +177,8 @@ static void handle_format(uint8_t param)
 
     // INTERESTING OBSERVATION: By responding to this command with 0x79 the
     // logo generator appears to be able to block user input on the from
-    // panel, then unblock it again by sending 0x23 subsequently.
+    // front panel, then unblock it again by sending 0x23 subsequently.
+    // What could this be for ...?
 }
 
 static void handle_logogen_ctrl(uint8_t param)
@@ -184,11 +187,23 @@ static void handle_logogen_ctrl(uint8_t param)
     {
     case SUBCMD_LOGOGEN_ON:
         logogen_ctrl(FORMAT_LG_ON, 0x80 | FORMAT_LG_ON);
+        // The base appears to want a status result.
+        // but it does nothing with it. Eh...
         cmd_respond('l', SUBCMD_LOGOGEN_IS_ON);
         break;
     case SUBCMD_LOGOGEN_OFF:
         logogen_ctrl(FORMAT_LG_ON, 0x80);
         cmd_respond('l', SUBCMD_LOGOGEN_IS_OFF);
+        break;
+    case SUBCMD_INCREMENT:
+        // This -may- be used to cycle through various customer logos
+        // programmed into a custom logo generator. We don't use it.
+        cmd_respond('l', SUBCMD_OK);
+        break;
+    case SUBCMD_QUERY:
+        // And presumably this returns which logo sequence is active
+        // Return zero for now.
+        cmd_respond('l', SUBCMD_IS_DATA | 0);
         break;
     default:
         if (param & SUBCMD_IS_LOGO)
@@ -202,7 +217,7 @@ static void handle_date_time(char cmd, uint8_t param)
 {
     uint8_t tmp;
 
-    if (param == '?')
+    if (param == SUBCMD_QUERY)
     {
         switch (cmd)
         {
@@ -226,7 +241,7 @@ static void handle_date_time(char cmd, uint8_t param)
             break;
         }
     }
-    else if (param == 'I')
+    else if (param == SUBCMD_INCREMENT)
     {
         switch (cmd)
         {
@@ -384,6 +399,9 @@ static void handle_char(char cmd, uint8_t param)
     }
     else if (param & SUBCMD_IS_DATA)
     {
+        // Text comes in one character at a time.
+        // The full sequence is quite complicated.
+
         if (cmd == '<')
         {
             if ((_g_rxcmd_idx + 1) == MAX_TEXT)

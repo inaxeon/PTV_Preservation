@@ -70,7 +70,6 @@
 #define DATE_OFFSET     53
 #define TIME_OFFSET     91
 #define LINE_HEIGHT     21 /* Per field. 42 lines total */
-
 #define DEFAULT_PRESET  4 /* Fine tune text H position */
 
 #define VC_SEL0         (1 << 4)
@@ -212,19 +211,11 @@ code promblock_t _g_char_blocks[] = {
 };
 
 code promblock_t _g_logo_blocks[] = {
-    { 12, 0x3F },
+    { 12, 0x3F }, // PTV Logo
     { 30, 0x61 }, // PHILIPS 16:9
   //{ 30, 0xA1 }, // PHILIPS 4:3
-    { 30, 0x81 },
-    { 30, 0xC1 },
-#if 0
-    { 2, 0x18 }, // C (YELLOW)
-    { 2, 0x1A }, // O (CYAN)
-    { 2, 0x1C }, // L (GREEN)
-    { 2, 0x1E }, // O (MAGENTA)
-    { 2, 0x20 }, // U (RED)
-    { 2, 0x22 }, // R (BLUE)
-#endif
+    { 30, 0x81 }, // EBU Colour bars
+    { 30, 0xC1 }, // "COLOUR" demo
 };
 
 const uint8_t _g_last_logo = ((sizeof(_g_logo_blocks) / sizeof(promblock_t)) - 1);

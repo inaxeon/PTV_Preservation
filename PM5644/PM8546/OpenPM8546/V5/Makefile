@@ -23,7 +23,6 @@ $(PROJECT).hex: $(OBJECTS)
 clean:
 	del $(PROJECT)
     del *.obj
-    del *.hex
     del *.lst
     del *.rsp
 	del *.m51

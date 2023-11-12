@@ -85,7 +85,6 @@ void main (void)
 
         if (clock_needs_update())
         {
-            // TODO. Don't turn on until first update;
             logogen_update_clock();
 
             // NOTE: The RTC's clock is tuned for the power off state (VCC=3V)
