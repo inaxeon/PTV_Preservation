@@ -25,13 +25,13 @@ PIN  16 =  V5
 BANK_OUT.d  =>
     BANK_SEL
 
-BANK_OUT.ar SEL0_OUT.ar SEL1_OUT.ar V0.ar V1.ar V2.ar V3.ar V4.ar V5.ar  =>
+BANK_OUT.ar SEL0_OUT.ar SEL1_OUT.ar V1.ar V2.ar V3.ar V4.ar V5.ar  =>
     0 
 
 BANK_OUT.oe  =>
     1 
 
-BANK_OUT.sp SEL0_OUT.sp SEL1_OUT.sp V0.sp V1.sp V2.sp V3.sp V4.sp V5.sp  =>
+BANK_OUT.sp SEL0_OUT.sp SEL1_OUT.sp V1.sp V2.sp V3.sp V4.sp V5.sp  =>
     0 
 
 IDX_OUT =>
@@ -63,13 +63,9 @@ SEL1_OUT.sp  =>
 V0 =>
     !RI
 
-V0.ar  =>
-    
 V0.oe  =>
     1 
 
-V0.sp  =>
-    
 V1.d  =>
     START & V1
 

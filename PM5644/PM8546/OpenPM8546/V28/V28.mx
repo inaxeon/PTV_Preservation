@@ -1,3 +1,23 @@
+/*
+ *   Philips PM8546 Logo Generator
+ *   Open source recreation
+ * 
+ *   File        : V29.pld
+ *   Author      : Matt Millman
+ *   Description : Y/G encoder PAL
+ *
+ *   This is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 2 of the License, or
+ *   (at your option) any later version.
+ *   This software is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *   You should have received a copy of the GNU General Public License
+ *   along with this software.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 Name     V28 ;
 PartNo   00 ;
 Date     29/09/2023 ;
@@ -20,8 +40,7 @@ PIN 7 = B_DATA;
 PIN 8 = R_DATA;
 PIN 9 = RGB_MODE;
 PIN 10 = DELAY_ON;
-
-PIN [20..14] = [Y0..6];
+PIN [14..20] = [Y6..0];
 
 Field COL_IN = [RGB_MODE, nTEXT_BLANK, DELAY_ON, G_DATA, B_DATA, R_DATA, G_DATA_DELAYED, B_DATA_DELAYED, R_DATA_DELAYED];
 Field Y_OUT = [Y6..0];
@@ -71,26 +90,6 @@ Table  COL_IN => Y_OUT.d {
    'b'011xxx000   =>   'd'64;  /* BLACK */
 }
 
-Y0.oe = 'b'1;
-Y1.oe = 'b'1;
-Y2.oe = 'b'1;
-Y3.oe = 'b'1;
-Y4.oe = 'b'1;
-Y5.oe = 'b'1;
-Y6.oe = 'b'1;
-
-Y0.sp = 'b'0;
-Y1.sp = 'b'0;
-Y2.sp = 'b'0;
-Y3.sp = 'b'0;
-Y4.sp = 'b'0;
-Y5.sp = 'b'0;
-Y6.sp = 'b'0;
-
-Y0.ar = 'b'0;
-Y1.ar = 'b'0;
-Y2.ar = 'b'0;
-Y3.ar = 'b'0;
-Y4.ar = 'b'0;
-Y5.ar = 'b'0;
-Y6.ar = 'b'0;
+Y_OUT.oe = 'b'1111111;
+Y_OUT.sp = 'b'0000000;
+Y_OUT.ar = 'b'0000000;

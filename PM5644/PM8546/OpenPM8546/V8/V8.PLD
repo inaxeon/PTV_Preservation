@@ -1,13 +1,3 @@
-Name     V8 ;
-PartNo   00 ;
-Date     26/09/2023 ;
-Revision 01 ;
-Designer Matt Millman ;
-Company  - ;
-Assembly None ;
-Location  ;
-Device   g22v10 ;
-
 /*
  *   Philips PM8546 Logo Generator
  *   Open source recreation
@@ -28,12 +18,22 @@ Device   g22v10 ;
  *   along with this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+Name     V8 ;
+PartNo   00 ;
+Date     26/09/2023 ;
+Revision 01 ;
+Designer Matt Millman ;
+Company  - ;
+Assembly None ;
+Location  ;
+Device   g22v10 ;
+
 /*
-    MEMORY MAP:
-    0xA000: WR V12 (V Control)
-    0x8000: WR V11 (H Preset)
-    0x4000: WR/RD (DPRAM)
-*/
+ *  MEMORY MAP:
+ *  0xA000: WR V12 (V Control)
+ *  0x8000: WR V11 (H Preset)
+ *  0x4000: WR/RD (DPRAM)
+ */
 
 /* &=AND #=OR $=XOR */
 

@@ -3,7 +3,7 @@ LISTING FOR LOGIC DESCRIPTION FILE: V29.pld                          Page 1
 CUPL(WM): Universal Compiler for Programmable Logic
 Version 5.0a Serial# MW-10400000
 Copyright (c) 1983, 1998 Logical Devices, Inc.
-Created Sat Nov 11 05:40:20 2023
+Created Sun Nov 12 07:08:27 2023
 
   1:Name     V29 ;
   2:PartNo   00 ;
@@ -15,136 +15,130 @@ Created Sat Nov 11 05:40:20 2023
   8:Location  ;
   9:Device   g22v10 ;
  10:
- 11:/* &=AND #=OR $=XOR */
- 12:
- 13:PIN 1 = GCLK;
- 14:PIN 2 = nTEXT_BLANK;
- 15:PIN 6 = G_DATA;
- 16:PIN 7 = B_DATA;
- 17:PIN 8 = R_DATA;
- 18:PIN 9 = RGB_MODE;
- 19:PIN 10 = DELAY_ON;
- 20:PIN 13 = IDX;
- 21:
- 22:PIN [23..19] = [V0..4];
- 23:PIN [18..14] = [U0..4];
- 24:
- 25:Field COL_IN = [RGB_MODE, nTEXT_BLANK, IDX, G_DATA, B_DATA, R_DATA];
- 26:Field U_OUT = [U4..0];
- 27:Field V_OUT = [V4..0];
- 28:
- 29:/*
- 30: * UV/BR CHANNEL COLOUR LOOKUP TABLE:
- 31: *
- 32: * How these values were derived: The hardware appears to be designed such
- 33: * that nearly the full range of the DAC is used to generate the U/V signals.
- 34: * Making an educated guess as to the original workings is more difficult.
- 35: *
- 36: * To derive the below values the U/V trimmers were set half-way, then the
- 37: * voltages at the -S input to the colour encoder were compared to +S when the
- 38: * PM5644 is in EBU colour bar mode. This will give values -close- to the
- 39: * orignials, and certainly the ability to tune to perfection as desired.
- 40: *
- 41: * No idea if the value chosen for RGB mode is correct. No surviving RGB
- 42: * PM5644's are known to verify it but this is how it was implemented.
- 43: */
+ 11:/*
+ 12: *   Philips PM8546 Logo Generator
+ 13: *   Open source recreation
+ 14: * 
+ 15: *   File        : V29.pld
+ 16: *   Author      : Matt Millman
+ 17: *   Description : UV/BR encoder PAL
+ 18: *
+ 19: *   This is free software: you can redistribute it and/or modify
+ 20: *   it under the terms of the GNU General Public License as published by
+ 21: *   the Free Software Foundation, either version 2 of the License, or
+ 22: *   (at your option) any later version.
+ 23: *   This software is distributed in the hope that it will be useful,
+ 24: *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ 25: *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ 26: *   GNU General Public License for more details.
+ 27: *   You should have received a copy of the GNU General Public License
+ 28: *   along with this software.  If not, see <http://www.gnu.org/licenses/>.
+ 29: */
+ 30:
+ 31:/* &=AND #=OR $=XOR */
+ 32:
+ 33:PIN 1 = GCLK;
+ 34:PIN 2 = nTEXT_BLANK;
+ 35:PIN 6 = G_DATA;
+ 36:PIN 7 = B_DATA;
+ 37:PIN 8 = R_DATA;
+ 38:PIN 9 = RGB_MODE;
+ 39:PIN 10 = DELAY_ON;
+ 40:PIN 13 = IDX;
+ 41:
+ 42:PIN [23..19] = [V0..4];
+ 43:PIN [18..14] = [U0..4];
  44:
- 45:Table  COL_IN => U_OUT.d {
- 46:   'b'x0xxxx   =>   'd'16;  /* BLANK */
- 47:   /* RGB: B */
- 48:   'b'11xx0x   =>   'd'16;  /* OFF */
- 49:   'b'11xx1x   =>   'd'31;  /* ON (Unverified value) */
- 50:   /* YUV: U */
- 51:   'b'01x111   =>   'd'16;  /* WHITE */
- 52:   'b'01x101   =>   'd'24;  /* YELLOW */
- 53:   'b'01x110   =>   'd'14;  /* CYAN */
+ 45:Field COL_IN = [RGB_MODE, nTEXT_BLANK, IDX, G_DATA, B_DATA, R_DATA];
+ 46:Field U_OUT = [U4..0];
+ 47:Field V_OUT = [V4..0];
+ 48:
+ 49:/*
+ 50: * UV/BR CHANNEL COLOUR LOOKUP TABLE:
+ 51: *
+ 52: * How these values were derived: The hardware appears to be designed such
+ 53: * that nearly the full range of the DAC is used to generate the U/V signals.
 
 LISTING FOR LOGIC DESCRIPTION FILE: V29.pld                          Page 2
 
 CUPL(WM): Universal Compiler for Programmable Logic
 Version 5.0a Serial# MW-10400000
 Copyright (c) 1983, 1998 Logical Devices, Inc.
-Created Sat Nov 11 05:40:20 2023
+Created Sun Nov 12 07:08:27 2023
 
- 54:   'b'01x100   =>   'd'21;  /* GREEN */
- 55:   'b'01x011   =>   'd'10;  /* MAGENTA */
- 56:   'b'01x001   =>   'd'18;  /* RED */
- 57:   'b'01x010   =>   'd'8;   /* BLUE */
- 58:   'b'01x000   =>   'd'16;  /* BLACK */
- 59:}
- 60:
- 61:Table COL_IN => V_OUT.d {
- 62:   'b'x0xxxx   =>   'd'16;  /* BLANK */
- 63:   /* RGB: R */
- 64:   'b'11xxx0   =>   'd'16;  /* OFF */
- 65:   'b'11xxx1   =>   'd'31;  /* ON (Unverified value) */
- 66:   /* YUV: V- */
- 67:   'b'010111   =>   'd'16;  /* WHITE */
- 68:   'b'010101   =>   'd'14;  /* YELLOW */
- 69:   'b'010110   =>   'd'26;  /* CYAN */
- 70:   'b'010100   =>   'd'24;  /* GREEN */
- 71:   'b'010011   =>   'd'8;   /* MAGENTA */
- 72:   'b'010001   =>   'd'6;   /* RED */
- 73:   'b'010010   =>   'd'18;  /* BLUE */
- 74:   'b'010000   =>   'd'16;  /* BLACK */
- 75:   /* YUV: V+ */
- 76:   'b'011111   =>   'd'16;  /* WHITE */
- 77:   'b'011101   =>   'd'18;  /* YELLOW */
- 78:   'b'011110   =>   'd'6;   /* CYAN */
- 79:   'b'011100   =>   'd'8;   /* GREEN */
- 80:   'b'011011   =>   'd'24;  /* MAGENTA */
- 81:   'b'011001   =>   'd'26;  /* RED */
- 82:   'b'011010   =>   'd'14;  /* BLUE */
- 83:   'b'011000   =>   'd'16;  /* BLACK */
- 84:}
- 85:
- 86:V0.oe = 'b'1;
- 87:V1.oe = 'b'1;
- 88:V2.oe = 'b'1;
- 89:V3.oe = 'b'1;
- 90:V4.oe = 'b'1;
- 91:
- 92:U0.oe = 'b'1;
- 93:U1.oe = 'b'1;
- 94:U2.oe = 'b'1;
- 95:U3.oe = 'b'1;
- 96:U4.oe = 'b'1;
- 97:
- 98:V0.sp = 'b'0;
- 99:V1.sp = 'b'0;
-100:V2.sp = 'b'0;
-101:V3.sp = 'b'0;
-102:V4.sp = 'b'0;
-103:
-104:U0.sp = 'b'0;
-105:U1.sp = 'b'0;
-106:U2.sp = 'b'0;
-107:U3.sp = 'b'0;
+ 54: * Making an educated guess as to the original workings is more difficult.
+ 55: *
+ 56: * To derive the below values the U/V trimmers were set half-way, the board is
+ 57: * populated with 1% tolerence components, then the voltages at the -S input
+ 58: * to the colour encoder were compared to +S when the PM5644 is in EBU colour
+ 59: * bar mode. This will give values -close- to the orignials, and certainly the
+ 60: * ability to tune to perfection as desired. Yes it would be better to do all
+ 61: * of the workings from the start, but eh. I'm tired of this.
+ 62: *
+ 63: * No idea if the value chosen for RGB mode is correct. No surviving RGB
+ 64: * PM5644's are known to verify it but this is how it was implemented.
+ 65: */
+ 66:
+ 67:Table  COL_IN => U_OUT.d {
+ 68:   'b'x0xxxx   =>   'd'16;  /* BLANK */
+ 69:   /* RGB: B */
+ 70:   'b'11xx0x   =>   'd'16;  /* OFF */
+ 71:   'b'11xx1x   =>   'd'31;  /* ON (Unverified value) */
+ 72:   /* YUV: U */
+ 73:   'b'01x111   =>   'd'16;  /* WHITE */
+ 74:   'b'01x101   =>   'd'24;  /* YELLOW */
+ 75:   'b'01x110   =>   'd'14;  /* CYAN */
+ 76:   'b'01x100   =>   'd'21;  /* GREEN */
+ 77:   'b'01x011   =>   'd'10;  /* MAGENTA */
+ 78:   'b'01x001   =>   'd'18;  /* RED */
+ 79:   'b'01x010   =>   'd'8;   /* BLUE */
+ 80:   'b'01x000   =>   'd'16;  /* BLACK */
+ 81:}
+ 82:
+ 83:Table COL_IN => V_OUT.d {
+ 84:   'b'x0xxxx   =>   'd'16;  /* BLANK */
+ 85:   /* RGB: R */
+ 86:   'b'11xxx0   =>   'd'16;  /* OFF */
+ 87:   'b'11xxx1   =>   'd'31;  /* ON (Unverified value) */
+ 88:   /* YUV: V- */
+ 89:   'b'010111   =>   'd'16;  /* WHITE */
+ 90:   'b'010101   =>   'd'14;  /* YELLOW */
+ 91:   'b'010110   =>   'd'26;  /* CYAN */
+ 92:   'b'010100   =>   'd'24;  /* GREEN */
+ 93:   'b'010011   =>   'd'8;   /* MAGENTA */
+ 94:   'b'010001   =>   'd'6;   /* RED */
+ 95:   'b'010010   =>   'd'18;  /* BLUE */
+ 96:   'b'010000   =>   'd'16;  /* BLACK */
+ 97:   /* YUV: V+ */
+ 98:   'b'011111   =>   'd'16;  /* WHITE */
+ 99:   'b'011101   =>   'd'18;  /* YELLOW */
+100:   'b'011110   =>   'd'6;   /* CYAN */
+101:   'b'011100   =>   'd'8;   /* GREEN */
+102:   'b'011011   =>   'd'24;  /* MAGENTA */
+103:   'b'011001   =>   'd'26;  /* RED */
+104:   'b'011010   =>   'd'14;  /* BLUE */
+105:   'b'011000   =>   'd'16;  /* BLACK */
+106:}
+107:
 
 LISTING FOR LOGIC DESCRIPTION FILE: V29.pld                          Page 3
 
 CUPL(WM): Universal Compiler for Programmable Logic
 Version 5.0a Serial# MW-10400000
 Copyright (c) 1983, 1998 Logical Devices, Inc.
-Created Sat Nov 11 05:40:20 2023
+Created Sun Nov 12 07:08:27 2023
 
-108:U4.sp = 'b'0;
-109:
-110:V0.ar = 'b'0;
-111:V1.ar = 'b'0;
-112:V2.ar = 'b'0;
-113:V3.ar = 'b'0;
-114:V4.ar = 'b'0;
+108:U_OUT.oe = 'b'11111;
+109:U_OUT.sp = 'b'00000;
+110:U_OUT.ar = 'b'00000;
+111:
+112:V_OUT.oe = 'b'11111;
+113:V_OUT.sp = 'b'00000;
+114:V_OUT.ar = 'b'00000;
 115:
-116:U0.ar = 'b'0;
-117:U1.ar = 'b'0;
-118:U2.ar = 'b'0;
-119:U3.ar = 'b'0;
-120:U4.ar = 'b'0;
-121:
-122:
+116:
 
 
 
 Jedec Fuse Checksum       (fafb)
-Jedec Transmit Checksum   (a556)
+Jedec Transmit Checksum   (a571)

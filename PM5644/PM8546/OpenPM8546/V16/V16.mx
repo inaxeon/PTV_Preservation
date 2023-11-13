@@ -1,3 +1,23 @@
+/*
+ *   Philips PM8546 Logo Generator
+ *   Open source recreation
+ * 
+ *   File        : V16.pld
+ *   Author      : Matt Millman
+ *   Description : Vertical counter PAL
+ *
+ *   This is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 2 of the License, or
+ *   (at your option) any later version.
+ *   This software is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *   You should have received a copy of the GNU General Public License
+ *   along with this software.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
 Name     V16 ;
 PartNo   00 ;
 Date     27/09/2023 ;
@@ -19,30 +39,9 @@ PIN 6 = BANK_SEL;
 PIN 13 = ID_IN;
 PIN 14 = IDX_OUT;
 PIN 15 = BANK_OUT;
-PIN [21..16] = [V0..5];
+PIN [16..21] = [V5..0];
 PIN 22 = SEL1_OUT;
 PIN 23 = SEL0_OUT;
-
-V0.oe = 'b'1;
-V1.oe = 'b'1;
-V2.oe = 'b'1;
-V3.oe = 'b'1;
-V4.oe = 'b'1;
-V5.oe = 'b'1;
-
-V0.sp = 'b'0;
-V1.sp = 'b'0;
-V2.sp = 'b'0;
-V3.sp = 'b'0;
-V4.sp = 'b'0;
-V5.sp = 'b'0;
-
-V0.ar = 'b'0;
-V1.ar = 'b'0;
-V2.ar = 'b'0;
-V3.ar = 'b'0;
-V4.ar = 'b'0;
-V5.ar = 'b'0;
 
 V0 = !RI;
 V1.d = START & !V1;
@@ -51,20 +50,25 @@ V3.d = START & V3 $ V2 & V1;
 V4.d = START & V4 $ V3 & V2 & V1;
 V5.d = START & V5 $ V4 & V3 & V2 & V1;
 
+[V5,V4,V3,V2,V1,V0].oe = 'b'111111;
+[V5,V4,V3,V2,V1].sp = 'b'000000;
+[V5,V4,V3,V2,V1].ar = 'b'000000;
+
+SEL0_OUT.d = SEL0_IN;
+SEL0_OUT.oe = 'b'1;
 SEL0_OUT.ar = 'b'0;
 SEL0_OUT.sp = 'b'0;
-SEL0_OUT.oe = 'b'1;
-SEL0_OUT.d = SEL0_IN;
 
+SEL1_OUT.d = SEL1_IN;
+SEL1_OUT.oe = 'b'1;
 SEL1_OUT.ar = 'b'0;
 SEL1_OUT.sp = 'b'0;
-SEL1_OUT.oe = 'b'1;
-SEL1_OUT.d = SEL1_IN;
 
-IDX_OUT.oe = 'b'1;
-IDX_OUT = ID_IN;
-
+BANK_OUT.d = BANK_SEL;
+BANK_OUT.oe = 'b'1;
 BANK_OUT.ar = 'b'0;
 BANK_OUT.sp = 'b'0;
-BANK_OUT.oe = 'b'1;
-BANK_OUT.d = BANK_SEL;
+
+// Not sure why this signal passes through here?
+IDX_OUT.oe = 'b'1;
+IDX_OUT = ID_IN;

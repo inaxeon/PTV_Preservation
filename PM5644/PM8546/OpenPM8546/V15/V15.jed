@@ -1,7 +1,7 @@
 
 CUPL(WM)        5.0a  Serial# MW-10400000
 Device          g22v10  Library DLIB-h-40-1
-Created         Sat Nov 11 06:18:43 2023
+Created         Mon Nov 13 05:20:32 2023
 Name            V15 
 Partno          00 
 Revision        01 
@@ -202,4 +202,4 @@ Location
 *V0068 11100000000N0HLLLLLLLLHN
 *V0069 01100000000N0HLLLLLLLLHN
 *V0070 11100000000N0HLLLLLLLLHN
-*D8DD
+*D8D7

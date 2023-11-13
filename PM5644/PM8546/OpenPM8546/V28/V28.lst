@@ -3,115 +3,115 @@ LISTING FOR LOGIC DESCRIPTION FILE: V28.pld                          Page 1
 CUPL(WM): Universal Compiler for Programmable Logic
 Version 5.0a Serial# MW-10400000
 Copyright (c) 1983, 1998 Logical Devices, Inc.
-Created Sat Nov 11 05:40:12 2023
+Created Mon Nov 13 05:22:01 2023
 
-  1:Name     V28 ;
-  2:PartNo   00 ;
-  3:Date     29/09/2023 ;
-  4:Revision 01 ;
-  5:Designer Matt Millman ;
-  6:Company  - ;
-  7:Assembly None ;
-  8:Location  ;
-  9:Device   g22v10 ;
- 10:
- 11:/* &=AND #=OR $=XOR */
- 12:
- 13:PIN 1 = GCLK;
- 14:PIN 2 = nTEXT_BLANK;
- 15:PIN 3 = G_DATA_DELAYED;
- 16:PIN 4 = B_DATA_DELAYED;
- 17:PIN 5 = R_DATA_DELAYED;
- 18:PIN 6 = G_DATA;
- 19:PIN 7 = B_DATA;
- 20:PIN 8 = R_DATA;
- 21:PIN 9 = RGB_MODE;
- 22:PIN 10 = DELAY_ON;
- 23:
- 24:PIN [20..14] = [Y0..6];
- 25:
- 26:Field COL_IN = [RGB_MODE, nTEXT_BLANK, DELAY_ON, G_DATA, B_DATA, R_DATA, G_DATA_DELAYED, B_DATA_DELAYED, R_DATA_DELAYED];
- 27:Field Y_OUT = [Y6..0];
- 28:
- 29:/*
- 30: * Y/G CHANNEL COLOUR LOOKUP TABLE:
- 31: *
- 32: * How these values were derived: The hardware appears to be designed such
- 33: * that half of the range of the DAC is full-scale for the Y channel (black to
- 34: * white) and, it is AC coupled, thus, valid Y ranges could be 0-63, 64-127,
- 35: * or anything in between.
- 36: *
- 37: * The values for each colour were selected simply as the closest match for
- 38: * the desired colour, using the PM5644 in EBU colour bar mode as a reference.
- 39: *
- 40: * What to do here then? Well I've decided to park the DAC at its mid-point
- 41: * (64) as the black level, then offset from there, as is done in the UV PAL.
- 42: * This allows the possibility of "blacker than black" output.
- 43: *
- 44: * No idea if the value chosen for RGB mode is correct. No surviving RGB
- 45: * PM5644's are known to verify it but this is how it was implemented.
- 46: */
+  1:/*
+  2: *   Philips PM8546 Logo Generator
+  3: *   Open source recreation
+  4: * 
+  5: *   File        : V29.pld
+  6: *   Author      : Matt Millman
+  7: *   Description : Y/G encoder PAL
+  8: *
+  9: *   This is free software: you can redistribute it and/or modify
+ 10: *   it under the terms of the GNU General Public License as published by
+ 11: *   the Free Software Foundation, either version 2 of the License, or
+ 12: *   (at your option) any later version.
+ 13: *   This software is distributed in the hope that it will be useful,
+ 14: *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ 15: *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ 16: *   GNU General Public License for more details.
+ 17: *   You should have received a copy of the GNU General Public License
+ 18: *   along with this software.  If not, see <http://www.gnu.org/licenses/>.
+ 19: */
+ 20:
+ 21:Name     V28 ;
+ 22:PartNo   00 ;
+ 23:Date     29/09/2023 ;
+ 24:Revision 01 ;
+ 25:Designer Matt Millman ;
+ 26:Company  - ;
+ 27:Assembly None ;
+ 28:Location  ;
+ 29:Device   g22v10 ;
+ 30:
+ 31:/* &=AND #=OR $=XOR */
+ 32:
+ 33:PIN 1 = GCLK;
+ 34:PIN 2 = nTEXT_BLANK;
+ 35:PIN 3 = G_DATA_DELAYED;
+ 36:PIN 4 = B_DATA_DELAYED;
+ 37:PIN 5 = R_DATA_DELAYED;
+ 38:PIN 6 = G_DATA;
+ 39:PIN 7 = B_DATA;
+ 40:PIN 8 = R_DATA;
+ 41:PIN 9 = RGB_MODE;
+ 42:PIN 10 = DELAY_ON;
+ 43:PIN [14..20] = [Y6..0];
+ 44:
+ 45:Field COL_IN = [RGB_MODE, nTEXT_BLANK, DELAY_ON, G_DATA, B_DATA, R_DATA, G_DATA_DELAYED, B_DATA_DELAYED, R_DATA_DELAYED];
+ 46:Field Y_OUT = [Y6..0];
  47:
- 48:Table  COL_IN => Y_OUT.d {
- 49:/*  COL_IN         Y_OUT */
- 50:   'b'x0xxxxxxx   =>   'd'64;  /* BLANK */
- 51:   /* RGB: G */
- 52:   'b'11x0xxxxx   =>   'd'64;  /* OFF */
- 53:   'b'11x1xxxxx   =>   'd'127; /* ON (Unverified value) */
+ 48:/*
+ 49: * Y/G CHANNEL COLOUR LOOKUP TABLE:
+ 50: *
+ 51: * How these values were derived: The hardware appears to be designed such
+ 52: * that half of the range of the DAC is full-scale for the Y channel (black to
+ 53: * white) and, it is AC coupled, thus, valid Y ranges could be 0-63, 64-127,
 
 LISTING FOR LOGIC DESCRIPTION FILE: V28.pld                          Page 2
 
 CUPL(WM): Universal Compiler for Programmable Logic
 Version 5.0a Serial# MW-10400000
 Copyright (c) 1983, 1998 Logical Devices, Inc.
-Created Sat Nov 11 05:40:12 2023
+Created Mon Nov 13 05:22:01 2023
 
- 54:   /* YUV: Y DELAY OFF */
- 55:   'b'010111xxx   =>   'd'127; /* WHITE */
- 56:   'b'010101xxx   =>   'd'106; /* YELLOW */
- 57:   'b'010110xxx   =>   'd'97;  /* CYAN */
- 58:   'b'010100xxx   =>   'd'91;  /* GREEN */
- 59:   'b'010011xxx   =>   'd'83;  /* MAGENTA */
- 60:   'b'010001xxx   =>   'd'77;  /* RED */
- 61:   'b'010010xxx   =>   'd'70;  /* BLUE */
- 62:   'b'010000xxx   =>   'd'64;  /* BLACK */
- 63:   /* YUV: Y DELAY ON */
- 64:   'b'011xxx111   =>   'd'127; /* WHITE */
- 65:   'b'011xxx101   =>   'd'106; /* YELLOW */
- 66:   'b'011xxx110   =>   'd'97;  /* CYAN */
- 67:   'b'011xxx100   =>   'd'91;  /* GREEN */
- 68:   'b'011xxx011   =>   'd'83;  /* MAGENTA */
- 69:   'b'011xxx001   =>   'd'77;  /* RED */
- 70:   'b'011xxx010   =>   'd'70;  /* BLUE */
- 71:   'b'011xxx000   =>   'd'64;  /* BLACK */
- 72:}
- 73:
- 74:Y0.oe = 'b'1;
- 75:Y1.oe = 'b'1;
- 76:Y2.oe = 'b'1;
- 77:Y3.oe = 'b'1;
- 78:Y4.oe = 'b'1;
- 79:Y5.oe = 'b'1;
- 80:Y6.oe = 'b'1;
- 81:
- 82:Y0.sp = 'b'0;
- 83:Y1.sp = 'b'0;
- 84:Y2.sp = 'b'0;
- 85:Y3.sp = 'b'0;
- 86:Y4.sp = 'b'0;
- 87:Y5.sp = 'b'0;
- 88:Y6.sp = 'b'0;
- 89:
- 90:Y0.ar = 'b'0;
- 91:Y1.ar = 'b'0;
- 92:Y2.ar = 'b'0;
- 93:Y3.ar = 'b'0;
- 94:Y4.ar = 'b'0;
- 95:Y5.ar = 'b'0;
- 96:Y6.ar = 'b'0;
+ 54: * or anything in between.
+ 55: *
+ 56: * The values for each colour were selected simply as the closest match for
+ 57: * the desired colour, using the PM5644 in EBU colour bar mode as a reference.
+ 58: *
+ 59: * What to do here then? Well I've decided to park the DAC at its mid-point
+ 60: * (64) as the black level, then offset from there, as is done in the UV PAL.
+ 61: * This allows the possibility of "blacker than black" output.
+ 62: *
+ 63: * No idea if the value chosen for RGB mode is correct. No surviving RGB
+ 64: * PM5644's are known to verify it but this is how it was implemented.
+ 65: */
+ 66:
+ 67:Table  COL_IN => Y_OUT.d {
+ 68:/*  COL_IN         Y_OUT */
+ 69:   'b'x0xxxxxxx   =>   'd'64;  /* BLANK */
+ 70:   /* RGB: G */
+ 71:   'b'11x0xxxxx   =>   'd'64;  /* OFF */
+ 72:   'b'11x1xxxxx   =>   'd'127; /* ON (Unverified value) */
+ 73:   /* YUV: Y DELAY OFF */
+ 74:   'b'010111xxx   =>   'd'127; /* WHITE */
+ 75:   'b'010101xxx   =>   'd'106; /* YELLOW */
+ 76:   'b'010110xxx   =>   'd'97;  /* CYAN */
+ 77:   'b'010100xxx   =>   'd'91;  /* GREEN */
+ 78:   'b'010011xxx   =>   'd'83;  /* MAGENTA */
+ 79:   'b'010001xxx   =>   'd'77;  /* RED */
+ 80:   'b'010010xxx   =>   'd'70;  /* BLUE */
+ 81:   'b'010000xxx   =>   'd'64;  /* BLACK */
+ 82:   /* YUV: Y DELAY ON */
+ 83:   'b'011xxx111   =>   'd'127; /* WHITE */
+ 84:   'b'011xxx101   =>   'd'106; /* YELLOW */
+ 85:   'b'011xxx110   =>   'd'97;  /* CYAN */
+ 86:   'b'011xxx100   =>   'd'91;  /* GREEN */
+ 87:   'b'011xxx011   =>   'd'83;  /* MAGENTA */
+ 88:   'b'011xxx001   =>   'd'77;  /* RED */
+ 89:   'b'011xxx010   =>   'd'70;  /* BLUE */
+ 90:   'b'011xxx000   =>   'd'64;  /* BLACK */
+ 91:}
+ 92:
+ 93:Y_OUT.oe = 'b'1111111;
+ 94:Y_OUT.sp = 'b'0000000;
+ 95:Y_OUT.ar = 'b'0000000;
+ 96:
  97:
 
 
 
 Jedec Fuse Checksum       (f504)
-Jedec Transmit Checksum   (7e67)
+Jedec Transmit Checksum   (7e69)

@@ -1,13 +1,3 @@
-Name     V29 ;
-PartNo   00 ;
-Date     29/09/2023 ;
-Revision 01 ;
-Designer Matt Millman ;
-Company  - ;
-Assembly None ;
-Location  ;
-Device   g22v10 ;
-
 /*
  *   Philips PM8546 Logo Generator
  *   Open source recreation
@@ -27,6 +17,16 @@ Device   g22v10 ;
  *   You should have received a copy of the GNU General Public License
  *   along with this software.  If not, see <http://www.gnu.org/licenses/>.
  */
+ 
+Name     V29 ;
+PartNo   00 ;
+Date     29/09/2023 ;
+Revision 01 ;
+Designer Matt Millman ;
+Company  - ;
+Assembly None ;
+Location  ;
+Device   g22v10 ;
 
 /* &=AND #=OR $=XOR */
 
@@ -39,8 +39,8 @@ PIN 9 = RGB_MODE;
 PIN 10 = DELAY_ON;
 PIN 13 = IDX;
 
-PIN [23..19] = [V0..4];
-PIN [18..14] = [U0..4];
+PIN [19..23] = [V4..0];
+PIN [14..18] = [U4..0];
 
 Field COL_IN = [RGB_MODE, nTEXT_BLANK, IDX, G_DATA, B_DATA, R_DATA];
 Field U_OUT = [U4..0];
@@ -105,38 +105,10 @@ Table COL_IN => V_OUT.d {
    'b'011000   =>   'd'16;  /* BLACK */
 }
 
-V0.oe = 'b'1;
-V1.oe = 'b'1;
-V2.oe = 'b'1;
-V3.oe = 'b'1;
-V4.oe = 'b'1;
+U_OUT.oe = 'b'11111;
+U_OUT.sp = 'b'00000;
+U_OUT.ar = 'b'00000;
 
-U0.oe = 'b'1;
-U1.oe = 'b'1;
-U2.oe = 'b'1;
-U3.oe = 'b'1;
-U4.oe = 'b'1;
-
-V0.sp = 'b'0;
-V1.sp = 'b'0;
-V2.sp = 'b'0;
-V3.sp = 'b'0;
-V4.sp = 'b'0;
-
-U0.sp = 'b'0;
-U1.sp = 'b'0;
-U2.sp = 'b'0;
-U3.sp = 'b'0;
-U4.sp = 'b'0;
-
-V0.ar = 'b'0;
-V1.ar = 'b'0;
-V2.ar = 'b'0;
-V3.ar = 'b'0;
-V4.ar = 'b'0;
-
-U0.ar = 'b'0;
-U1.ar = 'b'0;
-U2.ar = 'b'0;
-U3.ar = 'b'0;
-U4.ar = 'b'0;
+V_OUT.oe = 'b'11111;
+V_OUT.sp = 'b'00000;
+V_OUT.ar = 'b'00000;

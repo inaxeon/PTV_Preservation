@@ -3,44 +3,44 @@ LISTING FOR LOGIC DESCRIPTION FILE: V15.pld                          Page 1
 CUPL(WM): Universal Compiler for Programmable Logic
 Version 5.0a Serial# MW-10400000
 Copyright (c) 1983, 1998 Logical Devices, Inc.
-Created Sat Nov 11 06:18:42 2023
+Created Mon Nov 13 05:20:31 2023
 
-  1:Name     V15 ;
-  2:PartNo   00 ;
-  3:Date     26/09/2023 ;
-  4:Revision 01 ;
-  5:Designer Matt Millman ;
-  6:Company  - ;
-  7:Assembly None ;
-  8:Location  ;
-  9:Device   g22v10 ;
- 10:
- 11:/*
- 12: *   Philips PM8546 Logo Generator
- 13: *   Open source recreation
- 14: * 
- 15: *   File        : V15.pld
- 16: *   Author      : Matt Millman
- 17: *   Description : Horizontal counter PAL
- 18: *
- 19: *   This is free software: you can redistribute it and/or modify
- 20: *   it under the terms of the GNU General Public License as published by
- 21: *   the Free Software Foundation, either version 2 of the License, or
- 22: *   (at your option) any later version.
- 23: *   This software is distributed in the hope that it will be useful,
- 24: *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- 25: *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- 26: *   GNU General Public License for more details.
- 27: *   You should have received a copy of the GNU General Public License
- 28: *   along with this software.  If not, see <http://www.gnu.org/licenses/>.
- 29: */
+  1:/*
+  2: *   Philips PM8546 Logo Generator
+  3: *   Open source recreation
+  4: * 
+  5: *   File        : V15.pld
+  6: *   Author      : Matt Millman
+  7: *   Description : Horizontal counter PAL
+  8: *
+  9: *   This is free software: you can redistribute it and/or modify
+ 10: *   it under the terms of the GNU General Public License as published by
+ 11: *   the Free Software Foundation, either version 2 of the License, or
+ 12: *   (at your option) any later version.
+ 13: *   This software is distributed in the hope that it will be useful,
+ 14: *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ 15: *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ 16: *   GNU General Public License for more details.
+ 17: *   You should have received a copy of the GNU General Public License
+ 18: *   along with this software.  If not, see <http://www.gnu.org/licenses/>.
+ 19: */
+ 20:
+ 21:Name     V15 ;
+ 22:PartNo   00 ;
+ 23:Date     26/09/2023 ;
+ 24:Revision 01 ;
+ 25:Designer Matt Millman ;
+ 26:Company  - ;
+ 27:Assembly None ;
+ 28:Location  ;
+ 29:Device   g22v10 ;
  30:
  31:/* &=AND #=OR $=XOR */
  32:
  33:PIN 1 = GCLK;
  34:PIN 2 = LCNT_IN; /* Output of 'HC161/AC00 */
  35:PIN 3 = nFH_IN; /* Horizontal sync */
- 36:PIN [4..11] = [SH0..7];
+ 36:PIN [11..4] = [SH7..0];
  37:PIN 13 = SH8;
  38:PIN 14 = nSHIFT_LOAD;
  39:PIN 15 = H2;
@@ -53,61 +53,37 @@ Created Sat Nov 11 06:18:42 2023
  46:PIN 22 = H1;
  47:PIN 23 = H0;
  48:
- 49:H0.oe = 'b'1;
- 50:H1.oe = 'b'1;
- 51:H2.oe = 'b'1;
- 52:H3.oe = 'b'1;
- 53:H4.oe = 'b'1;
+ 49:// 9 bit counter. Reset by nFN_IN. Preset by SH8..0
+
+ 50:H0.d = ((nSHIFT_LOAD $ !H0) & nFH_IN) $ (!nFH_IN & SH0);
+ 51:H1.d = ((H1 $ (H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH1);
+ 52:H2.d = ((H2 $ (H1 & H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH2);
+ 53:H3.d = ((H3 $ (H2 & H1 & H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH3);
 
 LISTING FOR LOGIC DESCRIPTION FILE: V15.pld                          Page 2
 
 CUPL(WM): Universal Compiler for Programmable Logic
 Version 5.0a Serial# MW-10400000
 Copyright (c) 1983, 1998 Logical Devices, Inc.
-Created Sat Nov 11 06:18:42 2023
+Created Mon Nov 13 05:20:31 2023
 
- 54:H5.oe = 'b'1;
- 55:H6.oe = 'b'1;
- 56:H7.oe = 'b'1;
- 57:H8.oe = 'b'1;
- 58:
- 59:H0.sp = 'b'0;
- 60:H1.sp = 'b'0;
- 61:H2.sp = 'b'0;
- 62:H3.sp = 'b'0;
- 63:H4.sp = 'b'0;
- 64:H5.sp = 'b'0;
- 65:H6.sp = 'b'0;
- 66:H7.sp = 'b'0;
- 67:H8.sp = 'b'0;
+ 54:H4.d = ((H4 $ (H3 & H2 & H1 & H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH4);
+ 55:H5.d = ((H5 $ (H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH5);
+ 56:H6.d = ((H6 $ (H5 & H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH6);
+ 57:H7.d = ((H7 $ (H6 & H5 & H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH7);
+ 58:H8.d = ((H8 $ (H7 & H6 & H5 & H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH8);
+ 59:
+ 60:[H8,H7,H6,H5,H4,H3,H2,H1,H0].oe = 'b'111111111;
+ 61:[H8,H7,H6,H5,H4,H3,H2,H1,H0].sp = 'b'000000000;
+ 62:[H8,H7,H6,H5,H4,H3,H2,H1,H0].ar = 'b'000000000;
+ 63:
+ 64:nSHIFT_LOAD.d = LCNT_IN # !nSHIFT_LOAD;
+ 65:nSHIFT_LOAD.oe = 'b'1;
+ 66:nSHIFT_LOAD.sp = 'b'0;
+ 67:nSHIFT_LOAD.ar = 'b'0;
  68:
- 69:H0.ar = 'b'0;
- 70:H1.ar = 'b'0;
- 71:H2.ar = 'b'0;
- 72:H3.ar = 'b'0;
- 73:H4.ar = 'b'0;
- 74:H5.ar = 'b'0;
- 75:H6.ar = 'b'0;
- 76:H7.ar = 'b'0;
- 77:H8.ar = 'b'0;
- 78:
- 79:H0.d = ((nSHIFT_LOAD $ !H0) & nFH_IN) $ (!nFH_IN & SH0);
- 80:H1.d = ((H1 $ (H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH1);
- 81:H2.d = ((H2 $ (H1 & H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH2);
- 82:H3.d = ((H3 $ (H2 & H1 & H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH3);
- 83:H4.d = ((H4 $ (H3 & H2 & H1 & H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH4);
- 84:H5.d = ((H5 $ (H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH5);
- 85:H6.d = ((H6 $ (H5 & H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH6);
- 86:H7.d = ((H7 $ (H6 & H5 & H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH7);
- 87:H8.d = ((H8 $ (H7 & H6 & H5 & H4 & H3 & H2 & H1 & H0 & !nSHIFT_LOAD)) & nFH_IN) $ (!nFH_IN & SH8);
- 88:
- 89:nSHIFT_LOAD.sp = 'b'0;
- 90:nSHIFT_LOAD.ar = 'b'0;
- 91:nSHIFT_LOAD.oe = 'b'1;
- 92:nSHIFT_LOAD.d = LCNT_IN # !nSHIFT_LOAD;
- 93:
 
 
 
 Jedec Fuse Checksum       (793d)
-Jedec Transmit Checksum   (cd18)
+Jedec Transmit Checksum   (cd12)

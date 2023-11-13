@@ -5,7 +5,7 @@
 
 CUPL(WM)        5.0a Serial# MW-10400000
 Device          g22v10  Library DLIB-h-40-1
-Created         Sat Sep 30 07:29:47 2023
+Created         Mon Nov 13 05:19:28 2023
 Name            V16 
 Partno          00 
 Revision        01 
@@ -64,14 +64,8 @@ SEL1_OUT.sp  =>
 V0 =>
     !RI
 
-V0.ar  =>
-    0 
-
 V0.oe  =>
     1 
-
-V0.sp  =>
-    0 
 
 V1.d  =>
     START & !V1
@@ -181,9 +175,7 @@ Pol   Name              Ext     Pin     Type     Used   Pterms  Level
     SEL1_OUT            sp      22       X        1       1       1     
     START                       5        V        -       -       -     
     V0                          21       V        1       12      1     
-    V0                  ar      21       X        1       1       1     
     V0                  oe      21       X        1       1       1     
-    V0                  sp      21       X        1       1       1     
     V1                          20       V        -       -       -     
     V1                  d       20       X        1       14      1     
     V1                  ar      20       X        1       1       1     
