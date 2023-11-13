@@ -51,8 +51,8 @@ V4.d = START & V4 $ V3 & V2 & V1;
 V5.d = START & V5 $ V4 & V3 & V2 & V1;
 
 [V5,V4,V3,V2,V1,V0].oe = 'b'111111;
-[V5,V4,V3,V2,V1].sp = 'b'000000;
-[V5,V4,V3,V2,V1].ar = 'b'000000;
+[V5,V4,V3,V2,V1].sp = 'b'00000;
+[V5,V4,V3,V2,V1].ar = 'b'00000;
 
 SEL0_OUT.d = SEL0_IN;
 SEL0_OUT.oe = 'b'1;
