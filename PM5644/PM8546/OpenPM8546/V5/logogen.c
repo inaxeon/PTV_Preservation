@@ -212,8 +212,8 @@ code promblock_t _g_char_blocks[] = {
 
 code promblock_t _g_logo_blocks[] = {
     { 12, 0x3F }, // PTV Logo
-    { 30, 0x61 }, // PHILIPS 16:9
-  //{ 30, 0xA1 }, // PHILIPS 4:3
+    //{ 30, 0x61 }, // PHILIPS 4:3
+    { 30, 0xA1 }, // PHILIPS 16:9
     { 30, 0x81 }, // EBU Colour bars
     { 30, 0xC1 }, // "COLOUR" demo
 };
