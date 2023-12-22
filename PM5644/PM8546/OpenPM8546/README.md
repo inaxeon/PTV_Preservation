@@ -12,10 +12,10 @@ It implements all of the known functionality of the original hardware and genera
 * Clock (date/time) 12/24 hr mode, configurable date format
 * Built in text editor
 * All settings configurable from front panel and SCPI
+* PAL 16:9 or SECAM 4:3 (PAL 4:3 will work but needs horizontal alignment/calibration)
 
 ## NOT IMPLEMENTED (yet)
 
-* Anything other than PAL 16:9
 * Timecode decoder
 
 ## Contents
