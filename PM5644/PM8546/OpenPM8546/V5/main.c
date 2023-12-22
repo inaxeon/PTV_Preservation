@@ -40,11 +40,12 @@ extern uint8_t _g_rxcmd;
 extern uint8_t _g_rxcmd_idx;
 extern char _g_text_buf[];
 
-void vsync_ISR (void) interrupt 0
+void vblank_ISR (void) interrupt 0
 {
-    logogen_vsync_isr();
-    edit_vsync_isr();
-    clock_vsync_isr();
+    logogen_vblank_isr();
+    edit_vblank_isr();
+    clock_vblank_isr();
+    rs232_vblank_isr();
 }
 
 void timer1_ISR (void) interrupt 3
@@ -57,7 +58,7 @@ void mcu_init(void)
 {
     IE = 0x00; //Disable all interrupts
     TMOD = 0x55; // Timer0/1 Configure as 16-bit counters
-    EX0 = 1; // Enable external interrupt 0 (vsync)
+    EX0 = 1; // Enable external interrupt 0 (vblank)
     ET0 = 1; // Enable timer0 overflow (line counter)
     IT0 = 1; // INT0: Falling edge 
     EA = 1; // Enable interrupts globally

@@ -65,12 +65,28 @@
 
 #define LINE_LEN        0x100
 #define SPACE           0x3F
+
+#if defined(ASPECT_4_3)
+#define CENTER          54
+#define DATE_OFFSET     29
+#define TIME_OFFSET     63
+#if defined(STANDARD_PAL)
+#define DEFAULT_PRESET  6 /* DELAY=ON */
+#elif defined(STANDARD_SECAM)
+#define DEFAULT_PRESET  3 /* DELAY=OFF */
+#else
+#error Standard ratio not defined
+#endif
+#elif defined(ASPECT_16_9)
 #define CENTER          80
-#define LOGO_OFFSET     65
 #define DATE_OFFSET     53
 #define TIME_OFFSET     91
-#define LINE_HEIGHT     21 /* Per field. 42 lines total */
 #define DEFAULT_PRESET  4 /* Fine tune text H position */
+#else
+#error Aspect ratio not defined
+#endif
+
+#define LINE_HEIGHT     21 /* Per field. 42 lines total */
 
 #define VC_SEL0         (1 << 4)
 #define VC_SEL1         (1 << 5)
@@ -212,8 +228,13 @@ code promblock_t _g_char_blocks[] = {
 
 code promblock_t _g_logo_blocks[] = {
     { 12, 0x3F }, // PTV Logo
-    //{ 30, 0x61 }, // PHILIPS 4:3
+#if defined(ASPECT_4_3)
+    { 28, 0x62 }, // PHILIPS 4:3
+#elif defined(ASPECT_16_9)
     { 30, 0xA1 }, // PHILIPS 16:9
+#else
+#error Aspect ratio not defined
+#endif
     { 30, 0x81 }, // EBU Colour bars
     { 30, 0xC1 }, // "COLOUR" demo
 };
@@ -270,7 +291,7 @@ void timer0_ISR (void) interrupt 1
     }
 }
 
-void logogen_vsync_isr(void)
+void logogen_vblank_isr(void)
 {
     _text_state = TS_LINE1;
     TRIGGER0_IN_LINES(44);

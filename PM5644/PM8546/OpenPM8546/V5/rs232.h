@@ -22,8 +22,10 @@
  #define __RS232_H__
 
 void rs232_init(void);
+void rs232_vblank_isr(void);
 bool rs232_cmd_ready(void);
 void rs232_cmd_reset(void);
 void rs232_start_tx(void);
+
 
  #endif /* __RS232_H__ */

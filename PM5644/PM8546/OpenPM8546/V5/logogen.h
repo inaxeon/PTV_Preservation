@@ -29,8 +29,18 @@
 #define LOGOGEN_ACTIVATE_CLOCK  (1 << 6)
 #define LOGOGEN_ACTIVATE_LG     (1 << 7)
 
+
+#if defined(ASPECT_4_3)
+#define TEXTA_MAXBLOCKS     18
+#define TEXTB_MAXBLOCKS     28
+#elif defined(ASPECT_16_9)
 #define TEXTA_MAXBLOCKS     20
 #define TEXTB_MAXBLOCKS     30
+#else
+#error Aspect ratio not defined
+#endif
+
+
 #define TEXTA               1
 #define TEXTB               2
 #define MAX_TEXT            32 /* 31 + null terminator */
@@ -53,7 +63,7 @@ void logogen_textb_loaded(void);
 void logogen_set_standard_text(void);
 void logogen_set_clear_text(void);
 void logogen_set_demologo(uint8_t param);
-void logogen_vsync_isr(void);
+void logogen_vblank_isr(void);
 int logogen_get_text_len(const char *str, int maxblocks, uint8_t *maxchars);
 void logogen_ctrl(uint8_t mask, uint8_t config);
 void logogen_update_clock(void);

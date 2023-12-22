@@ -25,7 +25,14 @@
 #define RTC_ADDR    0x50
 
 code char _standard_texta[] = "PHILIPS";
+
+#if defined(ASPECT_4_3)
+code char _standard_textb[] = "PM5644";
+#elif defined(ASPECT_16_9)
 code char _standard_textb[] = "PM5644 16:9";
+#else
+#error Aspect ratio not defined
+#endif
 
 void config_validate(void)
 {

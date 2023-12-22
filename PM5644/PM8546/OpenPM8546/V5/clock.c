@@ -67,7 +67,7 @@ static uint8_t _second;
 static uint8_t _field_counter;
 static uint8_t _clock_state;
 
-void clock_vsync_isr(void)
+void clock_vblank_isr(void)
 {
     if (_clock_state & CLOCK_STOP_TIME)
         return;

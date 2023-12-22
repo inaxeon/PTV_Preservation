@@ -20,6 +20,12 @@
  #ifndef __PROJECT_H__
  #define __PROJECT_H__
 
+//#define ASPECT_16_9
+#define ASPECT_4_3
+
+//#define STANDARD_PAL
+#define STANDARD_SECAM
+
 #include <intrins.h>
 #include <reg51.h>
 #include <stdio.h>
