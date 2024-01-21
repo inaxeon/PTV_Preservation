@@ -20,11 +20,15 @@
  #ifndef __PROJECT_H__
  #define __PROJECT_H__
 
-//#define ASPECT_16_9
-#define ASPECT_4_3
 
-//#define STANDARD_PAL
-#define STANDARD_SECAM
+#define LINES_625
+//#define LINES_525
+
+#define STANDARD_PAL
+//#define STANDARD_SECAM
+
+#define ASPECT_16_9
+//#define ASPECT_4_3
 
 #include <intrins.h>
 #include <reg51.h>
@@ -39,6 +43,12 @@
 #define ST_DELAYCMD_EXEC        (1 << 6)
 #define ST_DELAYCMD_QUEUED      (1 << 7)
 
+#if defined(LINES_625)
 #define FPS 50
+#elif defined(LINES_525)
+#define FPS 60
+#else
+#error Line count not defined
+#endif
 
 #endif /* __PROJECT_H__ */

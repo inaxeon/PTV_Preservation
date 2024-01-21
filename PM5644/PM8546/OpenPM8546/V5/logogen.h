@@ -29,6 +29,7 @@
 #define LOGOGEN_ACTIVATE_CLOCK  (1 << 6)
 #define LOGOGEN_ACTIVATE_LG     (1 << 7)
 
+#if defined(LINES_625)
 
 #if defined(ASPECT_4_3)
 #define TEXTA_MAXBLOCKS     18
@@ -39,7 +40,12 @@
 #else
 #error Aspect ratio not defined
 #endif
-
+#elif defined(LINES_525)
+#define TEXTA_MAXBLOCKS     17
+#define TEXTB_MAXBLOCKS     27
+#else
+#error Line count not defined
+#endif
 
 #define TEXTA               1
 #define TEXTB               2

@@ -66,6 +66,8 @@
 #define LINE_LEN        0x100
 #define SPACE           0x3F
 
+
+#if defined(LINES_625)
 #if defined(ASPECT_4_3)
 #define CENTER          54
 #define DATE_OFFSET     29
@@ -84,6 +86,14 @@
 #define DEFAULT_PRESET  4 /* Fine tune text H position */
 #else
 #error Aspect ratio not defined
+#endif
+#elif defined(LINES_525)
+#define CENTER          52
+#define DATE_OFFSET     28
+#define TIME_OFFSET     61
+#define DEFAULT_PRESET  2 /* DELAY=ON */
+#else
+#error Line count not defined
 #endif
 
 #define LINE_HEIGHT     21 /* Per field. 42 lines total */
@@ -235,8 +245,15 @@ code promblock_t _g_logo_blocks[] = {
 #else
 #error Aspect ratio not defined
 #endif
+#if defined(LINES_625)
     { 30, 0x81 }, // EBU Colour bars
     { 30, 0xC1 }, // "COLOUR" demo
+#elif defined(LINES_525)
+    { 27, 0x82 }, // EBU Colour bars
+    { 27, 0xC3 }, // "COLOUR" demo
+#else
+#error Line count not defined
+#endif
 };
 
 const uint8_t _g_last_logo = ((sizeof(_g_logo_blocks) / sizeof(promblock_t)) - 1);
@@ -259,7 +276,13 @@ void timer0_ISR (void) interrupt 1
         case TS_OFF_B:
             VCONTROL = 0;
             _text_state = TS_CLOCK;
+#if defined(LINES_625)
             TRIGGER0_IN_LINES(83);
+#elif defined(LINES_525)
+            TRIGGER0_IN_LINES(62);
+#else
+#error Line count not defined
+#endif
             break;
         case TS_CLOCK:
             if (_text_flags & LOGOGEN_CLOCK_ON)
@@ -270,7 +293,13 @@ void timer0_ISR (void) interrupt 1
         case TS_OFF_C:
             VCONTROL = 0;
             _text_state = TS_LINE2;
+#if defined(LINES_625)
             TRIGGER0_IN_LINES(60);
+#elif defined(LINES_525)
+            TRIGGER0_IN_LINES(45);
+#else
+#error Line count not defined
+#endif
             break;
         case TS_LINE2:
             if (_text_flags & LOGOGEN_TEXTB_ON)
@@ -294,7 +323,15 @@ void timer0_ISR (void) interrupt 1
 void logogen_vblank_isr(void)
 {
     _text_state = TS_LINE1;
+
+#if defined(LINES_625)
     TRIGGER0_IN_LINES(44);
+#elif defined(LINES_525)
+    TRIGGER0_IN_LINES(36);
+#else
+#error Line count not defined
+#endif
+
     TR0 = 1;
 
     if (_text_flags & LOGOGEN_ACTIVATE_CLOCK)
