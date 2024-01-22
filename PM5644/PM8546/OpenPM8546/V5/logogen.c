@@ -66,8 +66,11 @@
 #define LINE_LEN        0x100
 #define SPACE           0x3F
 
-
 #if defined(LINES_625)
+#define LINE_HEIGHT     21 /* Per field. 42 lines total */
+#define LINES_TO_TEXTA  44
+#define LINES_TO_TEXTB  60
+#define LINES_TO_CLOCK  83
 #if defined(ASPECT_4_3)
 #define CENTER          54
 #define DATE_OFFSET     29
@@ -77,7 +80,7 @@
 #elif defined(STANDARD_SECAM)
 #define DEFAULT_PRESET  3 /* DELAY=OFF */
 #else
-#error Standard ratio not defined
+#error Standard not defined
 #endif
 #elif defined(ASPECT_16_9)
 #define CENTER          80
@@ -88,6 +91,13 @@
 #error Aspect ratio not defined
 #endif
 #elif defined(LINES_525)
+// NOTE: 525 line version starts text on the opposite field
+// to the 625 line version to ensure correct vertical alignment.
+// This is implemented in V16.
+#define LINE_HEIGHT     18 /* Per field. 36 lines total */
+#define LINES_TO_TEXTA  36
+#define LINES_TO_CLOCK  65
+#define LINES_TO_TEXTB  48
 #define CENTER          52
 #define DATE_OFFSET     28
 #define TIME_OFFSET     61
@@ -96,7 +106,6 @@
 #error Line count not defined
 #endif
 
-#define LINE_HEIGHT     21 /* Per field. 42 lines total */
 
 #define VC_SEL0         (1 << 4)
 #define VC_SEL1         (1 << 5)
@@ -123,7 +132,7 @@
 static void write_text(int line, int offset, const char *str);
 static void clear_all(void);
 static void clear_line(uint8_t line);
-static void put_clock_char(uint16_t *dpram_ptr, char chr);
+static void put_clock_char(uint16_t *dpram_ptr, uint8_t idx);
 static void set_flags(uint8_t mask, uint8_t flags);
 static void clear_time(void);
 static void clear_date(void);
@@ -239,7 +248,13 @@ code promblock_t _g_char_blocks[] = {
 code promblock_t _g_logo_blocks[] = {
     { 12, 0x3F }, // PTV Logo
 #if defined(ASPECT_4_3)
+#if defined(LINES_625)
     { 28, 0x62 }, // PHILIPS 4:3
+#elif defined(LINES_525)
+    { 27, 0x62 }, // PHILIPS 4:3
+#else
+#error Line count not defined
+#endif
 #elif defined(ASPECT_16_9)
     { 30, 0xA1 }, // PHILIPS 16:9
 #else
@@ -249,7 +264,7 @@ code promblock_t _g_logo_blocks[] = {
     { 30, 0x81 }, // EBU Colour bars
     { 30, 0xC1 }, // "COLOUR" demo
 #elif defined(LINES_525)
-    { 27, 0x82 }, // EBU Colour bars
+    { 27, 0x83 }, // EBU Colour bars
     { 27, 0xC3 }, // "COLOUR" demo
 #else
 #error Line count not defined
@@ -276,30 +291,18 @@ void timer0_ISR (void) interrupt 1
         case TS_OFF_B:
             VCONTROL = 0;
             _text_state = TS_CLOCK;
-#if defined(LINES_625)
-            TRIGGER0_IN_LINES(83);
-#elif defined(LINES_525)
-            TRIGGER0_IN_LINES(62);
-#else
-#error Line count not defined
-#endif
+            TRIGGER0_IN_LINES(LINES_TO_CLOCK);
             break;
         case TS_CLOCK:
             if (_text_flags & LOGOGEN_CLOCK_ON)
-                VCONTROL = VC_START | VC_SEL1;
+                VCONTROL = VC_START | VC_SEL1 | VC_BANK1;
             _text_state = TS_OFF_C;
             TRIGGER0_IN_LINES(LINE_HEIGHT);
             break;
         case TS_OFF_C:
             VCONTROL = 0;
             _text_state = TS_LINE2;
-#if defined(LINES_625)
-            TRIGGER0_IN_LINES(60);
-#elif defined(LINES_525)
-            TRIGGER0_IN_LINES(45);
-#else
-#error Line count not defined
-#endif
+            TRIGGER0_IN_LINES(LINES_TO_TEXTB);
             break;
         case TS_LINE2:
             if (_text_flags & LOGOGEN_TEXTB_ON)
@@ -324,13 +327,7 @@ void logogen_vblank_isr(void)
 {
     _text_state = TS_LINE1;
 
-#if defined(LINES_625)
-    TRIGGER0_IN_LINES(44);
-#elif defined(LINES_525)
-    TRIGGER0_IN_LINES(36);
-#else
-#error Line count not defined
-#endif
+    TRIGGER0_IN_LINES(LINES_TO_TEXTA);
 
     TR0 = 1;
 
@@ -390,45 +387,45 @@ void logogen_update_clock(void)
         {
             // Assumed to be DD:MM:YY
             tmp = clock_get_day();
-            put_clock_char(&dpram_ptr, '0' + (tmp / 10));
-            put_clock_char(&dpram_ptr, '0' + (tmp % 10));
-            put_clock_char(&dpram_ptr, '-');
+            put_clock_char(&dpram_ptr, (tmp / 10));
+            put_clock_char(&dpram_ptr, (tmp % 10));
+            put_clock_char(&dpram_ptr, 11 /* - */);
             tmp = clock_get_month();
-            put_clock_char(&dpram_ptr, '0' + (tmp / 10));
-            put_clock_char(&dpram_ptr, '0' + (tmp % 10));
-            put_clock_char(&dpram_ptr, '-');
+            put_clock_char(&dpram_ptr, (tmp / 10));
+            put_clock_char(&dpram_ptr, (tmp % 10));
+            put_clock_char(&dpram_ptr, 11 /* - */);
             tmp = clock_get_year();
-            put_clock_char(&dpram_ptr, '0' + (tmp / 10));
-            put_clock_char(&dpram_ptr, '0' + (tmp % 10));
+            put_clock_char(&dpram_ptr, (tmp / 10));
+            put_clock_char(&dpram_ptr, (tmp % 10));
         }
         else if (tmp == FORMAT_US)
         {
             // MM:DD:YY
             tmp = clock_get_month();
-            put_clock_char(&dpram_ptr, '0' + (tmp / 10));
-            put_clock_char(&dpram_ptr, '0' + (tmp % 10));
-            put_clock_char(&dpram_ptr, '-');
+            put_clock_char(&dpram_ptr, (tmp / 10));
+            put_clock_char(&dpram_ptr, (tmp % 10));
+            put_clock_char(&dpram_ptr, 11 /* - */);
             tmp = clock_get_day();
-            put_clock_char(&dpram_ptr, '0' + (tmp / 10));
-            put_clock_char(&dpram_ptr, '0' + (tmp % 10));
-            put_clock_char(&dpram_ptr, '-');
+            put_clock_char(&dpram_ptr, (tmp / 10));
+            put_clock_char(&dpram_ptr, (tmp % 10));
+            put_clock_char(&dpram_ptr, 11 /* - */);
             tmp = clock_get_year();
-            put_clock_char(&dpram_ptr, '0' + (tmp / 10));
-            put_clock_char(&dpram_ptr, '0' + (tmp % 10));
+            put_clock_char(&dpram_ptr, (tmp / 10));
+            put_clock_char(&dpram_ptr, (tmp % 10));
         }
         else
         {   // ISO8601: YY:MM:DD
             tmp = clock_get_year();
-            put_clock_char(&dpram_ptr, '0' + (tmp / 10));
-            put_clock_char(&dpram_ptr, '0' + (tmp % 10));
-            put_clock_char(&dpram_ptr, '-');
+            put_clock_char(&dpram_ptr, (tmp / 10));
+            put_clock_char(&dpram_ptr, (tmp % 10));
+            put_clock_char(&dpram_ptr, 11 /* - */);
             tmp = clock_get_month();
-            put_clock_char(&dpram_ptr, '0' + (tmp / 10));
-            put_clock_char(&dpram_ptr, '0' + (tmp % 10));
-            put_clock_char(&dpram_ptr, '-');
+            put_clock_char(&dpram_ptr, (tmp / 10));
+            put_clock_char(&dpram_ptr, (tmp % 10));
+            put_clock_char(&dpram_ptr, 11 /* - */);
             tmp = clock_get_day();
-            put_clock_char(&dpram_ptr, '0' + (tmp / 10));
-            put_clock_char(&dpram_ptr, '0' + (tmp % 10));
+            put_clock_char(&dpram_ptr, (tmp / 10));
+            put_clock_char(&dpram_ptr, (tmp % 10));
         }
     }
 
@@ -452,16 +449,16 @@ void logogen_update_clock(void)
         // FORMAT_ISO is never sent by the front panel
         // So FORMAT_EUR must be 24-hour time.
 
-        put_clock_char(&dpram_ptr, '0' + (hour_adjusted / 10));
-        put_clock_char(&dpram_ptr, '0' + (hour_adjusted % 10));
-        put_clock_char(&dpram_ptr, ':');
+        put_clock_char(&dpram_ptr, (hour_adjusted / 10));
+        put_clock_char(&dpram_ptr, (hour_adjusted % 10));
+        put_clock_char(&dpram_ptr, 10 /* : */);
         tmp = clock_get_minute();
-        put_clock_char(&dpram_ptr, '0' + (tmp / 10));
-        put_clock_char(&dpram_ptr, '0' + (tmp % 10));
-        put_clock_char(&dpram_ptr, ':');
+        put_clock_char(&dpram_ptr, (tmp / 10));
+        put_clock_char(&dpram_ptr, (tmp % 10));
+        put_clock_char(&dpram_ptr, 10 /* : */);
         tmp = clock_get_second();
-        put_clock_char(&dpram_ptr, '0' + (tmp / 10));
-        put_clock_char(&dpram_ptr, '0' + (tmp % 10));
+        put_clock_char(&dpram_ptr, (tmp / 10));
+        put_clock_char(&dpram_ptr, (tmp % 10));
     }
 }
 
@@ -720,14 +717,12 @@ static void write_text(int line, int offset, const char *str)
     }
 }
 
-void put_clock_char(uint16_t *dpram_ptr, char chr)
+static void put_clock_char(uint16_t *dpram_ptr, uint8_t idx)
 {
-    const promblock_t* pb;
+    idx <<= 1;
 
-    pb = &_g_char_blocks[chr - FIRST_CHAR];
-
-    DPRAM(*dpram_ptr) = pb->addr;
+    DPRAM(*dpram_ptr) = idx;
     (*dpram_ptr)++;
-    DPRAM(*dpram_ptr) = pb->addr + 1;
+    DPRAM(*dpram_ptr) = idx + 1;
     (*dpram_ptr)++;
 }

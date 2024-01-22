@@ -20,21 +20,34 @@
  #ifndef __PROJECT_H__
  #define __PROJECT_H__
 
-
-#define LINES_625
-//#define LINES_525
-
-#define STANDARD_PAL
-//#define STANDARD_SECAM
-
-#define ASPECT_16_9
-//#define ASPECT_4_3
-
 #include <intrins.h>
 #include <reg51.h>
 #include <stdio.h>
 #include <string.h>
 #include "types.h"
+
+//#define PAL_4_3_BUILD
+//#define PAL_16_9_BUILD
+//#define SECAM_BUILD
+#define PAL_M_BUILD
+
+#if defined(PAL_4_3_BUILD)
+#define LINES_625
+#define STANDARD_PAL
+#define ASPECT_4_3
+#elif defined(PAL_16_9_BUILD)
+#define LINES_625
+#define STANDARD_PAL
+#define ASPECT_4_3
+#elif defined(SECAM_BUILD)
+#define LINES_625
+#define STANDARD_SECAM
+#define ASPECT_4_3
+#elif defined(PAL_M_BUILD)
+#define LINES_525
+#define STANDARD_PAL
+#define ASPECT_4_3
+#endif
 
 #define ST_DELAYCMD_MASK        0x7
 #define ST_DELAYCMD_LG_ON       1
@@ -42,13 +55,5 @@
 #define ST_UPDATE_CLOCK         (1 << 5)
 #define ST_DELAYCMD_EXEC        (1 << 6)
 #define ST_DELAYCMD_QUEUED      (1 << 7)
-
-#if defined(LINES_625)
-#define FPS 50
-#elif defined(LINES_525)
-#define FPS 60
-#else
-#error Line count not defined
-#endif
 
 #endif /* __PROJECT_H__ */

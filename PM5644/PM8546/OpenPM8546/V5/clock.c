@@ -53,6 +53,14 @@
 #define CLOCK_STOP_DATE     (1 << 2)
 #define CLOCK_NEEDS_UPDATE  (1 << 3)
 
+#if defined(LINES_625)
+#define FPS 50
+#elif defined(LINES_525)
+#define FPS 60
+#else
+#error Line count not defined
+#endif
+
 static void tick_second(void);
 static void tick_day(void);
 static uint8_t number_of_days(uint8_t month_number, int year);
