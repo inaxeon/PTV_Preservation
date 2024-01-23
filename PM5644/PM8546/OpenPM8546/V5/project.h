@@ -29,7 +29,7 @@
 //#define PAL_4_3_BUILD
 //#define PAL_16_9_BUILD
 //#define SECAM_BUILD
-#define PAL_M_BUILD
+//#define PAL_M_BUILD
 
 #if defined(PAL_4_3_BUILD)
 #define LINES_625
@@ -38,7 +38,7 @@
 #elif defined(PAL_16_9_BUILD)
 #define LINES_625
 #define STANDARD_PAL
-#define ASPECT_4_3
+#define ASPECT_16_9
 #elif defined(SECAM_BUILD)
 #define LINES_625
 #define STANDARD_SECAM
