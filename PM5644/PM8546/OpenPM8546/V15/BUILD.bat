@@ -1,1 +1,12 @@
-c:\Wincupl\shared\cupl -m1lxfjnaes -u C:\Wincupl\Shared\cupl.dl V15.PLD
+@ECHO OFF
+c:\Wincupl\shared\cupl -m1lxfjae -u C:\Wincupl\Shared\cupl.dl g22v10 V15.PLD
+DEL V15_G22V10.JED
+REN V15.JED V15_G22V10.JED
+c:\Wincupl\shared\cupl -m1lxfjae -u C:\Wincupl\Shared\cupl.dl p22v10 V15.PLD
+DEL V15_P22V10.JED
+REN V15.JED V15_P22V10.JED
+DEL *.mx
+DEL *.sim
+DEL *.lst
+DEL *.abs
+DEL *.doc

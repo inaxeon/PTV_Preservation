@@ -22,7 +22,7 @@
 #define __EDIT_H__
 
 void edit_init(void);
-void edit_vsync_isr(void);
+void edit_vblank_isr(void);
 uint8_t edit_needs_update(void);
 bool edit_text_field(void);
 void edit_char_down(void);

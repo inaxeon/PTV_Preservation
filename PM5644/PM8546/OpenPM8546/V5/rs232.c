@@ -45,8 +45,7 @@ static void rs232_send(uint8_t txdata);
 uint8_t _g_xferbuf[3];
 static uint8_t _idx;
 static uint8_t _state;
-
-// IMPLEMENT STATE TIMEOUTS!!
+static uint8_t _last_txn_timestamp;
 
 void rs232_isr(void) interrupt 4
 {
@@ -61,10 +60,7 @@ void rs232_isr(void) interrupt 4
             SBUF = ACK_LG_TO_BASE;
 
             if (_idx == 3)
-            {
-                _idx = 0;
                 _state = ST_CMD_RECEIVED;
-            }
         }
         if (_state == ST_TX)
         {
@@ -85,6 +81,19 @@ void rs232_isr(void) interrupt 4
         TI = 0;
 }
 
+void rs232_vblank_isr(void)
+{
+    if (_state != ST_RX)
+    {
+        if (_last_txn_timestamp++ >= 6)
+        {
+            // Timeout. Reset state machine.
+            _last_txn_timestamp = 0;
+            rs232_cmd_reset();
+        }
+    }
+}
+
 void rs232_init(void)
 {
     // Serial Mode 2, 9-Data Bit, REN Enabled
@@ -93,6 +102,7 @@ void rs232_init(void)
     ES = 1; // Enable serial interrupts
 
     _idx = 0;
+    _last_txn_timestamp = 0;
     _state = ST_RX;
 }
 
@@ -103,6 +113,7 @@ bool rs232_cmd_ready(void)
 
 void rs232_cmd_reset(void)
 {
+    _idx = 0;
     _state = ST_RX;
 }
 

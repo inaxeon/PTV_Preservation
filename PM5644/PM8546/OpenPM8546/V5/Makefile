@@ -5,12 +5,12 @@ LN = c:\Keil\bin\bl51
 OH = c:\Keil\bin\oh51
 
 PROJECT = logogen
-CFLAGS =
+CFLAGS = DEFINE($(BUILD_TYPE)=1)
 LIBS  = 
 START = 
 
 .c.obj:
-	$(CC) $(CFLAGS) $&.c
+	$(CC) $&.c $(CFLAGS)
 
 OBJECTS = main.obj logogen.obj cmd.obj rs232.obj i2c.obj config.obj edit.obj clock.obj
 
@@ -18,7 +18,7 @@ $(PROJECT).hex: $(OBJECTS)
 	echo $(OBJECTS: =,) > tmp.rsp
 	echo TO $(PROJECT) RAMSIZE(128) PL(68) PW(78) CODE(80h) XDATA(8000h) DISABLEWARNING(16) >> tmp.rsp
 	$(LN) @tmp.rsp 
-	$(OH) $(PROJECT) HEXFILE($<)
+	$(OH) $(PROJECT) HEXFILE(logogen_$(BUILD_TYPE).hex)
 
 clean:
 	del $(PROJECT)
@@ -26,3 +26,4 @@ clean:
     del *.lst
     del *.rsp
 	del *.m51
+	

@@ -53,6 +53,14 @@
 #define CLOCK_STOP_DATE     (1 << 2)
 #define CLOCK_NEEDS_UPDATE  (1 << 3)
 
+#if defined(LINES_625)
+#define FPS 50
+#elif defined(LINES_525)
+#define FPS 60
+#else
+#error Line count not defined
+#endif
+
 static void tick_second(void);
 static void tick_day(void);
 static uint8_t number_of_days(uint8_t month_number, int year);
@@ -67,7 +75,7 @@ static uint8_t _second;
 static uint8_t _field_counter;
 static uint8_t _clock_state;
 
-void clock_vsync_isr(void)
+void clock_vblank_isr(void)
 {
     if (_clock_state & CLOCK_STOP_TIME)
         return;

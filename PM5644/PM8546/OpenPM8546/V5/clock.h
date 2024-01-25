@@ -21,7 +21,7 @@
  #ifndef __CLOCK_H__
  #define __CLOCK_H__
 
-void clock_vsync_isr(void);
+void clock_vblank_isr(void);
 void clock_init(void);
 bool clock_needs_update(void);
 void clock_set_year(uint8_t value);

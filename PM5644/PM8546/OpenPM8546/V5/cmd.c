@@ -53,6 +53,8 @@
 #define SUBCMD_LOGOGEN_OFF      0x42 // B
 #define SUBCMD_INCREMENT        0x49 // I
 #define SUBCMD_SET_DATE         0x44 // D
+#define SUBCMD_EDIT_CLOCK_FMT   0x45 // E
+#define SUBCMD_QUIT_CLOCK_FMT   0x51 // Q
 #define SUBCMD_SET_TIME         0x54 // T
 #define SUBCMD_LOGOGEN_IS_ON    0x61 // a
 #define SUBCMD_LOGOGEN_IS_OFF   0x62 // b
@@ -163,22 +165,33 @@ static void handle_format(uint8_t param)
     {
     case SUBCMD_SET_DATE:
         clock_stop_date();
+        cmd_respond('f', 'd');
         break;
     case SUBCMD_SET_TIME:
         clock_stop_time();
+        cmd_respond('f', 't');
+        break;
+    case SUBCMD_EDIT_CLOCK_FMT:
+        // We receive this when the edit clock mode level is entered on the front panel
+        // ... but why?
+        cmd_respond('f', 'e'); // Just acknowledge it.
+        break;
+    case SUBCMD_QUIT_CLOCK_FMT:
+        // And this when the clock mode level is exited
+        // ... but why?
+        cmd_respond('f', 'q'); // Once again just acknowledge it.
         break;
     default:
         if (param & SUBCMD_IS_DATA)
             logogen_ctrl(0xF7, param);
+        cmd_respond('f', 'x');
         break;
     }
-
-    cmd_respond('f', 0x64 /* OK (?) */);
 
     // INTERESTING OBSERVATION: By responding to this command with 0x79 the
     // logo generator appears to be able to block user input on the from
     // front panel, then unblock it again by sending 0x23 subsequently.
-    // What could this be for ...?
+    // What could this be for ...? It may be something to do with timecode operation?
 }
 
 static void handle_logogen_ctrl(uint8_t param)

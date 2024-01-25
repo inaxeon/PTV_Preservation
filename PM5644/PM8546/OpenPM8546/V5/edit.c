@@ -68,7 +68,7 @@ void edit_init(void)
     _blink_timeout = 0;
 }
 
-void edit_vsync_isr(void)
+void edit_vblank_isr(void)
 {
     if (_edit_state & (EDIT_BLINK2 | EDIT_BLINK1))
     {
