@@ -119,6 +119,7 @@
 #define TS_OFF_C        4
 #define TS_LINE2        5
 #define TS_OFF_D        6
+#define TS_INIT         7
 
 #define HPRESET *(volatile unsigned char xdata *)(HPRESET_REG)
 #define VCONTROL *(volatile unsigned char xdata *)(VCONTROL_REG)
@@ -320,11 +321,16 @@ void timer0_ISR (void) interrupt 1
             _text_state = TS_OFF_A;
             TR0 = 0; // Timer off
             break;
+        case TS_INIT:
+            break;
     }
 }
 
 void logogen_vblank_isr(void)
 {
+    if (_text_state == TS_INIT)
+        return;
+
     _text_state = TS_LINE1;
 
     TRIGGER0_IN_LINES(LINES_TO_TEXTA);
@@ -342,6 +348,9 @@ void logogen_vblank_isr(void)
         _text_flags &= ~LOGOGEN_ACTIVATE_LG;
         P1 &= ~0x08; // BLANK2 CTRL
     }
+
+    if (_text_flags & LOGOGEN_WAIT_VBLANK)
+        _text_flags &= ~LOGOGEN_WAIT_VBLANK;
 }
 
 void logogen_update_text(uint8_t field)
@@ -488,11 +497,14 @@ int logogen_get_text_len(const char *str, int maxblocks, uint8_t *maxchars)
 
 void logogen_init(void)
 {
+    _text_state = TS_INIT;
+
     clear_all();
+
+    _text_state = TS_LINE1;
 
     HPRESET = DEFAULT_PRESET;
     VCONTROL = 0x00;
-    _text_state = TS_LINE1;
     _text_flags = 0;
     _ctrl = (FORMAT_ISO << FORMAT_DATEFMT_SHIFT) | (FORMAT_ISO << FORMAT_TIMEFMT_SHIFT);
 
@@ -624,8 +636,32 @@ static void clear_all(void)
 {
     int i;
 
-    for (i = 0; i < LINE_LEN * 4; i++)
-        DPRAM(i) = SPACE;
+    // We must not clash with the generator circuitry while clearing out
+    // the DPRAM. Make sure a different line is selected when clearing it
+
+    VCONTROL = VC_SEL0; // Select line 1
+
+    // Clear line 0
+    for (i = 0; i < LINE_LEN; i++)
+        DPRAM((LINE_LEN * 0) + i) = SPACE;
+
+    VCONTROL = VC_SEL1; // Select line 2
+
+    // Clear line 1
+    for (i = 0; i < LINE_LEN; i++)
+        DPRAM((LINE_LEN * 1) + i) = SPACE;
+
+    VCONTROL = VC_SEL1 | VC_SEL0; // Select line 3
+
+    // Clear line 2
+    for (i = 0; i < LINE_LEN; i++)
+        DPRAM((LINE_LEN * 2) + i) = SPACE;
+
+    VCONTROL = 0; // Select line 0
+
+    // Clear line 3
+    for (i = 0; i < LINE_LEN; i++)
+        DPRAM((LINE_LEN * 3) + i) = SPACE;
 }
 
 static void clear_line(uint8_t line)

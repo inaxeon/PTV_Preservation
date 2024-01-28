@@ -14,11 +14,11 @@ START =
 
 OBJECTS = main.obj logogen.obj cmd.obj rs232.obj i2c.obj config.obj edit.obj clock.obj
 
-$(PROJECT).hex: $(OBJECTS)
+$(PROJECT)_$(BUILD_TYPE).hex: $(OBJECTS)
 	echo $(OBJECTS: =,) > tmp.rsp
 	echo TO $(PROJECT) RAMSIZE(128) PL(68) PW(78) CODE(80h) XDATA(8000h) DISABLEWARNING(16) >> tmp.rsp
 	$(LN) @tmp.rsp 
-	$(OH) $(PROJECT) HEXFILE(logogen_$(BUILD_TYPE).hex)
+	$(OH) $(PROJECT) HEXFILE($<)
 
 clean:
 	del $(PROJECT)

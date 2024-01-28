@@ -21,6 +21,7 @@
  #ifndef __LOGOGEN_H__
  #define __LOGOGEN_H__
 
+#define LOGOGEN_WAIT_VBLANK     (1 << 0)
 #define LOGOGEN_TEXTA_ON        (1 << 1)
 #define LOGOGEN_CLOCK_ON        (1 << 2)
 #define LOGOGEN_TEXTB_ON        (1 << 3)
