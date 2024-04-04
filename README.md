@@ -4,11 +4,13 @@ This repository contains all of the catalogues, manuals and code dumps I have fo
 
 * PM5534 color pattern generator
 * PM5544 color pattern generator
+* PM5570 video test signal generator
 * PM5580 TV modulator
 * PM5588 TV stereo sound modulator (Zweikanalton)
 * PM5631 color generator
 * PM5638 component color encoder, SPG
 * PM5644 color pattern generator
+* PM5654 VITS generator & inserter
 * PM5655 VITS generator & inserter
 * PM5680 TV modulator
 * PM5687 TV digital sound modulator (NICAM)
