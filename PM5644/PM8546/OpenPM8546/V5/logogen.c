@@ -348,9 +348,6 @@ void logogen_vblank_isr(void)
         _text_flags &= ~LOGOGEN_ACTIVATE_LG;
         P1 &= ~0x08; // BLANK2 CTRL
     }
-
-    if (_text_flags & LOGOGEN_WAIT_VBLANK)
-        _text_flags &= ~LOGOGEN_WAIT_VBLANK;
 }
 
 void logogen_update_text(uint8_t field)
