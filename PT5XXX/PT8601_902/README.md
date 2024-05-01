@@ -4,6 +4,10 @@ This folder contains a functionally accurate reconstruction of option 902 for th
 
 The original MCU code is lost to history, and probably only worked on very early PT8601 boards which differ to those in general circulation in unknown ways.
 
+In addition to re-programming most of the chips on the board, the MCU (V50) must be changed to DS80C320ECL.
+
 It must be installed in a PT5210 running the "DVG" firmware in this repository.
 
-![programmed board](Board.jpg "PT5210/902")
+![test card output](Running.jpg "PT5210/902 Running")
+![programmed board](Board.jpg "PT5210/902 Board")
+
