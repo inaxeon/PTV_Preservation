@@ -12,7 +12,7 @@
 /*		code UC* FindPatternTable( UC HWtype, UC HWVersion);										*/
 /*		code UC* FindAudioLevelTable( UC HWtype);										*/
 /*																									*/
-/*		void AnlValidateSetting( UC HWtype, UC HWVersion, UC ndx)									*/
+/*		void AnlValidateSetting( UC HWtype, UC HWversion, UC ndx)									*/
 /*		UC AnlValidatePattern( UC HWtype, UC ndx, UC system, UC pattern)		*/
 /*		UC AnlValidateGroupPattern( UC HWtype, UC ndx, UC system, \				*/
 /*																	 UC group, UC pattern)	*/
@@ -901,23 +901,23 @@ code UC ExtTextCharSet[236] = {
 	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
 
 // 125-149
-//	}, ~,    €, , ‚, ƒ, „, …, †, ‡, ˆ, ‰, Š, ‹, Œ, , , , , ‘, ’, “, ”, •,
+//	}, ~,    ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½,
 	0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0,
 
 // 150-174
-//	–, —, ˜, ™, š, ›, œ, , , Ÿ,  , ¡, ¢, £, ¤, ¥, ¦, §, ¨, ©, ª, «, ¬, ­, ®,
+//	ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½,
 	1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 
 // 175-199
-// ¯, °, ±, ², ³, ´, µ, ¶, ·, ¸, ¹, º, », ¼, ½, ¾, ¿, À, Á, Â, Ã, Ä, Å, Æ, Ç,
+// ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½,
 	0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 
 // 200-224
-//	È, É, Ê, Ë,  , Í, Î, Ï, Ğ, Ñ, Ò, Ó, Ô, Õ, Ö, ×, Ø, Ù, Ú, Û, Ü, İ, Ş, ß,  ,
+//	ï¿½, ï¿½, ï¿½, ï¿½,  , ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½,  ,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1,
 
 // 225-235
-//	á, â, ã, ä, å, æ, ç, è, é, ê, ë
+//	ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½, ï¿½
 	1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0
 };
 
@@ -930,7 +930,7 @@ code UC PresetCharSet[128] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 
 // 25-49
-//	                      , !, ", #, $, %, &, ï, (, ), *, +, ,, -, ., /, 0, 1,
+//	                      , !, ", #, $, %, &, ï¿½, (, ), *, +, ,, -, ., /, 0, 1,
 	0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1,
 
 // 50-74
@@ -1040,7 +1040,7 @@ code UC* FindAudioLevelTable( UC HWtype) {
 /*	Returns:		--																				*/
 /*	Updates:		--																				*/
 /***************************************************************************/
-void AnlValidateSetting( UC HWtype, UC ndx) {
+void AnlValidateSetting( UC HWtype, UC HWversion, UC ndx) {
 
 	register UC i;
 	UC system;
@@ -1058,11 +1058,14 @@ void AnlValidateSetting( UC HWtype, UC ndx) {
 			textPtr = AnlTPGConfig[ndx].Text[0];
 
 			i = 0;
-			while ( textPtr[i] && ( i < 8))
-				if ( !StdTextCharSet[textPtr[i++]]) {
-					strcpy( textPtr, "ANALOG1");
-					break;
-				}
+			if (HWversion != 2)
+			{
+				while ( textPtr[i] && ( i < 8))
+					if ( !StdTextCharSet[textPtr[i++]]) {
+						strcpy( textPtr, "ANALOG1");
+						break;
+					}
+			}
 														// Break IS missing!!
 		case PT8631:
 			system = AnlTPGConfig[ndx].System;

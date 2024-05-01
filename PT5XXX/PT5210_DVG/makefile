@@ -72,7 +72,6 @@ xaintfc.obj:  XAINTFC.C
 clean:
     del *.obj
     del *.hex
-    del *.bin
     del *.err
     del *.map
     del *.sym

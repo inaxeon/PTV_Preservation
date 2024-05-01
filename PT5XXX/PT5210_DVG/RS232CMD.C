@@ -3108,7 +3108,7 @@ void BBSystem() {
 															// Test if delay is valid
 															//  in the new system, (AFTER
 															//  the system is saved)
-						AnlValidateSetting( AnlBlkUnit[Suffix].HWType, Suffix);
+						AnlValidateSetting( AnlBlkUnit[Suffix].HWType, AnlTPGUnit[Suffix].HWVersion, Suffix);
 
 						TrxAnlBlkSystem( Suffix, UcharVal, AnlBlkConfig[Suffix].Delay,\
 															  AnlBlkConfig[Suffix].ScHPhase);
@@ -3731,9 +3731,14 @@ void AnlTPGTextString() {
 						case PT8601:
 							CharPtr = StdTextCharSet;
 							if ( AnlTPGUnit[Suffix].HWVersion == 2)
+							{
+								CharPtr = ExtTextCharSet;
 								noOfChar = PT863xMaxNoChar;
+							}
 							else
+							{
 								noOfChar = PT860xMaxNoChar;
+							}
 							break;
 
 						default:
@@ -4163,7 +4168,7 @@ void AnlTPGSystem() {
 															// Test if delay/pattern is valid
 															//  in the new system, (AFTER
 															//  the system is saved)
-						AnlValidateSetting( AnlTPGUnit[Suffix].HWType, Suffix);
+						AnlValidateSetting( AnlTPGUnit[Suffix].HWType, AnlTPGUnit[Suffix].HWVersion, Suffix);
 															// Get validated pattern
 						pattern = AnlTPGConfig[Suffix].Pattern;
 

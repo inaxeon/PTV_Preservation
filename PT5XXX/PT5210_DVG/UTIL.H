@@ -27,7 +27,7 @@ extern char* Cstrcpy( char* to, register code char * from);
 extern int Cstrcmp( register const char * s1, register code char * s2);
 extern int Cstrncmp( register const char * s1, register code char * s2, size_t len);
 
-extern char GetNextTextASCII( UC HWtype, UC direction, UC ASCIIChar);
+extern char GetNextTextASCII( UC HWtype, UC HWversion, UC direction, UC ASCIIChar);
 extern char GetNextPresetASCII( UC direction, UC ASCIIChar);
 
 extern void TimeFormat( UC format, UL TimeInf, UC TCIFormat, char* TimeTxt);

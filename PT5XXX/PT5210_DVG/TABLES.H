@@ -207,7 +207,7 @@ extern code UC PresetCharSet[128];
 extern code UC* FindPatternTable( UC HWtype, UC HWversion);
 extern code UC* FindAudioLevelTable( UC HWtype);
 
-extern void AnlValidateSetting( UC HWtype, UC ndx);
+extern void AnlValidateSetting( UC HWtype, UC HWversion, UC ndx);
 extern UC AnlValidatePattern( UC HWtype, UC ndx, UC system, UC pattern);
 extern UC AnlValidateGroupPattern( UC HWtype, UC ndx, UC system, UC group, UC pattern);
 extern UC AnlNextGroupPattern( UC HWtype, UC ndx, UC system, UC group, UC pattern);

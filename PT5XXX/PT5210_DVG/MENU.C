@@ -1448,7 +1448,7 @@ void BBSystemSelect(){
 															// Test if delay is valid
 															//  in the new system, (AFTER
 															//  the system is saved)
-			AnlValidateSetting( AnlBlkUnit[AnlBlkNdx].HWType, AnlBlkNdx);
+			AnlValidateSetting( AnlBlkUnit[AnlBlkNdx].HWType, AnlBlkUnit[AnlBlkNdx].HWVersion, AnlBlkNdx);
 
 			if ( ErrorCode = TrxAnlBlkSystem( AnlBlkNdx, UcharVal,\
 													AnlBlkConfig[AnlBlkNdx].Delay,\
@@ -2028,7 +2028,7 @@ void AnlTPGSystemSelect(){
 															// Test if delay/pattern is valid
 															//  in the new system, (AFTER
 															//  the system is saved)
-			AnlValidateSetting( AnlTPGUnit[ndx].HWType, ndx);
+			AnlValidateSetting( AnlTPGUnit[ndx].HWType, AnlTPGUnit[ndx].HWVersion, ndx);
 
 			pattern = AnlTPGConfig[ndx].Pattern;// Get validated pattern
 
@@ -2490,7 +2490,7 @@ void AnlTPGTextEditSelect(){
 			TextBuffer[UintVal+1] = 0;
 		}
 
-		TextBuffer[UintVal] = GetNextTextASCII( AnlTPGUnit[ndx].HWType,\
+		TextBuffer[UintVal] = GetNextTextASCII( AnlTPGUnit[ndx].HWType, AnlTPGUnit[ndx].HWVersion,
 										 ( FuncTriggers & 0x10), TextBuffer[UintVal]);
 
 		if ( !strcmp( AnlTPGConfig[ndx].Text[UcharVal], TextBuffer))
@@ -4308,7 +4308,7 @@ void SDITPGTextEditSelect(){
 			TextBuffer[UintVal+1] = 0;
 		}
 
-		TextBuffer[UintVal] = GetNextTextASCII( SDITPGUnit[ndx].HWType,\
+		TextBuffer[UintVal] = GetNextTextASCII( SDITPGUnit[ndx].HWType, SDITPGUnit[ndx].HWVersion,
 										 ( FuncTriggers & 0x10), TextBuffer[UintVal]);
 
 		if ( !strcmp( SDITPGConfig[ndx].Text[UcharVal], TextBuffer))

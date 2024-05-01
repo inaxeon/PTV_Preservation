@@ -806,7 +806,7 @@ UC ConfigureAnlBlkUnit( UC ndx) {
 
 	AnlBlkUnit[ndx].Present = TRUE;
 															// Just validate delay
-	AnlValidateSetting( AnlBlkUnit[ndx].HWType, ndx);
+	AnlValidateSetting( AnlBlkUnit[ndx].HWType, AnlBlkUnit[ndx].HWVersion, ndx);
 
 															// Transmit system/delay/ScHPhase
 	error = TrxAnlBlkSystem( ndx, AnlBlkConfig[ndx].System,\
@@ -840,7 +840,7 @@ UC ConfigureAnlTPGUnit( UC ndx) {
 
 	AnlTPGUnit[ndx].Present = TRUE;
 																// Validate the configuration
-	AnlValidateSetting( AnlTPGUnit[ndx].HWType, ndx);
+	AnlValidateSetting( AnlTPGUnit[ndx].HWType, AnlTPGUnit[ndx].HWVersion, ndx);
 
 	pattern = AnlTPGConfig[ndx].Pattern;			// Get validated pattern
 

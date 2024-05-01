@@ -21,7 +21,7 @@
 /*		char* Cstrcpy( char* to, register code char * from)						*/
 /*		int Cstrcmp( register const char * s1, register code char * s2)		*/
 /*		int Cstrncmp( register const char * s1, register code char * s2)		*/
-/*		char GetNextTextASCII( UC HWtype, UC direction, char ASCIIChar)		*/
+/*		char GetNextTextASCII( UC HWtype, UC HWversion, UC direction, char ASCIIChar)		*/
 /*		char GetNextPresetASCII( UC direction, char ASCIIChar)					*/
 /*		void TimeFormat( UC format, UL TimeInf, UC TCIFormat, char* TimeTxt)	*/
 /*		UC ValidTime( UL TimeInf)															*/
@@ -359,13 +359,20 @@ int Cstrncmp( register const char * s1, register code char * s2, size_t len) {
 /*	Returns:		Next/previous legal character.										*/
 /*	Updates:		--																				*/
 /***************************************************************************/
-char GetNextTextASCII( UC HWtype, UC direction, UC ASCIIChar) {
+char GetNextTextASCII( UC HWtype, UC HWversion, UC direction, UC ASCIIChar) {
 
 	code UC* CharPtr;
 	UC MaxCharNdx;
 
 	switch ( HWtype) {
 		case PT8601:
+			if ( HWversion == 2)
+			{
+				CharPtr = ExtTextCharSet;
+				MaxCharNdx = 235;
+				break;
+			}
+			// fall through
 		case PT8602:
 		case PT8603:
 			CharPtr = StdTextCharSet;

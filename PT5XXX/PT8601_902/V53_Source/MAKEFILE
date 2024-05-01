@@ -31,7 +31,6 @@ comm.obj:	comm.a51
 		a comm.a51
 
 clean:
-		del *.bin
 		del *.hex
 		del *.obj
 		del *.lst
