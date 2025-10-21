@@ -71,7 +71,7 @@ namespace Pm5644Commander.Cli
                 }
             }
 
-            var instr = InstrumentFactory.GetInstrument(addr);
+            var instr = InstrumentFactory.GetInstrument(InterfaceType.Gpib, addr);
 
             switch (operation)
             {
