@@ -1,0 +1,5 @@
+EEPROM_4008_002_02451_AT28HC64B.BIN:
+Firmware for the improved PCF84C00T Adapter board (same as EPROM_4008_002_02451_CSUM_8D20.BIN but truncated to 8KB as the MCU does not read any code above this)
+
+EPROM_4008_002_02451_CSUM_8D20.BIN:
+Original firmware (64KB)
