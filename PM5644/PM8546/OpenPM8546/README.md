@@ -21,6 +21,7 @@ It implements all of the known functionality of the original hardware and genera
 ## Contents
 
 * V5: Firmware
+* V5\_OriginalCompatible: Version of firmware which is compatible original PTV PAL code (do not use with this project yet)
 * V8: Address and timecode decoder
 * V15: Horizontal counter PAL
 * V16: Vertical counter PAL
@@ -28,6 +29,8 @@ It implements all of the known functionality of the original hardware and genera
 * V19: Blue PROM
 * V20: Red PROM
 * V28: Y/G encoder PAL
-* V28_MONO: Y/G encoder PAL (for monochrome builds where UV/BR components are omitted)
+* V28\_OriginalCompatible: Y/G encoder PAL - compatible with original character PROMs (do not use with this project yet)
+* V28\_MONO: Y/G encoder PAL (for monochrome builds where UV/BR components are omitted)
 * V29: UV/BR encoder PAL
-* V29_MONO: TESTING ONLY. DO NOT USE!
+* V29\_OriginalCompatible: UV/BR encoder PAL - compatible with original character PROMs (do not use with this project yet)
+* V29\_MONO: TESTING ONLY. DO NOT USE!
