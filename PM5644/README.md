@@ -1,5 +1,6 @@
 # PM5644
 
+* PM5644D902: PAL-D/K 4:3 Colour Circle with added corner circles (X1 = 13.5 MHz)
 * PM5644G00: PAL-G 4:3 Colour Circle (X1 = 13.5 MHz)
 * PM5644G913: PAL-G 4:3 Indian Head (X1 = 20 MHz)
 * PM5644G924: PAL 16:9 Colour Circle with 5.8 MHz grating (X1 = 20 MHz)
