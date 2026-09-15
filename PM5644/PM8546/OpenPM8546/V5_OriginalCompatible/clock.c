@@ -465,3 +465,233 @@ static void tick_day(void)
         }
     }
 }
+
+
+
+#if 0
+
+// MM: TODO: The below was written by Claude. Look at in future.
+
+/* ============================================================================
+ * EBU/LTC-style timecode decoder (grey-code link from external decoder chip)
+ * ----------------------------------------------------------------------------
+ * Reverse engineered from the original PM8546 firmware, via Ghidra.
+ * NOT wired up yet - this is a straight port of the original 8051 state
+ * machine so the algorithm can
+ * be reviewed/tested before it gets hooked up to the software clock.
+ *
+ * Hardware: an external analogue decoder does the bi-phase/grey-code
+ * demodulation and exports plain clock + data:
+ *   - clock -> INT1
+ *   - data  -> P1.4
+ *
+ * Each frame is 80 bit-times, matching SMPTE/EBU LTC: a long sync pulse
+ * (measured by width, not bit-decoded) followed by 64 data bits shifted in
+ * as 8 bytes. Those 8 bytes are simultaneously:
+ *   - combined pairwise (with a nibble swap) into 4 "field" bytes holding
+ *     hours/minutes/seconds/frames, plus 2 flag bits stolen from the top of
+ *     the seconds/minutes bytes (drop-frame/colour-frame)
+ *   - kept in full as an 8-byte "user bits" block, validated with a simple
+ *     nibble-sum checksum before being latched
+ *
+ * Omitted from this port (present in the original but not essential to the
+ * algorithm): a P1.2-gated alternate ISR mode, a P1.1 scope/debug pin toggle,
+ * and a Timer1 reload used as an inter-bit timeout watchdog.
+ * ========================================================================= */
+
+#define TC_DATA_BIT()           (!!(P1 & 0x10))    /* P1.4 */
+#define TC_SYNC_PULSE_WIDTH     0x0C
+#define SWAP_NIBBLES(x)         ((uint8_t)(((x) >> 4) | ((x) << 4)))
+
+/* sync/frame-boundary hunting state */
+static uint8_t _tc_frame_synced;     /* 1 = shifting frame data, 0 = hunting for the sync pulse */
+static uint8_t _tc_frame_valid;      /* 1 = previous frame's 8 bytes were shifted in cleanly */
+static uint8_t _tc_bit_sync;         /* pulse-train lock indicator (cleared on mistimed edges) */
+static uint8_t _tc_pulse_state1;
+static uint8_t _tc_pulse_state2;
+static uint8_t _tc_pulse_state3;
+static uint8_t _tc_sync_pulse_count;
+static uint8_t _tc_frame_bit_count;  /* total bit-times seen since the last sync pulse (0..0x50) */
+static uint8_t _tc_swap_disable;     /* mirrors an external flag bit whose producer wasn't traced */
+
+/* bit/byte shifting state */
+static uint8_t _tc_shiftreg;
+static uint8_t _tc_bit_count;
+static uint8_t _tc_byte_count;
+static uint8_t _tc_raw_fields[4];    /* combined hours/minutes/seconds/frames bytes */
+static uint8_t _tc_user_bits_raw[8]; /* raw shifted bytes, one per completed byte in the frame */
+
+/* decoded results */
+uint8_t tc_hours;
+uint8_t tc_minutes;
+uint8_t tc_seconds;
+uint8_t tc_frames;
+uint8_t tc_flags;             /* bit3 = colour-frame, bit7 = drop-frame (stolen sign bits) */
+uint8_t tc_user_bits_valid;
+uint8_t tc_user_bits[3];
+
+static void tc_reset_to_search(void)
+{
+    _tc_frame_synced = 0;
+    _tc_pulse_state1 = 1;
+    _tc_pulse_state2 = 1;
+    _tc_pulse_state3 = 1;
+    _tc_sync_pulse_count = 0;
+}
+
+static void tc_extract_frame(void)
+{
+    uint8_t sum;
+
+    tc_frames  = _tc_raw_fields[3] & 0x3f;
+    tc_seconds = _tc_raw_fields[2] & 0x7f;
+    tc_flags   = SWAP_NIBBLES(_tc_raw_fields[2] & 0x80);
+    tc_minutes = _tc_raw_fields[1] & 0x7f;
+    tc_flags  |= (_tc_raw_fields[1] & 0x80);
+    tc_hours   = _tc_raw_fields[0] & 0x3f;
+
+    /* The original also gates the block below on two external flag bits
+     * whose producers weren't traced - assumed enabled here. */
+
+    if (SWAP_NIBBLES(_tc_user_bits_raw[7]) != 0x08)
+    {
+        tc_user_bits_valid = 0;
+        return;
+    }
+
+    sum  = 0x08;
+    sum += _tc_user_bits_raw[6];
+    sum += SWAP_NIBBLES(_tc_user_bits_raw[5]);
+    sum += _tc_user_bits_raw[4];
+    sum += SWAP_NIBBLES(_tc_user_bits_raw[3]);
+    sum += _tc_user_bits_raw[2];
+    sum += SWAP_NIBBLES(_tc_user_bits_raw[1]);
+
+    if (((_tc_user_bits_raw[0] + sum + 1) & 0x0f) != 0)
+    {
+        tc_user_bits_valid = 0;
+        return;
+    }
+
+    tc_user_bits[0] = _tc_user_bits_raw[6] | _tc_user_bits_raw[5];
+    tc_user_bits[1] = _tc_user_bits_raw[4] | _tc_user_bits_raw[3];
+    tc_user_bits[2] = _tc_user_bits_raw[2] | _tc_user_bits_raw[1];
+    tc_user_bits_valid = 1;
+}
+
+/* Called once per clock edge on INT1 with the sampled P1.4 level.
+ * Mirrors FUN_CODE_1b44 (EBU_Greycode_BitShiftAndDecode) in the original. */
+static void tc_process_bit(uint8_t data_bit)
+{
+    if (_tc_frame_synced)
+    {
+        uint8_t nib_lo, nib_hi;
+
+        _tc_shiftreg = (_tc_shiftreg >> 1) | (data_bit ? 0x80 : 0x00);
+
+        if (--_tc_bit_count != 0)
+            return;
+
+        _tc_byte_count--;
+        _tc_bit_count = 8;
+
+        nib_lo = _tc_shiftreg & 0x0f;
+        if (!_tc_swap_disable)
+            nib_lo = SWAP_NIBBLES(nib_lo);
+        _tc_raw_fields[_tc_byte_count >> 1] |= nib_lo;
+
+        nib_hi = _tc_shiftreg & 0xf0;
+        if (!_tc_swap_disable)
+            nib_hi = SWAP_NIBBLES(nib_hi);
+        _tc_user_bits_raw[_tc_byte_count] = nib_hi;
+
+        if (_tc_byte_count != 0)
+            return;
+
+        tc_reset_to_search();
+        return;
+    }
+
+    if (!data_bit)
+    {
+        if (_tc_pulse_state1)
+        {
+            _tc_pulse_state1 = 0;
+            _tc_pulse_state2 = 1;
+            _tc_pulse_state3 = 1;
+            _tc_sync_pulse_count = 0;
+            _tc_bit_sync = 0;
+            return;
+        }
+        if (_tc_pulse_state2)
+        {
+            _tc_pulse_state2 = 0;
+            _tc_pulse_state3 = 1;
+            _tc_sync_pulse_count = 0;
+            _tc_bit_sync = 0;
+            return;
+        }
+        if (_tc_sync_pulse_count == 0)
+        {
+            _tc_pulse_state2 = 0;
+            _tc_pulse_state3 = 1;
+            _tc_sync_pulse_count = 0;
+            _tc_bit_sync = 0;
+            return;
+        }
+        if (_tc_sync_pulse_count != TC_SYNC_PULSE_WIDTH)
+        {
+            _tc_pulse_state1 = 0;
+            _tc_pulse_state2 = 1;
+            _tc_pulse_state3 = 1;
+            _tc_sync_pulse_count = 0;
+            _tc_bit_sync = 0;
+            return;
+        }
+        _tc_pulse_state3 = 0;
+        return;
+    }
+
+    /* data_bit == 1 */
+    if (_tc_pulse_state1 || _tc_pulse_state2)
+    {
+        tc_reset_to_search();
+        return;
+    }
+    if (_tc_pulse_state3)
+    {
+        _tc_sync_pulse_count++;
+        if (_tc_sync_pulse_count <= TC_SYNC_PULSE_WIDTH)
+            return;
+        tc_reset_to_search();
+        return;
+    }
+
+    /* pulse width confirmed - check whether the preceding frame was
+     * exactly 80 bit-times long */
+    if (_tc_frame_bit_count == 0x50)
+    {
+        _tc_frame_bit_count = 0;
+        if (_tc_frame_valid)
+            tc_extract_frame();
+        _tc_frame_synced = 1;
+        _tc_frame_valid = 1;
+        _tc_bit_count = 8;
+        _tc_byte_count = 8;
+        _tc_sync_pulse_count = 0;
+        return;
+    }
+
+    _tc_frame_bit_count = 0;
+    _tc_frame_valid = 0;
+    tc_reset_to_search();
+}
+
+/* Not enabled yet - to hook up: set IT1 = 1; EX1 = 1; in mcu_init(). */
+void timecode_ISR(void) interrupt 2
+{
+    _tc_frame_bit_count++;
+    tc_process_bit(TC_DATA_BIT());
+}
+
+#endif
