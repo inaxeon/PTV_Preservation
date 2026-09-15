@@ -215,7 +215,11 @@ static void handle_logogen_ctrl(uint8_t param)
     switch (param)
     {
     case SUBCMD_LOGOGEN_ON:
+#ifdef QC625_PROTOTYPE_BUILD
         logogen_ctrl(FORMAT_LG_ON | FORMAT_nDATE_ON | FORMAT_nTIME_ON, 0x80 | FORMAT_LG_ON | FORMAT_nTIME_ON | FORMAT_nDATE_ON);
+#else
+        logogen_ctrl(FORMAT_LG_ON, 0x80 | FORMAT_LG_ON);
+#endif /* QC625_PROTOTYPE_BUILD */
         // The base appears to want a status result.
         // but it does nothing with it. Eh...
         cmd_respond('l', SUBCMD_LOGOGEN_IS_ON);
