@@ -30,7 +30,14 @@
 //#define PAL_16_9_BUILD
 //#define SECAM_BUILD
 //#define PAL_M_BUILD
-//#define QC625_PROTOTYPE_BUILD // Ancient firmware on D/902
+
+// Ancient firmware on D/902 (identifies as QC625)
+// Old generator with incomplete logo generator impementation:
+// - No ability to program text via SCPI or front panel
+//   (would have to edit it in config.c and rebuild if a change was desired)
+// - Can activate clock with SCPI only
+// - Can set clock with front panel and SCPI
+//#define QC625_PROTOTYPE_BUILD 
 
 #if defined(PAL_4_3_BUILD)
 #define LINES_625
