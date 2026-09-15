@@ -29,8 +29,13 @@
 #include "clock.h"
 #include "edit.h"
 
+#ifdef QC625_PROTOTYPE_BUILD
+#define MSG_TYPE_BASE_TO_LG     0x03
+#define MSG_TYPE_LG_TO_BASE     0x05
+#else
 #define MSG_TYPE_BASE_TO_LG     0x01
 #define MSG_TYPE_LG_TO_BASE     0x03
+#endif /* QC625_PROTOTYPE_BUILD */
 
 #define SUBCMD_IS_DATA          0x80 // Parameter byte contains 7-bit data
 #define SUBCMD_IS_LOGO          0xC0 // ... contains 4-bit logo index
@@ -152,7 +157,13 @@ static void handle_reset(uint8_t param)
         break;
     default:
         if (param & SUBCMD_IS_DATA)
+        {
+#ifdef QC625_PROTOTYPE_BUILD
+            logogen_ctrl(0xFF, config_read_byte(CONFIG_CLOCK) | FORMAT_LG_ON);
+#else
             logogen_ctrl(0xFF, param);
+#endif /* QC625_PROTOTYPE_BUILD */
+        }
         break;
     }
 
@@ -183,7 +194,12 @@ static void handle_format(uint8_t param)
         break;
     default:
         if (param & SUBCMD_IS_DATA)
+        {
             logogen_ctrl(0xF7, param);
+#ifdef QC625_PROTOTYPE_BUILD
+            config_write_byte(CONFIG_CLOCK, param);
+#endif
+        }
         cmd_respond('f', 'x');
         break;
     }
@@ -199,7 +215,7 @@ static void handle_logogen_ctrl(uint8_t param)
     switch (param)
     {
     case SUBCMD_LOGOGEN_ON:
-        logogen_ctrl(FORMAT_LG_ON, 0x80 | FORMAT_LG_ON);
+        logogen_ctrl(FORMAT_LG_ON | FORMAT_nDATE_ON | FORMAT_nTIME_ON, 0x80 | FORMAT_LG_ON | FORMAT_nTIME_ON | FORMAT_nDATE_ON);
         // The base appears to want a status result.
         // but it does nothing with it. Eh...
         cmd_respond('l', SUBCMD_LOGOGEN_IS_ON);

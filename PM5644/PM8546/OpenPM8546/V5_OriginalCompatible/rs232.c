@@ -37,8 +37,14 @@
 #define ST_CMD_RECEIVED     (1 << 1)
 #define ST_TX               (1 << 2)
 
+#ifdef QC625_PROTOTYPE_BUILD
+#define ACK_LG_TO_BASE      0xFA
+#define ACK_BASE_TO_LG      0xFC
+#else
 #define ACK_LG_TO_BASE      0x7C
 #define ACK_BASE_TO_LG      0x7E
+#endif /* QC625_PROTOTYPE_BUILD */
+
 
 static void rs232_send(uint8_t txdata);
 

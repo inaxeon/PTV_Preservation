@@ -6,3 +6,5 @@ make clean
 make BUILD_TYPE=SECAM_BUILD
 make clean
 make BUILD_TYPE=PAL_M_BUILD
+make clean
+make BUILD_TYPE=QC625_PROTOTYPE_BUILD

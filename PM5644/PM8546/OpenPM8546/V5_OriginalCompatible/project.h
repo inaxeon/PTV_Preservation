@@ -30,6 +30,7 @@
 //#define PAL_16_9_BUILD
 //#define SECAM_BUILD
 //#define PAL_M_BUILD
+//#define QC625_PROTOTYPE_BUILD // Ancient firmware on D/902
 
 #if defined(PAL_4_3_BUILD)
 #define LINES_625
@@ -45,6 +46,10 @@
 #define ASPECT_4_3
 #elif defined(PAL_M_BUILD)
 #define LINES_525
+#define STANDARD_PAL
+#define ASPECT_4_3
+#elif defined(QC625_PROTOTYPE_BUILD)
+#define LINES_625
 #define STANDARD_PAL
 #define ASPECT_4_3
 #endif

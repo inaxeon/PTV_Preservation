@@ -28,7 +28,9 @@
 #define CONFIG_MAGIC        (CONFIG_BASE + 0)
 #define CONFIG_VERSION      (CONFIG_BASE + 2)
 #define CONFIG_YEAR         (CONFIG_BASE + 3)
-#define CONFIG_UNUSED2      (CONFIG_BASE + 4)
+#ifdef QC625_PROTOTYPE_BUILD
+#define CONFIG_CLOCK        (CONFIG_BASE + 4)
+#endif /* QC625_PROTOTYPE_BUILD */
 #define CONFIG_TEXTA        (CONFIG_BASE + 0x20)
 #define CONFIG_TEXTB        (CONFIG_BASE + 0x40)
 #define CONFIG_DEBUG        (CONFIG_BASE + 0x60)
